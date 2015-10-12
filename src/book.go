@@ -1,9 +1,9 @@
 package main
 
 import (
-	"common/goroutine"
-	"common/json"
 	"fmt"
+	"github.com/hiromaily/golang-libraries/goroutine"
+	"github.com/hiromaily/golang-libraries/json"
 	"github.com/PuerkitoBio/goquery"
 	"log"
 	//"reflect"
