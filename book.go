@@ -1,23 +1,31 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
+	st "github.com/hiromaily/booking-teacher/settings"
 	"github.com/hiromaily/golang-libraries/goroutine"
 	"github.com/hiromaily/golang-libraries/json"
-	"github.com/PuerkitoBio/goquery"
+	"io/ioutil"
 	"log"
+	"os"
+	"os/exec"
 	//"reflect"
-	st "settings"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
 var num_teachers int = len(st.TEACHERS_ID)
 var processing_count int = 0
+var m *sync.Mutex
+var savedTeacherIds []int
 
 // Main Processing
 func processing(index int) {
+	var flg bool = false
 	teacher_list := st.TEACHERS_ID[:]
 
 	//HTTP connection
@@ -25,14 +33,22 @@ func processing(index int) {
 	if err != nil {
 		log.Fatal(err)
 		return
-	} else {
+	} else if checkHtml(doc) {
 		parsed_html := perseHtml(doc)
 
 		//show teacher's id, name, date
-		fmt.Println("-----------" + teacher_list[index].Name + "/" + teacher_list[index].Country + "/" + strconv.Itoa(teacher_list[index].Id) + "-----------")
+		fmt.Printf("----------- %s / %s / %d ----------- \n", teacher_list[index].Name, teacher_list[index].Country, teacher_list[index].Id)
 		for _, dt := range parsed_html {
 			fmt.Println(dt)
+			flg = true
 		}
+		//save teacher
+		if flg {
+			saveTeacerId(teacher_list[index].Id)
+		}
+	} else {
+		//no teacher
+		fmt.Printf("teacher %s quit \n", teacher_list[index].Name)
 	}
 }
 
@@ -40,11 +56,19 @@ func processing(index int) {
 func parentProcessing(s chan<- int, core_num int) {
 	var idx int = 0
 	for processing_count < num_teachers {
+		m.Lock()
 		idx = processing_count //set in advance
 		processing_count++     //add
+		m.Unlock()
 		processing(idx)
 	}
 	goroutine.CallbackGoRoutine(s)
+}
+
+// Check html (empty or not)
+func checkHtml(htmldata *goquery.Document) bool {
+	ret := htmldata.Find("#fav_count").Text()
+	return ret != ""
 }
 
 // Parse html
@@ -57,9 +81,6 @@ func perseHtml(htmldata *goquery.Document) []string {
 
 			//decode
 			htmlStringDecode(&json_data)
-
-			//encode txt into json object
-			//encoded_json := jsonpkg.JsonEncode(json_data)
 
 			//analyze json object
 			var json_object map[string]interface{}
@@ -92,9 +113,54 @@ func htmlStringDecode(jsondata *string) {
 	}
 }
 
+func saveTeacerId(id int) {
+	savedTeacherIds = append(savedTeacherIds, id)
+}
+
+func openBrowser(ids []int) {
+	for index := range ids {
+		//out, err := exec.Command("open /Applications/Google\\ Chrome.app", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", id)).Output()
+		err := exec.Command("open", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", ids[index])).Start()
+		if err != nil {
+			panic(fmt.Sprintf("open browser error: %v", err))
+		}
+	}
+}
+
+//save teacher status to log
+func saveStatus(ids []int) bool {
+
+	//create string from ids slice
+	var sum int = 0
+	for index := range ids {
+		sum += ids[index]
+	}
+	newData := strconv.Itoa(sum)
+
+	//open saved log
+	fp, err := os.Open("status.log")
+	if err == nil {
+		scanner := bufio.NewScanner(fp)
+		scanner.Scan()
+		filedata := scanner.Text()
+
+		if newData == filedata {
+			return false
+		}
+	}
+
+	//save latest info
+	content := []byte(newData)
+	ioutil.WriteFile("./status.log", content, os.ModePerm)
+
+	return true
+}
+
 // Main
 func main() {
 	fmt.Println("getting teacher's information")
+
+	m = new(sync.Mutex)
 
 	//Time
 	t := time.Now()
@@ -102,7 +168,7 @@ func main() {
 
 	//go routine
 	c := make(chan int)
-	goroutine.RegisterStartRoutine(parentProcessing, c)
+	goroutine.RegisterStartRoutine(parentProcessing, c, 20)
 
 	//receiver
 	for {
@@ -112,9 +178,18 @@ func main() {
 		}
 	}
 
+	//open browser
+	if len(savedTeacherIds) != 0 {
+		//save status
+		openFlg := saveStatus(savedTeacherIds)
+		fmt.Println(openFlg)
+		if openFlg {
+			openBrowser(savedTeacherIds)
+		}
+	}
+
 	t2 := time.Now()
 	//fmt.Printf("%02d:%02d:%02d\n", t2.Hour(), t2.Minute(), t2.Second())
-
 	fmt.Println(t2.Sub(t))
 
 }

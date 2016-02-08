@@ -1,0 +1,6 @@
+#go get -u -v ./
+
+go fmt ./...
+go vet ./...
+
+go build -o ./book ./book.go
