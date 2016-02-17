@@ -129,6 +129,7 @@ func openBrowser(ids []int) {
 
 //save teacher status to log
 func saveStatus(ids []int) bool {
+	openFileName := "./status.log"
 
 	//create string from ids slice
 	var sum int = 0
@@ -138,7 +139,7 @@ func saveStatus(ids []int) bool {
 	newData := strconv.Itoa(sum)
 
 	//open saved log
-	fp, err := os.Open("status.log")
+	fp, err := os.OpenFile(openFileName, os.O_CREATE, 0666)
 	if err == nil {
 		scanner := bufio.NewScanner(fp)
 		scanner.Scan()
@@ -147,11 +148,14 @@ func saveStatus(ids []int) bool {
 		if newData == filedata {
 			return false
 		}
+	} else {
+		panic(err.Error())
 	}
 
 	//save latest info
 	content := []byte(newData)
-	ioutil.WriteFile("./status.log", content, os.ModePerm)
+	//ioutil.WriteFile(openFileName, content, os.ModePerm)
+	ioutil.WriteFile(openFileName, content, 0666)
 
 	return true
 }
