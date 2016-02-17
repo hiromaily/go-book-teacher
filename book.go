@@ -129,7 +129,7 @@ func openBrowser(ids []int) {
 
 //save teacher status to log
 func saveStatus(ids []int) bool {
-	openFileName := "./status.log"
+	openFileName := "/tmp/status.log"
 
 	//create string from ids slice
 	var sum int = 0
