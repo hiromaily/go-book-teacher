@@ -2,11 +2,10 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	st "github.com/hiromaily/booking-teacher/settings"
-	"github.com/hiromaily/golang-libraries/goroutine"
-	"github.com/hiromaily/golang-libraries/json"
 	"io/ioutil"
 	"log"
 	"os"
@@ -18,13 +17,50 @@ import (
 	"time"
 )
 
-var num_teachers int = len(st.TEACHERS_ID)
-var processing_count int = 0
-var m *sync.Mutex
+const MaxGoRoutine uint16 = 20
+const IntervalSecond = 30
+
+var teachersNum int = len(st.TEACHERS_ID)
 var savedTeacherIds []int
 
-// Main Processing
-func processing(index int) {
+var m *sync.Mutex
+
+// managing semaphore
+func manageSemaphore() {
+	var processingCount int = 0
+	var finishedCount int = 0
+
+	chanSemaphore := make(chan bool, MaxGoRoutine)
+
+	for {
+		chanSemaphore <- true
+
+		//TODO:このループを抜ける条件が必要
+		if processingCount != teachersNum {
+			m.Lock()
+			idx := processingCount //set in advance
+			processingCount++      //add
+			m.Unlock()
+
+			//chanSemaphore <- true
+			go func(index int) {
+				defer func() {
+					<-chanSemaphore
+				}()
+				handleHtmlProcessing(index)
+				finishedCount++
+			}(idx)
+		} else if finishedCount == teachersNum {
+			close(chanSemaphore)
+			break
+		} else {
+			continue
+		}
+	}
+}
+
+// Handling Html Processing
+func handleHtmlProcessing(index int) {
 	var flg bool = false
 	teacher_list := st.TEACHERS_ID[:]
 
@@ -52,19 +88,6 @@ func processing(index int) {
 	}
 }
 
-// For goroutine
-func parentProcessing(s chan<- int, core_num int) {
-	var idx int = 0
-	for processing_count < num_teachers {
-		m.Lock()
-		idx = processing_count //set in advance
-		processing_count++     //add
-		m.Unlock()
-		processing(idx)
-	}
-	goroutine.CallbackGoRoutine(s)
-}
-
 // Check html (empty or not)
 func checkHtml(htmldata *goquery.Document) bool {
 	ret := htmldata.Find("#fav_count").Text()
@@ -76,18 +99,19 @@ func perseHtml(htmldata *goquery.Document) []string {
 	var dates []string
 
 	htmldata.Find("a.bt-open").Each(func(_ int, s *goquery.Selection) {
-		if json_data, ok := s.Attr("id"); ok {
-			//fmt.Println(reflect.TypeOf(json_data))
+		if jsonData, ok := s.Attr("id"); ok {
+			//fmt.Println(reflect.TypeOf(jsonData))
 
 			//decode
-			htmlStringDecode(&json_data)
+			htmlStringDecode(&jsonData)
 
 			//analyze json object
-			var json_object map[string]interface{}
-			json.JsonAnalyze(json_data, &json_object)
+			var jsonObject map[string]interface{}
+			//json.JsonAnalyze(jsonData, &jsonObject)
+			json.Unmarshal([]byte(jsonData), &jsonObject)
 
 			//extract date from json object
-			dates = append(dates, json_object["field19"].(string))
+			dates = append(dates, jsonObject["field19"].(string))
 		}
 	})
 
@@ -113,18 +137,9 @@ func htmlStringDecode(jsondata *string) {
 	}
 }
 
+//save teacher id to variable
 func saveTeacerId(id int) {
 	savedTeacherIds = append(savedTeacherIds, id)
-}
-
-func openBrowser(ids []int) {
-	for index := range ids {
-		//out, err := exec.Command("open /Applications/Google\\ Chrome.app", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", id)).Output()
-		err := exec.Command("open", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", ids[index])).Start()
-		if err != nil {
-			panic(fmt.Sprintf("open browser error: %v", err))
-		}
-	}
 }
 
 //save teacher status to log
@@ -139,7 +154,7 @@ func saveStatus(ids []int) bool {
 	newData := strconv.Itoa(sum)
 
 	//open saved log
-	fp, err := os.OpenFile(openFileName, os.O_CREATE, 0666)
+	fp, err := os.OpenFile(openFileName, os.O_CREATE, 0664)
 	if err == nil {
 		scanner := bufio.NewScanner(fp)
 		scanner.Scan()
@@ -155,34 +170,33 @@ func saveStatus(ids []int) bool {
 	//save latest info
 	content := []byte(newData)
 	//ioutil.WriteFile(openFileName, content, os.ModePerm)
-	ioutil.WriteFile(openFileName, content, 0666)
+	ioutil.WriteFile(openFileName, content, 0664)
 
 	return true
 }
 
-// Main
-func main() {
-	fmt.Println("getting teacher's information")
+//open browser on PC
+func openBrowser(ids []int) {
+	for index := range ids {
+		//out, err := exec.Command("open /Applications/Google\\ Chrome.app", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", id)).Output()
+		err := exec.Command("open", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", ids[index])).Start()
+		if err != nil {
+			panic(fmt.Sprintf("open browser error: %v", err))
+		}
+	}
+}
 
-	m = new(sync.Mutex)
-
+//serial processing
+func serialProcessing() {
 	//Time
 	t := time.Now()
 	//fmt.Printf("%02d:%02d:%02d\n", t.Hour(), t.Minute(), t.Second())
 
-	//go routine
-	c := make(chan int)
-	goroutine.RegisterStartRoutine(parentProcessing, c, 20)
-
-	//receiver
-	for {
-		_, ok := <-c
-		if !ok {
-			break
-		}
-	}
+	//
+	manageSemaphore()
 
 	//open browser
+	//fmt.Println("open browser")
 	if len(savedTeacherIds) != 0 {
 		//save status
 		openFlg := saveStatus(savedTeacherIds)
@@ -191,9 +205,22 @@ func main() {
 			openBrowser(savedTeacherIds)
 		}
 	}
+	//reset
+	savedTeacherIds = nil
 
 	t2 := time.Now()
 	//fmt.Printf("%02d:%02d:%02d\n", t2.Hour(), t2.Minute(), t2.Second())
 	fmt.Println(t2.Sub(t))
+}
 
+// Main
+func main() {
+	fmt.Println("getting teacher's information")
+
+	m = new(sync.Mutex)
+
+	for {
+		serialProcessing()
+		time.Sleep(IntervalSecond * time.Second)
+	}
 }

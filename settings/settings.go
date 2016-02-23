@@ -29,7 +29,7 @@ var TEACHERS_ID []Teacher = []Teacher{
 	{6926, "Katie S", "America"},
 	{7355, "Mei Li", "America"},
 	{7545, "Amanda Y", "America"},
-	{7582, "Kittay", "America"},
+	//{7582, "Kittay", "America"},
 	{8099, "Dilia", "America"},
 	{8475, "Lindsey", "America"},
 	{8542, "Miranda Faye", "America"},
@@ -38,6 +38,6 @@ var TEACHERS_ID []Teacher = []Teacher{
 	{8703, "Mary C", "America"},
 	//{6281, "Monica U", "Canada"},
 	{398, "Jules", "UK"},
-	{1670, "Jessica", "UK"},
+	//{1670, "Jessica", "UK"},
 	{425, "Mel", "Australia"},
 }
