@@ -18,7 +18,10 @@ import (
 )
 
 const MaxGoRoutine uint16 = 20
-const IntervalSecond = 30
+const OpenFileName string = "/tmp/status.log"
+
+const timeRangeFrom string = "07:00:00"
+const timeRangeTo string = "24:00:00"
 
 var teachersNum int = len(st.TEACHERS_ID)
 var savedTeacherIds []int
@@ -35,7 +38,7 @@ func manageSemaphore() {
 	for {
 		chanSemaphore <- true
 
-		//TODO:このループを抜ける条件が必要
+		//TODO:condition when to break is necessary
 		if processingCount != teachersNum {
 			m.Lock()
 			idx := processingCount //set in advance
@@ -69,7 +72,7 @@ func handleHtmlProcessing(index int) {
 	if err != nil {
 		log.Fatal(err)
 		return
-	} else if checkHtml(doc) {
+	} else if isTeacherActive(doc) {
 		parsed_html := perseHtml(doc)
 
 		//show teacher's id, name, date
@@ -89,9 +92,17 @@ func handleHtmlProcessing(index int) {
 }
 
 // Check html (empty or not)
-func checkHtml(htmldata *goquery.Document) bool {
+func isTeacherActive(htmldata *goquery.Document) bool {
 	ret := htmldata.Find("#fav_count").Text()
 	return ret != ""
+}
+
+// check within range for applicable time
+func isTimeApplicable(strDate string) bool {
+	//e.g. 2016-02-27 03:30:00
+	strTarget := strings.Split(strDate, " ")[1]
+
+	return strTarget >= timeRangeFrom && strTarget <= timeRangeTo
 }
 
 // Parse html
@@ -111,7 +122,11 @@ func perseHtml(htmldata *goquery.Document) []string {
 			json.Unmarshal([]byte(jsonData), &jsonObject)
 
 			//extract date from json object
-			dates = append(dates, jsonObject["field19"].(string))
+			//e.g. 2016-02-27 03:30:00
+			strDate := jsonObject["field19"].(string)
+			if isTimeApplicable(strDate) {
+				dates = append(dates, strDate)
+			}
 		}
 	})
 
@@ -144,7 +159,6 @@ func saveTeacerId(id int) {
 
 //save teacher status to log
 func saveStatus(ids []int) bool {
-	openFileName := "/tmp/status.log"
 
 	//create string from ids slice
 	var sum int = 0
@@ -154,7 +168,7 @@ func saveStatus(ids []int) bool {
 	newData := strconv.Itoa(sum)
 
 	//open saved log
-	fp, err := os.OpenFile(openFileName, os.O_CREATE, 0664)
+	fp, err := os.OpenFile(OpenFileName, os.O_CREATE, 0664)
 	if err == nil {
 		scanner := bufio.NewScanner(fp)
 		scanner.Scan()
@@ -169,8 +183,7 @@ func saveStatus(ids []int) bool {
 
 	//save latest info
 	content := []byte(newData)
-	//ioutil.WriteFile(openFileName, content, os.ModePerm)
-	ioutil.WriteFile(openFileName, content, 0664)
+	ioutil.WriteFile(OpenFileName, content, 0664)
 
 	return true
 }
@@ -221,6 +234,6 @@ func main() {
 
 	for {
 		serialProcessing()
-		time.Sleep(IntervalSecond * time.Second)
+		time.Sleep(60 * time.Second)
 	}
 }

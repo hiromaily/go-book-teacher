@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #go get -u -v ./
 
 go fmt ./...
