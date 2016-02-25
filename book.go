@@ -216,6 +216,9 @@ func serialProcessing() {
 		fmt.Println(openFlg)
 		if openFlg {
 			openBrowser(savedTeacherIds)
+
+			//emit a sound
+			_ = exec.Command("say", "Found").Start()
 		}
 	}
 	//reset
@@ -230,10 +233,13 @@ func serialProcessing() {
 func main() {
 	fmt.Println("getting teacher's information")
 
+	//json
+	_ = LoadJsonFile()
+
 	m = new(sync.Mutex)
 
 	for {
 		serialProcessing()
-		time.Sleep(60 * time.Second)
+		time.Sleep(120 * time.Second)
 	}
 }

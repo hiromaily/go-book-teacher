@@ -4,4 +4,5 @@
 go fmt ./...
 go vet ./...
 
-go build -o ./book ./book.go
+#go build -o ./book ./book.go
+go build -o ./book
