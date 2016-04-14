@@ -1,4 +1,4 @@
 # booking-teacher
-for booking teacher on English lesson
-This program is scraping data for extracting schedule of teachers
+
+This program is for booking specific teachers on English lesson usign web scraping.
 
