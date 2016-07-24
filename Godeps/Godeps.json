@@ -1,0 +1,69 @@
+{
+	"ImportPath": "github.com/hiromaily/go-book-teacher",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v74",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/PuerkitoBio/goquery",
+			"Comment": "v0.3.2-93-gf0d7573",
+			"Rev": "f0d75731e0db647903c8611d00c7b85002751317"
+		},
+		{
+			"ImportPath": "github.com/andybalholm/cascadia",
+			"Rev": "3ad29d1ad1c4f2023e355603324348cf1f4b2d48"
+		},
+		{
+			"ImportPath": "github.com/garyburd/redigo/internal",
+			"Comment": "v1.0.0-1-gb8dc900",
+			"Rev": "b8dc90050f24c1a73a52f107f3f575be67b21b7c"
+		},
+		{
+			"ImportPath": "github.com/garyburd/redigo/redis",
+			"Comment": "v1.0.0-1-gb8dc900",
+			"Rev": "b8dc90050f24c1a73a52f107f3f575be67b21b7c"
+		},
+		{
+			"ImportPath": "github.com/hiromaily/golibs/db/redis",
+			"Rev": "dbba67a1141b97a452703d5e8f7ff862737b709b"
+		},
+		{
+			"ImportPath": "github.com/hiromaily/golibs/heroku",
+			"Rev": "dbba67a1141b97a452703d5e8f7ff862737b709b"
+		},
+		{
+			"ImportPath": "github.com/hiromaily/golibs/log",
+			"Rev": "dbba67a1141b97a452703d5e8f7ff862737b709b"
+		},
+		{
+			"ImportPath": "github.com/hiromaily/golibs/mails",
+			"Rev": "dbba67a1141b97a452703d5e8f7ff862737b709b"
+		},
+		{
+			"ImportPath": "github.com/hiromaily/golibs/signal",
+			"Rev": "dbba67a1141b97a452703d5e8f7ff862737b709b"
+		},
+		{
+			"ImportPath": "github.com/hiromaily/golibs/times",
+			"Rev": "dbba67a1141b97a452703d5e8f7ff862737b709b"
+		},
+		{
+			"ImportPath": "github.com/hiromaily/golibs/tmpl",
+			"Rev": "dbba67a1141b97a452703d5e8f7ff862737b709b"
+		},
+		{
+			"ImportPath": "github.com/hiromaily/golibs/utils",
+			"Rev": "dbba67a1141b97a452703d5e8f7ff862737b709b"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html",
+			"Rev": "f841c39de738b1d0df95b5a7187744f0e03d8112"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html/atom",
+			"Rev": "f841c39de738b1d0df95b5a7187744f0e03d8112"
+		}
+	]
+}

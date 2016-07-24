@@ -1,0 +1,23 @@
+language: go
+sudo: false
+go:
+  - tip
+
+services:
+  - redis-server
+
+env:
+  global:
+    - secure: "uHNRxJhumpFZZdaQDaFKWejOiY7PDeG5jY/fy1BfmFMeOMbaWxiCz758qk3lWkSBNd5oON/2+10o1ZWEtdZNbTI5sr8STz7E8E7vsgU8HIIxQPh1jOU18QpQshZG8nW9HZULorxdckjjCsG1K1SqAFuZHtBeFFnFhei9XSKUc6OYr1FuKHHTRT93nNvBgW130nFRhy6JaZR+i1rVqdYmWo0qIEPlc3GSXjlxxCszrHL1FP+U2a9TosebV7oH0PSQX87IHQJAgGZKQvtksH9hWkH2jgOZRc0N9fptFB7EowCIhNkIUZef9dQ+tO8R+skmbEX79fxiJAv/S8yduHxnvH/OIacG+VpU6CkvoFpxRDKGgbPqQSbusdSiHo2G9/ALTooDjScQroohpxmfE+kzyAozDwxnmmctUjGLhmjHP4gzk+xZcYuShAOr6lsbF1AbRI+rDaC4oV3xq3PoQ6Rjizne7SttlnVx6yBjktGFuZ07wKebMNDs8dbzW3DuYKEj7rpgzJnq7gJsk59xAnsBIDVq1RAr7kbx4wCTsAbV7z6iQ5v+XsYoLSJV1ZEiWWYKPWPocAslM6mD/Xa5jSPMIWLyjkfxqG/+OOiKBaYUwJIZ7p/+LHfHFh9tBGyuzjmcSU7L4S9TbYHCMhEiZapwa9+Eo22jTGUbQTBjX7ra/oM="
+
+script:
+  - go fmt ./...
+  - go vet $(go list ./... | grep -v /vendor/)
+  - go test -v cmd/book/*.go -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT} -rdsvr ${REDIS_URL}
+
+before_install:
+  - go get github.com/tools/godep
+
+branches:
+  only:
+    - master
