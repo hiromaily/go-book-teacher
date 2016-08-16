@@ -1,0 +1,34 @@
+#docker-compose.yml
+#- redis:3.2
+#- book from Dockerfile of book (build is required)
+version: '2'
+services:
+  # Redis
+  redis:
+    image: redis:3.2
+    container_name: book-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./docker_build/redis_data:/data
+    restart: always
+    command: redis-server --requirepass password --appendonly yes
+  # golang:go-book-teacher
+  book:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        redisHostName: redis-server
+    image: go-book-teacher:v1.1
+    container_name: book
+    env_file: ./docker_build/.env
+    links:
+      - redis:redis-server
+    depends_on:
+      - redis
+    volumes:
+      - ./:/go/src/github.com/hiromaily/go-book-teacher
+    stdin_open: true
+    tty: true
+    command: bash

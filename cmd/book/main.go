@@ -150,9 +150,11 @@ func checkFile(newData string) bool {
 }
 
 func deleteTxt(txtPath string) {
-	if err := os.Remove(txtPath); err != nil {
-		lg.Errorf("to delete file was failed: %s, error is %s\n", txtPath, err)
-	}
+	os.Remove(txtPath)
+	//err := os.Remove(txtPath)
+	//if err != nil {
+	//	lg.Errorf("to delete file was failed: %s, error is %s\n", txtPath, err)
+	//}
 }
 
 //save teacher status to log

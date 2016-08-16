@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	//"fmt"
 	lg "github.com/hiromaily/golibs/log"
 	//r "github.com/hiromaily/golibs/runtimes"
 	u "github.com/hiromaily/golibs/utils"
@@ -11,7 +10,6 @@ import (
 )
 
 var (
-	benchFlg    = flag.Int("bc", 0, "Normal Test or Bench Test")
 	mailToAdd   = flag.String("toadd", "", "MAIL_TO_ADDRESS")
 	mailFromAdd = flag.String("fradd", "", "MAIL_FROM_ADDRESS")
 	smtpPass    = flag.String("smpass", "", "SMTP_PASS")
@@ -23,12 +21,17 @@ var (
 var txtPath string = "./status.log"
 var jsonPath string = "../../settings.json"
 
-func setup() {
+//-----------------------------------------------------------------------------
+// Test Framework
+//-----------------------------------------------------------------------------
+// Initialize
+func init() {
+	flag.Parse()
+
 	lg.InitializeLog(lg.DEBUG_STATUS, lg.LOG_OFF_COUNT, 0, "[GO-BOOK-TEACHER_TEST]", "/var/log/go/test.log")
+}
 
-	if *benchFlg == 0 {
-	}
-
+func setup() {
 	//check parameter
 	checkParam()
 
@@ -40,26 +43,21 @@ func setup() {
 }
 
 func teardown() {
-	if *benchFlg == 0 {
-	}
 }
 
-// Initialize
 func TestMain(m *testing.M) {
-	flag.Parse()
-
-	//TODO: According to argument, it switch to user or not.
-	//TODO: For bench or not bench
 	setup()
 
 	code := m.Run()
 
 	teardown()
 
-	// 終了
 	os.Exit(code)
 }
 
+//-----------------------------------------------------------------------------
+// functions
+//-----------------------------------------------------------------------------
 func checkParam() {
 	if *mailToAdd == "" || *mailFromAdd == "" || *smtpPass == "" ||
 		*smtpServer == "" || *smtpPort == 0 || *redisURL == "" {
@@ -104,6 +102,9 @@ func clearData() {
 	clearEnvOnThisTest()
 }
 
+//-----------------------------------------------------------------------------
+// Test
+//-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 // Main
 // TODO:全パターンをテストできるように

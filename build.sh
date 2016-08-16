@@ -7,23 +7,25 @@
 GOTRACEBACK=all
 CURRENTDIR=`pwd`
 
+export TEST_MODE=0
+AUTO_EXEC=0
+GODEP_MODE=1
+AUTO_GITCOMMIT=0
+HEROKU_MODE=0
+DOCKER_MODE=0
+
 ###########################################################
 # Update all package
 ###########################################################
 #go get -u -v ./...
-
-
-###########################################################
-# Adjust version dependency of projects
-###########################################################
-#cd ${GOPATH}/src/github.com/aws/aws-sdk-go
-#git checkout v0.9.17
-#git checkout master
+#go get -d -v ./...
+#go get -u github.com/tools/godep
 
 
 ###########################################################
 # go fmt and go vet
 ###########################################################
+echo '============== go fmt; go vet; =============='
 go fmt ./...
 #go vet ./...
 go vet `go list ./... | grep -v '/vendor/'`
@@ -43,21 +45,30 @@ fi
 ###########################################################
 # go list for check import package
 ###########################################################
-#go list -f '{{.ImportPath}} -> {{join .Imports "\n"}}' ./ginserver.go
+#go list -f '{{.ImportPath}} -> {{join .Imports "\n"}}' ./cmd/book/main.go
+
+
+###########################################################
+# Adjust version dependency of projects
+###########################################################
+#cd ${GOPATH}/src/github.com/aws/aws-sdk-go
+#git checkout v0.9.17
+#git checkout master
 
 
 ###########################################################
 # go build and install
 ###########################################################
+echo '============== go build -i -v -o; =============='
+rm -rf ./vendor
+
 #-n show just command for build
-#go build -i -n -o ./ginserver ./ginserver.go
+#go build -i -n ./cmd/book/
 
 #rebuild dependent packages (rebuild all package)
-#go build -a -v -o ./ginserver ./ginserver.go
+#go build -a -v -o ${GOPATH}/bin/book ./cmd/book/
 
 #build and install
-#go build -i -v -o book ./cmd/book/
-#go build -i -v ./cmd/book/
 go build -i -v -o ${GOPATH}/bin/book ./cmd/book/
 EXIT_STATUS=$?
 
@@ -65,47 +76,84 @@ if [ $EXIT_STATUS -gt 0 ]; then
     exit $EXIT_STATUS
 fi
 
-exit 0
-
 ###########################################################
 # go test
 ###########################################################
-#MAIL_TO_ADDRESS=xxxxx@gmail.com
-#MAIL_FROM_ADDRESS=xxxx@xxxx.com
-#SMTP_ADDRESS=xxxx@xxxx.com
-#SMTP_PASS=xxxxx
-#SMTP_SERVER=smtp.xxxx.com
-#SMTP_PORT=587
+if [ $TEST_MODE -ne 0 ]; then
+    echo '============== test =============='
 
-#1.All
-#go test -v cmd/book/*.go -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
-#2.json
-#go test -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
-#3.saved file test
-#go test -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
-#go test -v cmd/book/*.go -run TestIntegrationOnLocalUsingRedisAndMail -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
+    #call another shell
+    sh ./mail.sh
+
+    #MAIL_TO_ADDRESS=xxxxx@gmail.com
+    #MAIL_FROM_ADDRESS=xxxx@xxxx.com
+    #SMTP_ADDRESS=xxxx@xxxx.com
+    #SMTP_PASS=xxxxx
+    #SMTP_SERVER=smtp.xxxx.com
+    #SMTP_PORT=587
+
+    #break
+    TEST_MODE=0
+
+    #Don't Run below. it moved to mail.sh.
+    if [ $TEST_MODE -eq 1 ]; then
+        #1.All
+        go test -v cmd/book/*.go \
+        -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} \
+        -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
+    fi
+
+    if [ $TEST_MODE -eq 2 ]; then
+        #2.json
+        go test -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson \
+        -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} \
+        -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
+    fi
+
+    if [ $TEST_MODE -eq 3 ]; then
+        #3.saved file test
+        go test -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser \
+        -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} \
+        -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
+    fi
+
+    if [ $TEST_MODE -eq 4 ]; then
+        go test -v cmd/book/*.go -run TestIntegrationOnLocalUsingRedisAndMail \
+        -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} \
+        -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
+    fi
+fi
 
 
 ###########################################################
 # exec
 ###########################################################
-#./book -f ${GOPATH}/src/github.com/hiromaily/booking-teacher/settings.json
+if [ $AUTO_EXEC -eq 1 ]; then
+    echo '============== exec =============='
+    #when using json file
+    #book -f ${PWD}/settings.json
 
+    GOTRACEBACK=all go run ./cmd/book/main.go
+fi
 
 ###########################################################
 # godep
 ###########################################################
-#go get -u github.com/tools/godep
+if [ $GODEP_MODE -eq 1 ]; then
+    echo '============== godeps =============='
 
-#Save
-rm -rf Godeps
-rm -rf vendor
+    #go get -u github.com/tools/godep
 
-godep save ./...
-EXIT_STATUS=$?
+    #Save
+    rm -rf Godeps
+    rm -rf vendor
 
-if [ $EXIT_STATUS -gt 0 ]; then
-    exit $EXIT_STATUS
+    godep save ./...
+    EXIT_STATUS=$?
+
+    if [ $EXIT_STATUS -gt 0 ]; then
+        exit $EXIT_STATUS
+    fi
 fi
 
 #Build
@@ -114,22 +162,28 @@ fi
 #Restore
 #godep restore
 
-exit 0
 
 ###########################################################
 # git add, commit, push
 ###########################################################
-git recm
-git pufom
+if [ $AUTO_GITCOMMIT -eq 1 ]; then
+    echo '============== git recm, pufom =============='
+    git recm
+    git pufom
+    git st
+fi
 
 
 ###########################################################
 # heroku
 ###########################################################
+if [ $HEROKU_MODE -eq 1 ]; then
+    echo '============== heroku: git push =============='
+    git push -f heroku master
+fi
+
 #heroku config:add HEROKU_FLG=1
 #heroku addons:create scheduler:standard
-
-git push -f heroku master
 
 #heroku run book
 #heroku run bash
@@ -137,6 +191,15 @@ git push -f heroku master
 #heroku ps -a book
 #heroku ps
 #heroku config
+
+
+###########################################################
+# Docker
+###########################################################
+if [ $DOCKER_MODE -eq 1 ]; then
+    echo '============== docker =============='
+    ./docker-create.sh
+fi
 
 
 ###########################################################
