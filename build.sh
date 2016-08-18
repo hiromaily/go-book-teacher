@@ -14,6 +14,10 @@ AUTO_GITCOMMIT=0
 HEROKU_MODE=0
 DOCKER_MODE=0
 
+# when using go 1.7 for the first time, delete all inside pkg directory and run go install.
+#go install -v ./...
+#go get -u -v ./...
+
 ###########################################################
 # Update all package
 ###########################################################
@@ -60,7 +64,10 @@ fi
 # go build and install
 ###########################################################
 echo '============== go build -i -v -o; =============='
-rm -rf ./vendor
+if [ $GODEP_MODE -eq 1 ]; then
+    rm -rf Godeps
+    rm -rf ./vendor
+fi
 
 #-n show just command for build
 #go build -i -n ./cmd/book/

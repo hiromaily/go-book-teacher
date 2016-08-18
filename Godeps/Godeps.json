@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/hiromaily/go-book-teacher",
-	"GoVersion": "go1.6",
+	"GoVersion": "go1.7",
 	"GodepVersion": "v74",
 	"Packages": [
 		"./..."
@@ -17,53 +17,57 @@
 		},
 		{
 			"ImportPath": "github.com/garyburd/redigo/internal",
-			"Comment": "v1.0.0-1-gb8dc900",
-			"Rev": "b8dc90050f24c1a73a52f107f3f575be67b21b7c"
+			"Comment": "v1.0.0-5-gffa8d46",
+			"Rev": "ffa8d46ada782d81cfda81a0fbd9f45ceae448e8"
 		},
 		{
 			"ImportPath": "github.com/garyburd/redigo/redis",
-			"Comment": "v1.0.0-1-gb8dc900",
-			"Rev": "b8dc90050f24c1a73a52f107f3f575be67b21b7c"
+			"Comment": "v1.0.0-5-gffa8d46",
+			"Rev": "ffa8d46ada782d81cfda81a0fbd9f45ceae448e8"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/db/redis",
-			"Rev": "5c9d775345b59786cef153a626d7d36aebcf7317"
+			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/heroku",
-			"Rev": "5c9d775345b59786cef153a626d7d36aebcf7317"
+			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/log",
-			"Rev": "5c9d775345b59786cef153a626d7d36aebcf7317"
+			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/mails",
-			"Rev": "5c9d775345b59786cef153a626d7d36aebcf7317"
+			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/signal",
-			"Rev": "5c9d775345b59786cef153a626d7d36aebcf7317"
+			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/times",
-			"Rev": "5c9d775345b59786cef153a626d7d36aebcf7317"
+			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/tmpl",
-			"Rev": "5c9d775345b59786cef153a626d7d36aebcf7317"
+			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/utils",
-			"Rev": "5c9d775345b59786cef153a626d7d36aebcf7317"
+			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
+		},
+		{
+			"ImportPath": "github.com/shiena/ansicolor",
+			"Rev": "a422bbe96644373c5753384a59d678f7d261ff10"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
-			"Rev": "f841c39de738b1d0df95b5a7187744f0e03d8112"
+			"Rev": "07b51741c1d6423d4a6abab1c49940ec09cb1aaf"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html/atom",
-			"Rev": "f841c39de738b1d0df95b5a7187744f0e03d8112"
+			"Rev": "07b51741c1d6423d4a6abab1c49940ec09cb1aaf"
 		}
 	]
 }
