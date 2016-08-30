@@ -1,0 +1,43 @@
+{
+  "name": "go-book-teacher",
+  "description": "for booking teacher on English lesson",
+  "keywords": [ "golang", "english", "hiromaily" ],
+  "repository": "https://github.com/hiromaily/go-book-teacher",
+  "logo": "https://raw.githubusercontent.com/hiromaily/go-gin-wrapper/master/gopher.png",
+  "website": "https://github.com/hiromaily/go-book-teacher",
+  "env" : {
+    "HEROKU_FLG": {
+      "description": "set environment as Heroku",
+      "value": 1
+    },
+    "MAIL_TO_ADDRESS": {
+      "description": "mail address for those who get mail",
+      "value": ""
+    },
+    "MAIL_FROM_ADDRESS": {
+      "description": "mail address from your mail server",
+      "value": ""
+    },
+    "SMTP_ADDRESS": {
+      "description": "smtp server address",
+      "value": ""
+    },
+    "SMTP_PASS": {
+      "description": "smtp server password",
+      "value": ""
+    },
+    "SMTP_SERVER": {
+      "description": "smtp server ip or domain",
+      "value": ""
+    },
+    "SMTP_PORT": {
+      "description": "smtp port number",
+      "value": ""
+    }
+  },
+  "image": "heroku/go",
+  "addons": [
+    "heroku-redis:hobby-dev",
+    "scheduler:standard"
+  ]
+}

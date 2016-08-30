@@ -30,7 +30,8 @@ DOCKER_MODE=0
 # go fmt and go vet
 ###########################################################
 echo '============== go fmt; go vet; =============='
-go fmt ./...
+#go fmt ./...
+go fmt `go list ./... | grep -v '/vendor/'`
 #go vet ./...
 go vet `go list ./... | grep -v '/vendor/'`
 EXIT_STATUS=$?
