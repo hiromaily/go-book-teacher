@@ -27,35 +27,35 @@
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/db/redis",
-			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
+			"Rev": "1b6e4b0f8955d7c6d7c7fa16032d5678b322d2fe"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/heroku",
-			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
+			"Rev": "1b6e4b0f8955d7c6d7c7fa16032d5678b322d2fe"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/log",
-			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
+			"Rev": "1b6e4b0f8955d7c6d7c7fa16032d5678b322d2fe"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/mails",
-			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
+			"Rev": "1b6e4b0f8955d7c6d7c7fa16032d5678b322d2fe"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/signal",
-			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
+			"Rev": "1b6e4b0f8955d7c6d7c7fa16032d5678b322d2fe"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/times",
-			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
+			"Rev": "1b6e4b0f8955d7c6d7c7fa16032d5678b322d2fe"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/tmpl",
-			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
+			"Rev": "1b6e4b0f8955d7c6d7c7fa16032d5678b322d2fe"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/utils",
-			"Rev": "294ab11131ff0b93c1c1abdf553bb9f1419e110d"
+			"Rev": "1b6e4b0f8955d7c6d7c7fa16032d5678b322d2fe"
 		},
 		{
 			"ImportPath": "github.com/shiena/ansicolor",

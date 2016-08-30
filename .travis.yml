@@ -8,15 +8,17 @@ services:
 
 env:
   global:
-    - secure: "uHNRxJhumpFZZdaQDaFKWejOiY7PDeG5jY/fy1BfmFMeOMbaWxiCz758qk3lWkSBNd5oON/2+10o1ZWEtdZNbTI5sr8STz7E8E7vsgU8HIIxQPh1jOU18QpQshZG8nW9HZULorxdckjjCsG1K1SqAFuZHtBeFFnFhei9XSKUc6OYr1FuKHHTRT93nNvBgW130nFRhy6JaZR+i1rVqdYmWo0qIEPlc3GSXjlxxCszrHL1FP+U2a9TosebV7oH0PSQX87IHQJAgGZKQvtksH9hWkH2jgOZRc0N9fptFB7EowCIhNkIUZef9dQ+tO8R+skmbEX79fxiJAv/S8yduHxnvH/OIacG+VpU6CkvoFpxRDKGgbPqQSbusdSiHo2G9/ALTooDjScQroohpxmfE+kzyAozDwxnmmctUjGLhmjHP4gzk+xZcYuShAOr6lsbF1AbRI+rDaC4oV3xq3PoQ6Rjizne7SttlnVx6yBjktGFuZ07wKebMNDs8dbzW3DuYKEj7rpgzJnq7gJsk59xAnsBIDVq1RAr7kbx4wCTsAbV7z6iQ5v+XsYoLSJV1ZEiWWYKPWPocAslM6mD/Xa5jSPMIWLyjkfxqG/+OOiKBaYUwJIZ7p/+LHfHFh9tBGyuzjmcSU7L4S9TbYHCMhEiZapwa9+Eo22jTGUbQTBjX7ra/oM="
+    - secure: "0VU6m7Bv5m3id/OjSuHXY2ez1np3ojQVdE/+9eG5Kazf2KVPpZFXIMXR+HTV9eaNOVvsSN5Pw5y1r1JhEJWw0kKtqZc7/U0HLIjCWNffbPiq/IqNwi7+DdoQ60zvLMJV/spNpIEV1hhhnjeTHN5WrTux+ayAJMmQR5KTl95uKWaPur9eH+DILFDLDA2gsRN1xkhfL002K5GpTNOmAy9brPKNjAn2RTN0d6+jCdtT7ZamZNWuuzTNRI6IWv0o8ne4x2Lvg+V/OhydeRWrYiBWT1n79BoIRvJ7R0NTCt7QjI71h+x9FyXsQY+MM7roZQj288UwMs6L2uCg6H7rOji5SFqCAlKXGVPrsAYufSQRQWPzYvdAbdmIP1bvJlRMb7thB8lWqTRwfGc95fTxnor5/ne9+QEi8dANBRZdBTh9sXeuY5MLVs7iq9wX8R/2pcuWCVJKqwo+K/ldd1Z1d3I2JCfRagAJML7SmayFR1IY0yq9rrVpc9X5vAOLNl0ZGlD1sucjEPMcZ2U0m8Okyf8OWsuCYpmCDagkZfJT/whRCAWbids/BzaI7rQMffFg0qD6DA9axK6NY44xvZOHs0g0anNINyda2rRcMwcVKeBWf2zaaFk2O0h2WgC356qHm6NcCjeIi3y4zs+R3bHiHFURQKMN08blYCxyIzxz8J+k5C0="
 
 script:
   - go fmt ./...
   - go vet $(go list ./... | grep -v /vendor/)
-  - go test -v cmd/book/*.go -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT} -rdsvr ${REDIS_URL}
+  - go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT} -rdsvr ${REDIS_URL}
+  # - goveralls -coverprofile=profile.cov -service=travis-ci
 
 before_install:
   - go get github.com/tools/godep
+  - go get github.com/mattn/goveralls
 
 branches:
   only:
