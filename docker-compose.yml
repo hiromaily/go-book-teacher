@@ -22,7 +22,10 @@ services:
         redisHostName: redis-server
     image: go-book-teacher:v1.1
     container_name: book
-    env_file: ./docker_build/.env
+    #env_file: ./docker_build/.env
+    environment:
+      ENC_KEY: ${ENC_KEY}
+      ENC_IV: ${ENC_IV}
     links:
       - redis:redis-server
     depends_on:
