@@ -23,6 +23,14 @@ $ ./docker-create.sh
 ## Configration
 
 ### 1. Common settings
+#### TOML file
+
+```${PWD}/config/settings.toml```
+
+* mail settings
+* Redis settings  
+※ As needed, secret information can be ciphered.
+
 #### registration for target teacher's ids
 1. Inside ./teacher/teacherinfo.go  
   or
@@ -31,12 +39,12 @@ $ ./docker-create.sh
 #### notification
 1. Web browser  
   or
-2. mail: To set ```MAIL_TO_ADDRESS``` environment variable
+2. mail: To set mail info on settins.toml
 
 #### save current state
-1. txt file: ```SAVE_LOG``` environment variable or ```/tmp/status.log``` as default  
+1. txt file: To set status_file on settings.toml  
  or
-2. redis server: To set ```REDIS_URL``` environment variable
+2. redis server: To set redis_url on settings.toml
 
 ### 2. On heroku
 ```
@@ -47,12 +55,8 @@ $ heroku addons:create scheduler:standard
 
 ## Environment variable
 $ heroku config:add HEROKU_FLG=1
-$ heroku config:add MAIL_TO_ADDRESS=xxx@gmail.com
-$ heroku config:add MAIL_FROM_ADDRESS=xxx@gmail.com
-$ heroku config:add SMTP_ADDRESS=xxx@gmail.com
-$ heroku config:add SMTP_PASS=xxxxx
-$ heroku config:add SMTP_SERVER=smtp.gmail.com
-$ heroku config:add SMTP_PORT=587
+$ heroku config:add ENC_KEY=xxxxx
+$ heroku config:add ENC_IV=xxxxx
 
 ## Check
 $ heroku config | grep REDIS
@@ -77,26 +81,9 @@ $ git push -f heroku master
 ### 1. Option
 | NAME              | Value                               |
 |:------------------|:------------------------------------|
-| REDIS_URL         | redis://h:password@$servername:6379 |
-| SAVE_LOG          | /var/log/teacher/data.log           |
+| ENC_KEY           | xxxxx                               |
+| ENC_IV            | xxxxx                               |
 | HEROKU_FLG        | 1                                   |
-
-### 2. Mail Mode
-| NAME              | Value            |
-|:------------------|:---------------- |
-| MAIL_TO_ADDRESS   | xxx@example.com  |
-| MAIL_FROM_ADDRESS | info@example.com |
-| SMTP_ADDRESS      | info@example.com |
-| SMTP_PASS         | xxxxx            |
-| SMTP_SERVER       | smpt.example.com |
-| SMTP_PORT         | 587              |
-
-### 3. Port
-Heroku server use PORT automatically as environment valuable
-
-| NAME              | Value            |
-|:------------------|:---------------- |
-| PORT              | 9999             |
 
 
 ## Usage
@@ -104,9 +91,11 @@ Heroku server use PORT automatically as environment valuable
 Usage: book [options...]
 
 Options:
-  -f     Json file path
+  -j     Json file path
+  -t     Toml file path
+  -i     Interval for scraping
 
 e.g.
- $ book -f /var/go/teacher.json
+ $ book -j /var/go/teacher.json -t settings.toml -i 120
 ```
 

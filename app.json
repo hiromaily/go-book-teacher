@@ -10,28 +10,12 @@
       "description": "set environment as Heroku",
       "value": 1
     },
-    "MAIL_TO_ADDRESS": {
-      "description": "mail address for those who get mail",
+    "ENC_KEY": {
+      "description": "encode key",
       "value": ""
     },
-    "MAIL_FROM_ADDRESS": {
-      "description": "mail address from your mail server",
-      "value": ""
-    },
-    "SMTP_ADDRESS": {
-      "description": "smtp server address",
-      "value": ""
-    },
-    "SMTP_PASS": {
-      "description": "smtp server password",
-      "value": ""
-    },
-    "SMTP_SERVER": {
-      "description": "smtp server ip or domain",
-      "value": ""
-    },
-    "SMTP_PORT": {
-      "description": "smtp port number",
+    "ENC_IV": {
+      "description": "encode key(IV)",
       "value": ""
     }
   },
