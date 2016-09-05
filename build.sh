@@ -7,7 +7,7 @@
 GOTRACEBACK=all
 CURRENTDIR=`pwd`
 
-export TEST_MODE=0  #0:off, 1:All, 2...5, 9:All and coverage.
+export TEST_MODE=1  #0:off, 1:All, 2...5, 9:All and coverage.
 AUTO_EXEC=0
 GODEP_MODE=1
 AUTO_GITCOMMIT=0

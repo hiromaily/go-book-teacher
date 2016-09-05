@@ -8,3 +8,4 @@ status.log
 data.txt
 docker_build/redis_data/*
 docker_build/go-book-teacher
+profile.cov
