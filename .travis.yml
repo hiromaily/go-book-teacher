@@ -8,7 +8,6 @@ services:
 
 env:
   global:
-    - secure: "0VU6m7Bv5m3id/OjSuHXY2ez1np3ojQVdE/+9eG5Kazf2KVPpZFXIMXR+HTV9eaNOVvsSN5Pw5y1r1JhEJWw0kKtqZc7/U0HLIjCWNffbPiq/IqNwi7+DdoQ60zvLMJV/spNpIEV1hhhnjeTHN5WrTux+ayAJMmQR5KTl95uKWaPur9eH+DILFDLDA2gsRN1xkhfL002K5GpTNOmAy9brPKNjAn2RTN0d6+jCdtT7ZamZNWuuzTNRI6IWv0o8ne4x2Lvg+V/OhydeRWrYiBWT1n79BoIRvJ7R0NTCt7QjI71h+x9FyXsQY+MM7roZQj288UwMs6L2uCg6H7rOji5SFqCAlKXGVPrsAYufSQRQWPzYvdAbdmIP1bvJlRMb7thB8lWqTRwfGc95fTxnor5/ne9+QEi8dANBRZdBTh9sXeuY5MLVs7iq9wX8R/2pcuWCVJKqwo+K/ldd1Z1d3I2JCfRagAJML7SmayFR1IY0yq9rrVpc9X5vAOLNl0ZGlD1sucjEPMcZ2U0m8Okyf8OWsuCYpmCDagkZfJT/whRCAWbids/BzaI7rQMffFg0qD6DA9axK6NY44xvZOHs0g0anNINyda2rRcMwcVKeBWf2zaaFk2O0h2WgC356qHm6NcCjeIi3y4zs+R3bHiHFURQKMN08blYCxyIzxz8J+k5C0="
     - GO_PROJ_PATH='/home/travis/gopath/src/github.com/hiromaily/go-book-teacher/cmd/book/'
 
 before_install:
@@ -19,8 +18,7 @@ before_install:
 script:
   - go fmt ./...
   - go vet $(go list ./... | grep -v /vendor/)
-  #- go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT} -rdsvr ${REDIS_URL}
-  - cd ${GO_PROJ_PATH};go test -v -covermode=count -coverprofile=profile.cov -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT} -rdsvr ${REDIS_URL}
+  - cd ${GO_PROJ_PATH};go test -v -covermode=count -coverprofile=profile.cov
   - cd ${GO_PROJ_PATH};goveralls -coverprofile=profile.cov -service=travis-ci
 
 branches:
