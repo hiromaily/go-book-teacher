@@ -7,8 +7,8 @@
 GOTRACEBACK=all
 CURRENTDIR=`pwd`
 
-export TEST_MODE=1  #0:off, 1:All, 2...5, 9:All and coverage.
-AUTO_EXEC=0
+export TEST_MODE=0  #0:off, 1:All, 2...5, 9:All and coverage.
+AUTO_EXEC=1
 GODEP_MODE=1
 AUTO_GITCOMMIT=0
 HEROKU_MODE=0
@@ -91,44 +91,40 @@ if [ $TEST_MODE -ne 0 ]; then
     echo '============== test =============='
 
     #call another shell
-    sh ./mail.sh
+    #sh ./mail.sh
 
-    #MAIL_TO_ADDRESS=xxxxx@gmail.com
-    #MAIL_FROM_ADDRESS=xxxx@xxxx.com
-    #SMTP_ADDRESS=xxxx@xxxx.com
-    #SMTP_PASS=xxxxx
-    #SMTP_SERVER=smtp.xxxx.com
-    #SMTP_PORT=587
-
-    #break
-    TEST_MODE=0
-
-    #Don't Run below. it moved to mail.sh.
     if [ $TEST_MODE -eq 1 ]; then
+        echo '1.All'
         #1.All
-        go test -v cmd/book/*.go \
-        -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} \
-        -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
+        go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go \
+        -t ${PWD}/config/settings.toml
     fi
 
     if [ $TEST_MODE -eq 2 ]; then
+        echo '2.json'
         #2.json
-        go test -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson \
-        -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} \
-        -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
+        go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go \
+        -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson
     fi
 
     if [ $TEST_MODE -eq 3 ]; then
+        echo '3.saved file test'
         #3.saved file test
-        go test -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser \
-        -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} \
-        -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
+        go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go \
+        -run TestIntegrationOnLocalUsingTxtAndBrowser
     fi
 
     if [ $TEST_MODE -eq 4 ]; then
-        go test -v cmd/book/*.go -run TestIntegrationOnLocalUsingRedisAndMail \
-        -toadd ${MAIL_TO_ADDRESS} -fradd ${MAIL_FROM_ADDRESS} \
-        -smpass ${SMTP_PASS} -smsvr ${SMTP_SERVER} -smport ${SMTP_PORT}
+        echo '4.saved file test ver.2'
+        go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go \
+        -run TestIntegrationOnLocalUsingRedisAndMail
+    fi
+
+    if [ $TEST_MODE -eq 5 ]; then
+        echo '5.Godep test check'
+        #Godep test check
+        godep go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go \
+        -run TestIntegrationOnLocalUsingTxtAndBrowser
     fi
 fi
 
@@ -139,9 +135,12 @@ fi
 if [ $AUTO_EXEC -eq 1 ]; then
     echo '============== exec =============='
     #when using json file
-    #book -f ${PWD}/settings.json
+    #book -f ${PWD}/json/teachers/settings.json
 
-    GOTRACEBACK=all go run ./cmd/book/main.go
+    go run ./cmd/book/main.go
+    #go run ./cmd/book/main.go -i 90
+    #GOTRACEBACK=all go run ./cmd/book/main.go
+    #GOTRACEBACK=all go run ./cmd/book/main.go -t settings.toml -i 90
 fi
 
 ###########################################################

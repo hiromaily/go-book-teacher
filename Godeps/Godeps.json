@@ -7,6 +7,11 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/BurntSushi/toml",
+			"Comment": "v0.2.0-21-g9906417",
+			"Rev": "99064174e013895bbd9b025c31100bd1d9b590ca"
+		},
+		{
 			"ImportPath": "github.com/PuerkitoBio/goquery",
 			"Comment": "v0.3.2-93-gf0d7573",
 			"Rev": "f0d75731e0db647903c8611d00c7b85002751317"
@@ -24,6 +29,10 @@
 			"ImportPath": "github.com/garyburd/redigo/redis",
 			"Comment": "v1.0.0-5-gffa8d46",
 			"Rev": "ffa8d46ada782d81cfda81a0fbd9f45ceae448e8"
+		},
+		{
+			"ImportPath": "github.com/hiromaily/golibs/cipher/encryption",
+			"Rev": "97d0827c9c518d7576c5b388616c366041d50bd5"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/db/redis",

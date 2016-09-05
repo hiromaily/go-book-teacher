@@ -5,7 +5,9 @@ import (
 	"flag"
 	"fmt"
 	"github.com/garyburd/redigo/redis"
+	conf "github.com/hiromaily/go-book-teacher/config"
 	th "github.com/hiromaily/go-book-teacher/teacher"
+	enc "github.com/hiromaily/golibs/cipher/encryption"
 	rd "github.com/hiromaily/golibs/db/redis"
 	hrk "github.com/hiromaily/golibs/heroku"
 	lg "github.com/hiromaily/golibs/log"
@@ -13,7 +15,6 @@ import (
 	"github.com/hiromaily/golibs/signal"
 	tm "github.com/hiromaily/golibs/times"
 	"github.com/hiromaily/golibs/tmpl"
-	u "github.com/hiromaily/golibs/utils"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -22,28 +23,57 @@ import (
 	"time"
 )
 
+const MaxGoRoutine uint16 = 20
+
 var (
-	jsPath = flag.String("f", "", "Json file path")
+	jsPath   = flag.String("j", "", "Json file path")
+	tomlPath = flag.String("t", "", "Toml file path")
+	interval = flag.Int64("i", 120, "Interval for scraping")
 )
 
 var usage = `Usage: %s [options...]
 Options:
-  -f     Json file path
+  -j     Json file path
+  -t     Toml file path
+  -i     Interval for scraping
 `
 
-var mi *ml.MailInfo
+var (
+	mi *ml.MailInfo
 
-var tmplMails string = `
+	tmplMails string = `
 The following tachers are available now!
 {{range .Teachers}}
 {{$.Url}}teacher/index/{{.Id}}/ [{{.Name}} / {{.Country}}]
 {{end}}
 Enjoy!`
 
-const MaxGoRoutine uint16 = 20
-const OpenFileName string = "/tmp/status.log"
+	redisKey      string = "bookteacher:save"
+	savedFilePath string = "/tmp/status.log"
 
-var redisKey string = "bookteacher:save"
+	//judge ment
+	herokuFlg string = os.Getenv("HEROKU_FLG")
+	mailFlg   bool   = false
+	redisFlg  bool   = false
+)
+
+//ENVIRONMENT VARIABLE
+//HEROKU_FLG
+//ENC_KEY
+//ENC_IV
+
+// cipher settings
+func cipherSetup() {
+	size := 16
+	key := os.Getenv("ENC_KEY")
+	iv := os.Getenv("ENC_IV")
+
+	if key == "" || iv == "" {
+		panic("set Environment Variable: ENC_KEY, ENC_IV")
+	}
+
+	enc.NewCrypt(size, key, iv)
+}
 
 // setting for sending mail
 func settingMail() {
@@ -51,12 +81,20 @@ func settingMail() {
 	subject := "[ENGLISH LESSON] It's Available."
 	body := ""
 	//mails
-	smtp := ml.Smtp{Address: os.Getenv("SMTP_ADDRESS"), Pass: os.Getenv("SMTP_PASS"),
-		Server: os.Getenv("SMTP_SERVER"), Port: u.Atoi(os.Getenv("SMTP_PORT"))}
+	smt := conf.GetConf().Mail.Smtp
+	m := conf.GetConf().Mail
 
-	//cannot use mails.MailInfo literal (type *mails.MailInfo) as type mails.MailInfo in assignment
-	mi = &ml.MailInfo{ToAddress: []string{os.Getenv("MAIL_TO_ADDRESS")}, FromAddress: os.Getenv("MAIL_FROM_ADDRESS"),
+	smtp := ml.Smtp{Address: smt.Address, Pass: smt.Pass,
+		Server: smt.Server, Port: smt.Port}
+
+	mi = &ml.MailInfo{ToAddress: []string{m.MailTo}, FromAddress: m.MailFrom,
 		Subject: subject, Body: body, Smtp: smtp}
+}
+
+func settingSavedFile() {
+	if conf.GetConf().StatusFile != "" {
+		savedFilePath = conf.GetConf().StatusFile
+	}
 }
 
 // send mail
@@ -99,8 +137,12 @@ func checkRedis(newData string) bool {
 
 	c := rd.GetRedisInstance().Conn
 	val, err := redis.String(c.Do("GET", redisKey))
-	lg.Debugf("redis error is %s\n", err)
+
+	if err != nil {
+		lg.Errorf("redis error is %s\n", err)
+	}
 	lg.Debugf("new value is %s, old value is %s\n", newData, val)
+
 	if err != nil || newData != val {
 		//save
 		c.Do("SET", redisKey, newData)
@@ -121,13 +163,9 @@ func deleteRedisKey() {
 // check txt file
 func checkFile(newData string) bool {
 	lg.Debug("Using TxtFile")
-	//open saved log
-	filePath := os.Getenv("SAVE_LOG")
-	if filePath == "" {
-		filePath = OpenFileName
-	}
 
-	fp, err := os.OpenFile(filePath, os.O_CREATE, 0664)
+	//open saved log
+	fp, err := os.OpenFile(savedFilePath, os.O_CREATE, 0664)
 	defer fp.Close()
 
 	if err == nil {
@@ -145,7 +183,7 @@ func checkFile(newData string) bool {
 
 	//save latest info
 	content := []byte(newData)
-	ioutil.WriteFile(filePath, content, 0664)
+	ioutil.WriteFile(savedFilePath, content, 0664)
 	return true
 }
 
@@ -168,8 +206,7 @@ func saveStatusLog(ths []th.TeacherInfo) bool {
 	newData := strconv.Itoa(sum)
 
 	//redis
-	redisURL := os.Getenv("REDIS_URL")
-	if redisURL != "" && rd.GetRedisInstance() != nil {
+	if redisFlg && rd.GetRedisInstance() != nil {
 		//redis
 		return checkRedis(newData)
 	} else {
@@ -187,7 +224,7 @@ func checkSavedTeachers() {
 		openFlg := saveStatusLog(ths)
 		fmt.Println(openFlg)
 		if openFlg {
-			if os.Getenv("MAIL_TO_ADDRESS") != "" {
+			if mailFlg {
 				// for sending mail
 				sendMail(ths)
 			} else {
@@ -226,19 +263,6 @@ func handleTeachers(si *th.SiteInfo) {
 	wg.Wait()
 }
 
-//initialize Redis
-func redisInit() {
-	redisURL := os.Getenv("REDIS_URL")
-	if redisURL != "" {
-		host, pass, port, err := hrk.GetRedisInfo(redisURL)
-		if err != nil {
-			return
-		}
-		rd.New(host, uint16(port), pass)
-		rd.GetRedisInstance().Connection(0)
-	}
-}
-
 func init() {
 	lg.InitializeLog(lg.DEBUG_STATUS, lg.LOG_OFF_COUNT, 0, "[BookingTeacher]", "/var/log/go/book.log")
 
@@ -252,20 +276,60 @@ func init() {
 	//signal (Debug)
 	go signal.StartSignal()
 
-	//Redis
-	redisInit()
+	//cipher
+	cipherSetup()
+
+	//config
+	if *tomlPath != "" {
+		conf.SetTomlPath(*tomlPath)
+	}
+	conf.New("")
+	conf.Cipher()
+}
+
+func setupMain() {
+	//saved file
+	settingSavedFile()
+
+	//flg
+	if conf.GetConf().Redis.URL != "" {
+		redisFlg = true
+
+		//Redis
+		settingRedis()
+	}
+	if conf.GetConf().Mail.MailTo != "" {
+		mailFlg = true
+
+		//Mail Check
+		settingMail()
+	}
+
+	//th.SetPrintOn(true)
+}
+
+//initialize Redis
+func settingRedis() {
+	redisURL := conf.GetConf().Redis.URL
+	host, pass, port, err := hrk.GetRedisInfo(redisURL)
+	if err != nil {
+		return
+	}
+	rd.New(host, uint16(port), pass)
+	rd.GetRedisInstance().Connection(0)
+}
+
+func checkHeroku() error {
+	//heroku mode
+	if herokuFlg == "1" && (!mailFlg || !redisFlg) {
+		return fmt.Errorf("%s", "mail settings is required for HEROKU")
+	}
+	return nil
 }
 
 //return value is whether executed scraping or not.
 func execMain(testFlg uint8) bool {
 	lg.Info("getting teacher's information")
-
-	//heroku mode
-	herokuFlg := os.Getenv("HEROKU_FLG")
-	if herokuFlg == "1" && (os.Getenv("MAIL_TO_ADDRESS") == "" || os.Getenv("REDIS_URL") == "") {
-		lg.Info("environment is not met to run on HEROKU")
-		return false
-	}
 
 	var si *th.SiteInfo
 	//m = new(sync.Mutex)
@@ -276,11 +340,6 @@ func execMain(testFlg uint8) bool {
 	} else {
 		//use build teacher data
 		si = th.GetDefinedData()
-	}
-
-	//Mail Check
-	if os.Getenv("MAIL_TO_ADDRESS") != "" {
-		settingMail()
 	}
 
 	for {
@@ -299,11 +358,18 @@ func execMain(testFlg uint8) bool {
 			return true
 		}
 
-		time.Sleep(120 * time.Second)
+		time.Sleep(time.Duration(*interval) * time.Second)
 	}
 }
 
 // Main
 func main() {
+	setupMain()
+
+	err := checkHeroku()
+	if err != nil {
+		panic(err)
+	}
+
 	execMain(0)
 }

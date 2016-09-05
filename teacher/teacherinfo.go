@@ -21,9 +21,15 @@ type SiteInfo struct {
 	Teachers []TeacherInfo `json:"teachers"`
 }
 
-var siteInfo SiteInfo
+var (
+	siteInfo      SiteInfo
+	savedTeachers []TeacherInfo
+	printOn       bool = true
+)
 
-var savedTeachers []TeacherInfo
+func SetPrintOn(b bool) {
+	printOn = b
+}
 
 //init saved teacher
 func InitSavedTeachers() {
@@ -55,9 +61,13 @@ func (t *TeacherInfo) GetHTML(url string) {
 		parsed_html := perseHtml(doc)
 
 		//show teacher's id, name, date
-		fmt.Printf("----------- %s / %s / %d ----------- \n", t.Name, t.Country, t.Id)
+		if printOn {
+			fmt.Printf("----------- %s / %s / %d ----------- \n", t.Name, t.Country, t.Id)
+		}
 		for _, dt := range parsed_html {
-			fmt.Println(dt)
+			if printOn {
+				fmt.Println(dt)
+			}
 			flg = true
 		}
 		//save teacher
@@ -66,7 +76,9 @@ func (t *TeacherInfo) GetHTML(url string) {
 		}
 	} else {
 		//no teacher
-		fmt.Printf("teacher [%d]%s quit \n", t.Id, t.Name)
+		if printOn {
+			fmt.Printf("teacher [%d]%s quit \n", t.Id, t.Name)
+		}
 	}
 }
 
@@ -83,7 +95,7 @@ func LoadJsonFile(filePath string) *SiteInfo {
 	if filePath == "" {
 		//dir := path.Dir(os.Args[0])
 		//lg.Debugf("path.Dir(os.Args[0]): %s", dir)
-		//filePath = fmt.Sprintf("%s/settings.json", dir)
+		//filePath = fmt.Sprintf("%s/json/teachers.json", dir)
 		lg.Fatal("json filepath have to be set.")
 		return nil
 	}
