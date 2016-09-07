@@ -29,7 +29,7 @@ $ ./docker-create.sh
 
 * mail settings
 * Redis settings  
-※ As needed, secret information can be ciphered.
+※ As needed, secret information can be ciphered.(using AES encryption)
 
 #### registration for target teacher's ids
 1. Inside ./teacher/teacherinfo.go  
