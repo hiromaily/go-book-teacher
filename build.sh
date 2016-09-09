@@ -192,7 +192,7 @@ fi
 #heroku config:add HEROKU_FLG=1
 #heroku addons:create scheduler:standard
 
-#heroku run book
+#heroku run book -t /app/config/settings.toml
 #heroku run bash
 #heroku logs -t
 #heroku ps -a book
