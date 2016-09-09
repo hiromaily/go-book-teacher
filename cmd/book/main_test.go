@@ -57,7 +57,7 @@ func checkParam() {
 
 	if m.MailTo == "" || m.MailFrom == "" || m.Smtp.Pass == "" ||
 		m.Smtp.Server == "" || m.Smtp.Port == 0 || conf.GetConf().Redis.URL == "" {
-		panic("paramter is wrong.")
+		panic("parameter is wrong.")
 	}
 }
 
