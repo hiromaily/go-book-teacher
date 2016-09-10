@@ -7,12 +7,15 @@
 GOTRACEBACK=all
 CURRENTDIR=`pwd`
 
-export TEST_MODE=0  #0:off, 1:All, 2...5, 9:All and coverage.
-AUTO_EXEC=1
+TEST_MODE=0  #0:off, 1:All, 2...5, 9:All and coverage.
+AUTO_EXEC=0
 GODEP_MODE=1
 AUTO_GITCOMMIT=0
 HEROKU_MODE=0
 DOCKER_MODE=0
+
+GO_GET=0
+GO_LINT=0
 
 # when using go 1.7 for the first time, delete all inside pkg directory and run go install.
 #go install -v ./...
@@ -21,10 +24,11 @@ DOCKER_MODE=0
 ###########################################################
 # Update all package
 ###########################################################
-#go get -u -v ./...
-#go get -d -v ./...
-#go get -u github.com/tools/godep
-
+if [ $GO_GET -eq 1 ]; then
+    go get -u -v ./...
+    #go get -d -v ./...
+    go get -u github.com/tools/godep
+fi
 
 ###########################################################
 # go fmt and go vet
@@ -44,7 +48,12 @@ fi
 # go lint
 ###########################################################
 # it's too strict
-#golint ./...
+#go get -u github.com/golang/lint/golint
+if [ $GO_LINT -eq 1 ]; then
+    #golint ./...
+    #golint `go list ./... | grep -v '/vendor/'`
+    golint ./... | grep -v '^vendor\/' || true
+fi
 
 
 ###########################################################

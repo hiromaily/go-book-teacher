@@ -10,61 +10,67 @@ import (
 	//"path"
 )
 
-type TeacherInfo struct {
-	Id      int    `json:"id"`
+// Info is json structure for teacher information
+type Info struct {
+	ID      int    `json:"id"`
 	Name    string `json:"name"`
 	Country string `json:"country"`
 }
 
+// SiteInfo is json structure for teacher information
 type SiteInfo struct {
-	Url      string        `json:"url"`
-	Teachers []TeacherInfo `json:"teachers"`
+	URL      string `json:"url"`
+	Teachers []Info `json:"teachers"`
 }
 
 var (
 	siteInfo      SiteInfo
-	savedTeachers []TeacherInfo
-	printOn       bool = true
+	savedTeachers []Info
+	printOn       = true
 )
 
+// SetPrintOn is to show teacher info using fmt.Printf()
 func SetPrintOn(b bool) {
 	printOn = b
 }
 
-//init saved teacher
+//InitSavedTeachers is to initialize variable for saved teacher
 func InitSavedTeachers() {
-	savedTeachers = make([]TeacherInfo, 0)
+	savedTeachers = make([]Info, 0)
 }
 
 //save teacher id to variable
-func saveTeacer(t *TeacherInfo) {
+func saveTeacer(t *Info) {
 	savedTeachers = append(savedTeachers, *t)
 }
 
+// GetSiteInfo is to get siteInfo
 func GetSiteInfo() *SiteInfo {
 	return &siteInfo
 }
 
-func GetsavedTeachers() []TeacherInfo {
+// GetsavedTeachers is to get savedTeachers
+func GetsavedTeachers() []Info {
 	return savedTeachers
 }
 
-func (t *TeacherInfo) GetHTML(url string) {
-	var flg bool = false
+// GetHTML is to get scraped HTML from web page
+func (t *Info) GetHTML(url string) {
+	var flg = false
 
 	//HTTP connection
-	doc, err := goquery.NewDocument(fmt.Sprintf("%steacher/index/%d/", url, t.Id))
+	doc, err := goquery.NewDocument(fmt.Sprintf("%steacher/index/%d/", url, t.ID))
 	if err != nil {
 		lg.Fatal(err)
 		return
 	} else if isTeacherActive(doc) {
-		parsed_html := perseHtml(doc)
+		parsedHTML := perseHTML(doc)
 
 		//show teacher's id, name, date
 		if printOn {
-			fmt.Printf("----------- %s / %s / %d ----------- \n", t.Name, t.Country, t.Id)
+			fmt.Printf("----------- %s / %s / %d ----------- \n", t.Name, t.Country, t.ID)
 		}
-		for _, dt := range parsed_html {
+		for _, dt := range parsedHTML {
 			if printOn {
 				fmt.Println(dt)
 			}
@@ -77,12 +83,13 @@ func (t *TeacherInfo) GetHTML(url string) {
 	} else {
 		//no teacher
 		if printOn {
-			fmt.Printf("teacher [%d]%s quit \n", t.Id, t.Name)
+			fmt.Printf("teacher [%d]%s quit \n", t.ID, t.Name)
 		}
 	}
 }
 
-func LoadJsonFile(filePath string) *SiteInfo {
+// LoadJSONFile is to load json file
+func LoadJSONFile(filePath string) *SiteInfo {
 	lg.Debug("load json file")
 	//initialize
 	siteInfo = SiteInfo{}
@@ -107,15 +114,16 @@ func LoadJsonFile(filePath string) *SiteInfo {
 		lg.Fatalf("json format is invalid: %v, filepath is %s", err, filePath)
 		return nil
 	}
-	lg.Debugf("SiteInfo.Url: %v", siteInfo.Url)
-	lg.Debugf("SiteInfo.Teachers[0].Id: %d, Name: %s, Country: %s", siteInfo.Teachers[0].Id, siteInfo.Teachers[0].Name, siteInfo.Teachers[0].Country)
+	lg.Debugf("SiteInfo.Url: %v", siteInfo.URL)
+	lg.Debugf("SiteInfo.Teachers[0].Id: %d, Name: %s, Country: %s", siteInfo.Teachers[0].ID, siteInfo.Teachers[0].Name, siteInfo.Teachers[0].Country)
 
 	return &siteInfo
 }
 
+// GetDefinedData is registered teacher info
 func GetDefinedData() *SiteInfo {
-	ti := []TeacherInfo{
-		{Id: 6214, Name: "Aleksandra S", Country: "Serbia"},
+	ti := []Info{
+		{ID: 6214, Name: "Aleksandra S", Country: "Serbia"},
 		{1381, "Anna O", "Rossiya"},
 		{1411, "Jekaterina", "Latvia"},
 		{2464, "Emilia", "Serbia"},
@@ -149,10 +157,11 @@ func GetDefinedData() *SiteInfo {
 		//{8261, "Ela T", "Germany"},
 		//{8912, "Pascale", "Netherland"},
 	}
-	siteInfo = SiteInfo{Url: "http://eikaiwa.dmm.com/", Teachers: ti}
+	siteInfo = SiteInfo{URL: "http://eikaiwa.dmm.com/", Teachers: ti}
 	return &siteInfo
 }
 
-func CreateSiteInfo(ti []TeacherInfo) *SiteInfo {
-	return &SiteInfo{Url: "http://eikaiwa.dmm.com/", Teachers: ti}
+// CreateSiteInfo is to get SiteInfo
+func CreateSiteInfo(ti []Info) *SiteInfo {
+	return &SiteInfo{URL: "http://eikaiwa.dmm.com/", Teachers: ti}
 }

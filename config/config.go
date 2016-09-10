@@ -10,10 +10,12 @@ import (
 	"os"
 )
 
-var tomlFileName string = "./config/settings.toml"
+var (
+	tomlFileName = "./config/settings.toml"
+	conf         *Config
+)
 
-var conf *Config
-
+// Config is root of toml config
 type Config struct {
 	Environment int    `toml:"environment"`
 	StatusFile  string `toml:"status_file"`
@@ -21,26 +23,29 @@ type Config struct {
 	Mail        *MailConfig
 }
 
+// RedisConfig is for redis server
 type RedisConfig struct {
 	Encrypted bool   `toml:"encrypted"`
 	URL       string `toml:"url"`
 }
 
+// MailConfig is for mail
 type MailConfig struct {
 	Encrypted bool        `toml:"encrypted"`
 	MailTo    string      `toml:"mail_to"`
 	MailFrom  string      `toml:"mail_from"`
-	Smtp      *SmtpConfig `toml:"smtp"`
+	SMTP      *SMTPConfig `toml:"smtp"`
 }
 
-type SmtpConfig struct {
+// SMTPConfig is for smtp server of mail
+type SMTPConfig struct {
 	Address string `toml:"address"`
 	Pass    string `toml:"pass"`
 	Server  string `toml:"server"`
 	Port    int    `toml:"port"`
 }
 
-var checkTomlKeys [][]string = [][]string{
+var checkTomlKeys = [][]string{
 	{"environment"},
 	{"redis", "encrypted"},
 	{"redis", "url"},
@@ -122,6 +127,7 @@ func loadConfig(path string) (*Config, error) {
 	return &config, nil
 }
 
+// New is for creating config instance
 func New(file string) {
 	var err error
 	conf, err = loadConfig(file)
@@ -130,7 +136,7 @@ func New(file string) {
 	}
 }
 
-// singleton architecture
+// GetConf is to get config instance by singleton architecture
 func GetConf() *Config {
 	var err error
 	if conf == nil {
@@ -143,10 +149,12 @@ func GetConf() *Config {
 	return conf
 }
 
+// SetTomlPath is to set toml file path
 func SetTomlPath(path string) {
 	tomlFileName = path
 }
 
+// Cipher is to decrypt encrypted value of toml file
 func Cipher() {
 	crypt := enc.GetCryptInstance()
 
@@ -160,7 +168,7 @@ func Cipher() {
 		c.MailTo, _ = crypt.DecryptBase64(c.MailTo)
 		c.MailFrom, _ = crypt.DecryptBase64(c.MailFrom)
 
-		c2 := conf.Mail.Smtp
+		c2 := conf.Mail.SMTP
 		c2.Address, _ = crypt.DecryptBase64(c2.Address)
 		c2.Pass, _ = crypt.DecryptBase64(c2.Pass)
 		c2.Server, _ = crypt.DecryptBase64(c2.Server)

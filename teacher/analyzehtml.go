@@ -43,7 +43,7 @@ func isTeacherActive(htmldata *goquery.Document) bool {
 }
 
 // Parse html
-func perseHtml(htmldata *goquery.Document) []string {
+func perseHTML(htmldata *goquery.Document) []string {
 	var dates []string
 
 	htmldata.Find("a.bt-open").Each(func(_ int, s *goquery.Selection) {

@@ -10,8 +10,8 @@ import (
 	"testing"
 )
 
-var txtPath string = "./status.log"
-var jsonPath string = "../../json/teachers.json"
+var txtPath = "./status.log"
+var jsonPath = "../../json/teachers.json"
 
 //-----------------------------------------------------------------------------
 // Test Framework
@@ -55,8 +55,8 @@ func checkParam() {
 
 	m := conf.GetConf().Mail
 
-	if m.MailTo == "" || m.MailFrom == "" || m.Smtp.Pass == "" ||
-		m.Smtp.Server == "" || m.Smtp.Port == 0 || conf.GetConf().Redis.URL == "" {
+	if m.MailTo == "" || m.MailFrom == "" || m.SMTP.Pass == "" ||
+		m.SMTP.Server == "" || m.SMTP.Port == 0 || conf.GetConf().Redis.URL == "" {
 		panic("parameter is wrong.")
 	}
 }

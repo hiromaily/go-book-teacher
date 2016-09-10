@@ -23,6 +23,7 @@ import (
 	"time"
 )
 
+// MaxGoRoutine is number of goroutine running at the same time
 const MaxGoRoutine uint16 = 20
 
 var (
@@ -41,20 +42,20 @@ Options:
 var (
 	mi *ml.MailInfo
 
-	tmplMails string = `
+	tmplMails = `
 The following tachers are available now!
 {{range .Teachers}}
 {{$.Url}}teacher/index/{{.Id}}/ [{{.Name}} / {{.Country}}]
 {{end}}
 Enjoy!`
 
-	redisKey      string = "bookteacher:save"
-	savedFilePath string = "/tmp/status.log"
+	redisKey      = "bookteacher:save"
+	savedFilePath = "/tmp/status.log"
 
 	//judge ment
-	herokuFlg string = os.Getenv("HEROKU_FLG")
-	mailFlg   bool   = false
-	redisFlg  bool   = false
+	herokuFlg = os.Getenv("HEROKU_FLG")
+	mailFlg   = false
+	redisFlg  = false
 )
 
 //ENVIRONMENT VARIABLE
@@ -81,7 +82,7 @@ func settingMail() {
 	subject := "[ENGLISH LESSON] It's Available."
 	body := ""
 	//mails
-	smt := conf.GetConf().Mail.Smtp
+	smt := conf.GetConf().Mail.SMTP
 	m := conf.GetConf().Mail
 
 	smtp := ml.Smtp{Address: smt.Address, Pass: smt.Pass,
@@ -98,7 +99,7 @@ func settingSavedFile() {
 }
 
 // send mail
-func sendMail(ths []th.TeacherInfo) {
+func sendMail(ths []th.Info) {
 	//make body
 	si := th.CreateSiteInfo(ths)
 	body, err := tmpl.StrTempParser(tmplMails, &si)
@@ -111,13 +112,13 @@ func sendMail(ths []th.TeacherInfo) {
 }
 
 //open browser on PC
-func openBrowser(ths []th.TeacherInfo) {
+func openBrowser(ths []th.Info) {
 	for _, t := range ths {
 		//during test, it doesn't work.
 		//open browser error: exec: "open": executable file not found in $PATH
 
 		//out, err := exec.Command("open /Applications/Google\\ Chrome.app", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", id)).Output()
-		err := exec.Command("open", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", t.Id)).Start()
+		err := exec.Command("open", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", t.ID)).Start()
 		if err != nil {
 			//panic(fmt.Sprintf("open browser error: %v", err))
 			lg.Errorf(fmt.Sprintf("open browser error: %v", err))
@@ -147,9 +148,8 @@ func checkRedis(newData string) bool {
 		//save
 		c.Do("SET", redisKey, newData)
 		return true
-	} else {
-		return false
 	}
+	return false
 }
 
 func deleteRedisKey() {
@@ -196,12 +196,12 @@ func deleteTxt(txtPath string) {
 }
 
 //save teacher status to log
-func saveStatusLog(ths []th.TeacherInfo) bool {
+func saveStatusLog(ths []th.Info) bool {
 
 	//create string from ids slice
-	var sum int = 0
+	var sum int
 	for _, t := range ths {
-		sum += t.Id
+		sum += t.ID
 	}
 	newData := strconv.Itoa(sum)
 
@@ -209,10 +209,10 @@ func saveStatusLog(ths []th.TeacherInfo) bool {
 	if redisFlg && rd.GetRedisInstance() != nil {
 		//redis
 		return checkRedis(newData)
-	} else {
-		//open saved log
-		return checkFile(newData)
 	}
+
+	//open saved log
+	return checkFile(newData)
 }
 
 //check saved data and run browser if needed
@@ -251,13 +251,13 @@ func handleTeachers(si *th.SiteInfo) {
 		chanSemaphore <- true
 
 		//chanSemaphore <- true
-		go func(t th.TeacherInfo) {
+		go func(t th.Info) {
 			defer func() {
 				<-chanSemaphore
 				wg.Done()
 			}()
 			//concurrent func
-			t.GetHTML(si.Url)
+			t.GetHTML(si.URL)
 		}(teacher)
 	}
 	wg.Wait()
@@ -336,7 +336,7 @@ func execMain(testFlg uint8) bool {
 
 	if *jsPath != "" {
 		//json
-		si = th.LoadJsonFile(*jsPath)
+		si = th.LoadJSONFile(*jsPath)
 	} else {
 		//use build teacher data
 		si = th.GetDefinedData()
