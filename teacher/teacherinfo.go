@@ -107,8 +107,8 @@ func LoadJSONFile(filePath string) *SiteInfo {
 		return nil
 	}
 
-	file, err := ioutil.ReadFile(filePath)
-	err = json.Unmarshal(file, &siteInfo)
+	file, _ := ioutil.ReadFile(filePath)
+	err := json.Unmarshal(file, &siteInfo)
 
 	if err != nil {
 		lg.Fatalf("json format is invalid: %v, filepath is %s", err, filePath)

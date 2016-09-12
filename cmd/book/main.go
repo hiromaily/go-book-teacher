@@ -11,9 +11,9 @@ import (
 	rd "github.com/hiromaily/golibs/db/redis"
 	hrk "github.com/hiromaily/golibs/heroku"
 	lg "github.com/hiromaily/golibs/log"
-	ml "github.com/hiromaily/golibs/mails"
+	ml "github.com/hiromaily/golibs/mail"
 	"github.com/hiromaily/golibs/signal"
-	tm "github.com/hiromaily/golibs/times"
+	tm "github.com/hiromaily/golibs/time"
 	"github.com/hiromaily/golibs/tmpl"
 	"io/ioutil"
 	"os"
@@ -40,7 +40,7 @@ Options:
 `
 
 var (
-	mi *ml.MailInfo
+	mi *ml.Info
 
 	tmplMails = `
 The following tachers are available now!
@@ -85,11 +85,11 @@ func settingMail() {
 	smt := conf.GetConf().Mail.SMTP
 	m := conf.GetConf().Mail
 
-	smtp := ml.Smtp{Address: smt.Address, Pass: smt.Pass,
+	smtp := ml.SMTP{Address: smt.Address, Pass: smt.Pass,
 		Server: smt.Server, Port: smt.Port}
 
-	mi = &ml.MailInfo{ToAddress: []string{m.MailTo}, FromAddress: m.MailFrom,
-		Subject: subject, Body: body, Smtp: smtp}
+	mi = &ml.Info{ToAddress: []string{m.MailTo}, FromAddress: m.MailFrom,
+		Subject: subject, Body: body, SMTP: smtp}
 }
 
 func settingSavedFile() {
@@ -134,9 +134,9 @@ func checkRedis(newData string) bool {
 
 	//close
 	//TODO:when use close
-	defer rd.GetRedisInstance().Close()
+	defer rd.GetRedis().Close()
 
-	c := rd.GetRedisInstance().Conn
+	c := rd.GetRedis().Conn
 	val, err := redis.String(c.Do("GET", redisKey))
 
 	if err != nil {
@@ -153,7 +153,7 @@ func checkRedis(newData string) bool {
 }
 
 func deleteRedisKey() {
-	c := rd.GetRedisInstance().Conn
+	c := rd.GetRedis().Conn
 	_, err := c.Do("DEL", redisKey)
 	if err != nil {
 		lg.Debug("delete key on redis is failed.")
@@ -206,7 +206,7 @@ func saveStatusLog(ths []th.Info) bool {
 	newData := strconv.Itoa(sum)
 
 	//redis
-	if redisFlg && rd.GetRedisInstance() != nil {
+	if redisFlg && rd.GetRedis() != nil {
 		//redis
 		return checkRedis(newData)
 	}
@@ -264,7 +264,7 @@ func handleTeachers(si *th.SiteInfo) {
 }
 
 func init() {
-	lg.InitializeLog(lg.DEBUG_STATUS, lg.LOG_OFF_COUNT, 0, "[BookingTeacher]", "/var/log/go/book.log")
+	lg.InitializeLog(lg.DebugStatus, lg.LogOff, 99, "[BookingTeacher]", "/var/log/go/book.log")
 
 	flag.Usage = func() {
 		fmt.Fprint(os.Stderr, fmt.Sprintf(usage, os.Args[0]))
@@ -316,7 +316,7 @@ func settingRedis() {
 		return
 	}
 	rd.New(host, uint16(port), pass)
-	rd.GetRedisInstance().Connection(0)
+	rd.GetRedis().Connection(0)
 }
 
 func checkHeroku() error {

@@ -20,8 +20,8 @@ var jsonPath = "../../json/teachers.json"
 func init() {
 	flag.Parse()
 
-	//lg.InitializeLog(lg.DEBUG_STATUS, lg.LOG_OFF_COUNT, 0, "[GO-BOOK-TEACHER_TEST]", "/var/log/go/test.log")
-	lg.InitializeLog(lg.INFO_STATUS, lg.LOG_OFF_COUNT, 0, "[GO-BOOK-TEACHER_TEST]", "/var/log/go/test.log")
+	//lg.InitializeLog(lg.DebugStatus, lg.LogOff, 99, "[GO-BOOK-TEACHER_TEST]", "/var/log/go/test.log")
+	lg.InitializeLog(lg.InfoStatus, lg.LogOff, 99, "[GO-BOOK-TEACHER_TEST]", "/var/log/go/test.log")
 }
 
 func setup() {

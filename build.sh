@@ -15,7 +15,7 @@ HEROKU_MODE=0
 DOCKER_MODE=0
 
 GO_GET=0
-GO_LINT=0
+GO_LINT=1
 
 # when using go 1.7 for the first time, delete all inside pkg directory and run go install.
 #go install -v ./...
@@ -50,9 +50,15 @@ fi
 # it's too strict
 #go get -u github.com/golang/lint/golint
 if [ $GO_LINT -eq 1 ]; then
-    #golint ./...
-    #golint `go list ./... | grep -v '/vendor/'`
+    echo '============== golint =============='
     golint ./... | grep -v '^vendor\/' || true
+
+    echo '============== misspell =============='
+    #misspell .
+    misspell `find . -name "*.go" | grep -v '/vendor/'`
+
+    echo '============== ineffassign =============='
+    ineffassign .
 fi
 
 

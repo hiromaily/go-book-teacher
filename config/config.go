@@ -156,7 +156,7 @@ func SetTomlPath(path string) {
 
 // Cipher is to decrypt encrypted value of toml file
 func Cipher() {
-	crypt := enc.GetCryptInstance()
+	crypt := enc.GetCrypt()
 
 	if conf.Redis.Encrypted {
 		c := conf.Redis
