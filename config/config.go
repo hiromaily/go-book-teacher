@@ -128,11 +128,15 @@ func loadConfig(path string) (*Config, error) {
 }
 
 // New is for creating config instance
-func New(file string) {
+func New(file string, cipherFlg bool) {
 	var err error
 	conf, err = loadConfig(file)
 	if err != nil {
 		panic(err)
+	}
+
+	if cipherFlg {
+		Cipher()
 	}
 }
 

@@ -2,10 +2,11 @@ package main
 
 import (
 	"flag"
-	lg "github.com/hiromaily/golibs/log"
-	//r "github.com/hiromaily/golibs/runtimes"
 	conf "github.com/hiromaily/go-book-teacher/config"
+	rd "github.com/hiromaily/go-book-teacher/redis"
 	th "github.com/hiromaily/go-book-teacher/teacher"
+	tt "github.com/hiromaily/go-book-teacher/text"
+	lg "github.com/hiromaily/golibs/log"
 	"os"
 	"testing"
 )
@@ -61,9 +62,14 @@ func checkParam() {
 	}
 }
 
-func clearData() {
-	deleteTxt(txtPath)
-	deleteRedisKey()
+func clear() {
+	if redisFlg {
+		clearData(rd.Get())
+	} else {
+		clearData(tt.Get())
+	}
+	//deleteTxt(txtPath)
+	//deleteRedisKey()
 
 	*jsPath = ""
 }
@@ -104,7 +110,7 @@ func TestIntegrationOnLocalUsingTxtAndBrowser(t *testing.T) {
 		t.Error("failed something.")
 	}
 
-	clearData()
+	clear()
 }
 
 // 2. on local and redis and mail
@@ -128,7 +134,7 @@ func TestIntegrationOnLocalUsingRedisAndMail(t *testing.T) {
 		t.Error("failed something.")
 	}
 
-	clearData()
+	clear()
 }
 
 // 3. on local and txt file and load json and browser
@@ -148,7 +154,7 @@ func TestIntegrationOnLocalUsingTxtAndBrowserAndJson(t *testing.T) {
 		t.Error("failed something.")
 	}
 
-	clearData()
+	clear()
 }
 
 // 4. on heroku and txt file and mail
@@ -168,7 +174,7 @@ func TestIntegrationOnHerokuUsingTxtAndMail(t *testing.T) {
 		t.Error("failed something.")
 	}
 
-	clearData()
+	clear()
 }
 
 // 5. on heroku and redis and browser
@@ -188,7 +194,7 @@ func TestIntegrationOnHerokuUsingRedisAndBrowser(t *testing.T) {
 		t.Error("failed something.")
 	}
 
-	clearData()
+	clear()
 }
 
 // 6. on heroku and redis and mail
@@ -206,5 +212,5 @@ func TestIntegrationOnHerokuUsingRedisAndMail(t *testing.T) {
 		t.Error("failed something.")
 	}
 
-	clearData()
+	clear()
 }

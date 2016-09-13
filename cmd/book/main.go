@@ -1,27 +1,30 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
-	"github.com/garyburd/redigo/redis"
 	conf "github.com/hiromaily/go-book-teacher/config"
+	ioo "github.com/hiromaily/go-book-teacher/io"
+	ml "github.com/hiromaily/go-book-teacher/mail"
+	rd "github.com/hiromaily/go-book-teacher/redis"
 	th "github.com/hiromaily/go-book-teacher/teacher"
+	tt "github.com/hiromaily/go-book-teacher/text"
 	enc "github.com/hiromaily/golibs/cipher/encryption"
-	rd "github.com/hiromaily/golibs/db/redis"
-	hrk "github.com/hiromaily/golibs/heroku"
+	//rd "github.com/hiromaily/golibs/db/redis"
 	lg "github.com/hiromaily/golibs/log"
-	ml "github.com/hiromaily/golibs/mail"
 	"github.com/hiromaily/golibs/signal"
 	tm "github.com/hiromaily/golibs/time"
-	"github.com/hiromaily/golibs/tmpl"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strconv"
 	"sync"
 	"time"
 )
+
+//ENVIRONMENT VARIABLE
+//HEROKU_FLG
+//ENC_KEY
+//ENC_IV
 
 // MaxGoRoutine is number of goroutine running at the same time
 const MaxGoRoutine uint16 = 20
@@ -40,75 +43,18 @@ Options:
 `
 
 var (
-	mi *ml.Info
-
-	tmplMails = `
-The following tachers are available now!
-{{range .Teachers}}
-{{$.Url}}teacher/index/{{.Id}}/ [{{.Name}} / {{.Country}}]
-{{end}}
-Enjoy!`
-
-	redisKey      = "bookteacher:save"
-	savedFilePath = "/tmp/status.log"
-
 	//judge ment
 	herokuFlg = os.Getenv("HEROKU_FLG")
 	mailFlg   = false
 	redisFlg  = false
 )
 
-//ENVIRONMENT VARIABLE
-//HEROKU_FLG
-//ENC_KEY
-//ENC_IV
-
-// cipher settings
-func cipherSetup() {
-	size := 16
-	key := os.Getenv("ENC_KEY")
-	iv := os.Getenv("ENC_IV")
-
-	if key == "" || iv == "" {
-		panic("set Environment Variable: ENC_KEY, ENC_IV")
+func checkHeroku() error {
+	//heroku mode
+	if herokuFlg == "1" && (!mailFlg || !redisFlg) {
+		return fmt.Errorf("%s", "mail settings is required for HEROKU")
 	}
-
-	enc.NewCrypt(size, key, iv)
-}
-
-// setting for sending mail
-func settingMail() {
-	//get environment variable
-	subject := "[ENGLISH LESSON] It's Available."
-	body := ""
-	//mails
-	smt := conf.GetConf().Mail.SMTP
-	m := conf.GetConf().Mail
-
-	smtp := ml.SMTP{Address: smt.Address, Pass: smt.Pass,
-		Server: smt.Server, Port: smt.Port}
-
-	mi = &ml.Info{ToAddress: []string{m.MailTo}, FromAddress: m.MailFrom,
-		Subject: subject, Body: body, SMTP: smtp}
-}
-
-func settingSavedFile() {
-	if conf.GetConf().StatusFile != "" {
-		savedFilePath = conf.GetConf().StatusFile
-	}
-}
-
-// send mail
-func sendMail(ths []th.Info) {
-	//make body
-	si := th.CreateSiteInfo(ths)
-	body, err := tmpl.StrTempParser(tmplMails, &si)
-	if err != nil {
-		lg.Debugf("mail couldn't be send caused by err : %s\n", err)
-	} else {
-		mi.Body = body
-		mi.SendMail("10s")
-	}
+	return nil
 }
 
 //open browser on PC
@@ -126,107 +72,28 @@ func openBrowser(ths []th.Info) {
 	}
 }
 
-// check Redis
-func checkRedis(newData string) bool {
-	lg.Debug("Using Redis")
-	//redis
-	//key := "bookteacher:save"
-
-	//close
-	//TODO:when use close
-	defer rd.GetRedis().Close()
-
-	c := rd.GetRedis().Conn
-	val, err := redis.String(c.Do("GET", redisKey))
-
-	if err != nil {
-		lg.Errorf("redis error is %s\n", err)
-	}
-	lg.Debugf("new value is %s, old value is %s\n", newData, val)
-
-	if err != nil || newData != val {
-		//save
-		c.Do("SET", redisKey, newData)
-		return true
-	}
-	return false
-}
-
-func deleteRedisKey() {
-	c := rd.GetRedis().Conn
-	_, err := c.Do("DEL", redisKey)
-	if err != nil {
-		lg.Debug("delete key on redis is failed.")
-	}
-}
-
-// check txt file
-func checkFile(newData string) bool {
-	lg.Debug("Using TxtFile")
-
-	//open saved log
-	fp, err := os.OpenFile(savedFilePath, os.O_CREATE, 0664)
-	defer fp.Close()
-
-	if err == nil {
-
-		scanner := bufio.NewScanner(fp)
-		scanner.Scan()
-		filedata := scanner.Text()
-
-		if newData == filedata {
-			return false
-		}
-	} else {
-		panic(err.Error())
-	}
-
-	//save latest info
-	content := []byte(newData)
-	ioutil.WriteFile(savedFilePath, content, 0664)
-	return true
-}
-
-func deleteTxt(txtPath string) {
-	os.Remove(txtPath)
-	//err := os.Remove(txtPath)
-	//if err != nil {
-	//	lg.Errorf("to delete file was failed: %s, error is %s\n", txtPath, err)
-	//}
-}
-
-//save teacher status to log
-func saveStatusLog(ths []th.Info) bool {
-
-	//create string from ids slice
-	var sum int
-	for _, t := range ths {
-		sum += t.ID
-	}
-	newData := strconv.Itoa(sum)
-
-	//redis
-	if redisFlg && rd.GetRedis() != nil {
-		//redis
-		return checkRedis(newData)
-	}
-
-	//open saved log
-	return checkFile(newData)
+func clearData(s ioo.Deleter) {
+	err := s.Delete()
+	lg.Error(err)
 }
 
 //check saved data and run browser if needed
 func checkSavedTeachers() {
+	var openFlg bool
 	ths := th.GetsavedTeachers()
 	//open browser
 	if len(ths) != 0 {
 		//save status
-		openFlg := saveStatusLog(ths)
+		if redisFlg {
+			openFlg = saveStatusLog(rd.Get(), ths)
+		} else {
+			openFlg = saveStatusLog(tt.Get(), ths)
+		}
 		fmt.Println(openFlg)
 		if openFlg {
 			if mailFlg {
 				// for sending mail
-				sendMail(ths)
+				ml.Send(ths)
 			} else {
 				//Browser Mode
 				openBrowser(ths)
@@ -236,6 +103,20 @@ func checkSavedTeachers() {
 			}
 		}
 	}
+}
+
+//save teacher status to log
+// check how to use interface
+func saveStatusLog(s ioo.Saver, ths []th.Info) bool {
+
+	//create string from ids slice
+	var sum int
+	for _, t := range ths {
+		sum += t.ID
+	}
+	newData := strconv.Itoa(sum)
+
+	return s.Save(newData)
 }
 
 //handle each teacher data
@@ -277,57 +158,41 @@ func init() {
 	go signal.StartSignal()
 
 	//cipher
-	cipherSetup()
+	_, err := enc.NewCryptDefault()
+	if err != nil {
+		panic(err)
+	}
 
 	//config
-	if *tomlPath != "" {
-		conf.SetTomlPath(*tomlPath)
-	}
-	conf.New("")
-	conf.Cipher()
+	conf.New(*tomlPath, true)
+	//conf.Cipher()
 }
 
+//1.setupMain()
 func setupMain() {
-	//saved file
-	settingSavedFile()
 
 	//flg
 	if conf.GetConf().Redis.URL != "" {
-		redisFlg = true
-
 		//Redis
-		settingRedis()
+		_, err := rd.Setup()
+		if err == nil {
+			redisFlg = true
+		}
 	}
+	//saved file
+	tt.Setup()
+
 	if conf.GetConf().Mail.MailTo != "" {
 		mailFlg = true
 
 		//Mail Check
-		settingMail()
+		ml.Setup()
 	}
 
 	//th.SetPrintOn(true)
 }
 
-//initialize Redis
-func settingRedis() {
-	redisURL := conf.GetConf().Redis.URL
-	host, pass, port, err := hrk.GetRedisInfo(redisURL)
-	if err != nil {
-		return
-	}
-	rd.New(host, uint16(port), pass)
-	rd.GetRedis().Connection(0)
-}
-
-func checkHeroku() error {
-	//heroku mode
-	if herokuFlg == "1" && (!mailFlg || !redisFlg) {
-		return fmt.Errorf("%s", "mail settings is required for HEROKU")
-	}
-	return nil
-}
-
-//return value is whether executed scraping or not.
+//2.execMain() return value is whether executed scraping or not.
 func execMain(testFlg uint8) bool {
 	lg.Info("getting teacher's information")
 
@@ -354,7 +219,10 @@ func execMain(testFlg uint8) bool {
 
 		//TODO:when integration test, send channel
 		//execuite only once on heroku
-		if herokuFlg == "1" || testFlg == 1 {
+		if herokuFlg == "1" {
+			return true
+		} else if testFlg == 1 {
+
 			return true
 		}
 
