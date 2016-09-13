@@ -14,7 +14,7 @@ var (
 	tmplMails = `
 The following tachers are available now!
 {{range .Teachers}}
-{{$.Url}}teacher/index/{{.Id}}/ [{{.Name}} / {{.Country}}]
+{{$.URL}}teacher/index/{{.ID}}/ [{{.Name}} / {{.Country}}]
 {{end}}
 Enjoy!`
 )

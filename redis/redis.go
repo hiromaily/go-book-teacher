@@ -45,13 +45,9 @@ func Get() *StoreRedis {
 // Save is to save data on Redis
 func (rd *StoreRedis) Save(newData string) bool {
 	lg.Debug("Using Redis")
-	//redis
-	//key := "bookteacher:save"
 
 	//close
-	//TODO:when use close
-
-	defer rd.RD.Close()
+	//defer rd.RD.Close()
 
 	c := rd.RD.Conn
 	val, err := redis.String(c.Do("GET", redisKey))

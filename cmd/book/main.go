@@ -219,7 +219,11 @@ func execMain(testFlg uint8) bool {
 
 		//TODO:when integration test, send channel
 		//execuite only once on heroku
+
 		if herokuFlg == "1" {
+			if rd.Get() != nil {
+				rd.Get().RD.Close()
+			}
 			return true
 		} else if testFlg == 1 {
 
