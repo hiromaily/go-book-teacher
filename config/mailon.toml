@@ -1,0 +1,20 @@
+environment = 0    #0:local, 1:docker, 2:heroku
+
+#status_file = "/tmp/status.log"
+status_file = "./status.log"
+
+[redis]
+encrypted = true
+url = "Scx3B/7qmzC6e0x0GWWxsmV4oUfNSFpOiZ8cVNM4DeQtZWuZAFiA8ltNGTLun7N5gUJX4exo5kDXXACmgbP8jdre8n0LBJavB1Ul8BdxKOyigTmUWijetM7LSpr0FPQL"
+
+[mail]
+encrypted = true
+mail_to = "FcQjhb5ErsSBlh6EDwe69eLdcW/eJPKWtnTWmDPoAAM="
+mail_from = "rbQELet6NtgU1RE77OdDMknVqlZDqAO7UIQlqIe2LEs="
+
+[mail.smtp]
+address = "rbQELet6NtgU1RE77OdDMknVqlZDqAO7UIQlqIe2LEs="
+pass = "tJ5MG5PQ43SRZHWJzV2gYQ=="
+server = "+rjgS1GqgekF90B3Jyuxsg=="
+port = 587
+

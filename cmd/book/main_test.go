@@ -54,6 +54,8 @@ func TestMain(m *testing.M) {
 // functions
 //-----------------------------------------------------------------------------
 func checkParam() {
+	path := os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/config/mailon.toml"
+	conf.New(path, true)
 
 	m := conf.GetConf().Mail
 
