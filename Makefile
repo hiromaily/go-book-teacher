@@ -54,5 +54,26 @@ godep:
 
 
 ###############################################################################
-# Execution Local
+# Build Heroku
 ###############################################################################
+heroku:
+	git push -f heroku master
+
+
+###############################################################################
+# Test
+###############################################################################
+tst1:
+	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/config/settings.toml
+
+tst2:
+	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson
+
+tst3:
+	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
+
+tst4:
+	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingRedisAndMail
+
+tst5:
+	godep go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
