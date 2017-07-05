@@ -59,6 +59,10 @@ godep:
 heroku:
 	git push -f heroku master
 
+hirokuinfo:
+	heroku config
+	heroku ps
+
 
 ###############################################################################
 # Test
