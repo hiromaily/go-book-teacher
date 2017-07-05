@@ -1,15 +1,15 @@
 {
 	"ImportPath": "github.com/hiromaily/go-book-teacher",
-	"GoVersion": "go1.7",
-	"GodepVersion": "v74",
+	"GoVersion": "go1.8",
+	"GodepVersion": "v79",
 	"Packages": [
 		"./..."
 	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/BurntSushi/toml",
-			"Comment": "v0.2.0-21-g9906417",
-			"Rev": "99064174e013895bbd9b025c31100bd1d9b590ca"
+			"Comment": "v0.2.0-37-gd94612f",
+			"Rev": "d94612f9fc140360834f9742158c70b5c5b5535b"
 		},
 		{
 			"ImportPath": "github.com/PuerkitoBio/goquery",
@@ -22,49 +22,49 @@
 		},
 		{
 			"ImportPath": "github.com/garyburd/redigo/internal",
-			"Comment": "v1.0.0-5-gffa8d46",
-			"Rev": "ffa8d46ada782d81cfda81a0fbd9f45ceae448e8"
+			"Comment": "v1.0.0-21-g0d253a6",
+			"Rev": "0d253a66e6e1349f4581d6d2b300ee434ee2da9f"
 		},
 		{
 			"ImportPath": "github.com/garyburd/redigo/redis",
-			"Comment": "v1.0.0-5-gffa8d46",
-			"Rev": "ffa8d46ada782d81cfda81a0fbd9f45ceae448e8"
+			"Comment": "v1.0.0-21-g0d253a6",
+			"Rev": "0d253a66e6e1349f4581d6d2b300ee434ee2da9f"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/cipher/encryption",
-			"Rev": "e64941b0b597f9b5be62aead9435f4f4a6a16856"
+			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/db/redis",
-			"Rev": "e64941b0b597f9b5be62aead9435f4f4a6a16856"
+			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/heroku",
-			"Rev": "e64941b0b597f9b5be62aead9435f4f4a6a16856"
+			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/log",
-			"Rev": "e64941b0b597f9b5be62aead9435f4f4a6a16856"
+			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/mail",
-			"Rev": "e64941b0b597f9b5be62aead9435f4f4a6a16856"
+			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/signal",
-			"Rev": "e64941b0b597f9b5be62aead9435f4f4a6a16856"
+			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/time",
-			"Rev": "e64941b0b597f9b5be62aead9435f4f4a6a16856"
+			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/tmpl",
-			"Rev": "e64941b0b597f9b5be62aead9435f4f4a6a16856"
+			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},
 		{
 			"ImportPath": "github.com/hiromaily/golibs/utils",
-			"Rev": "e64941b0b597f9b5be62aead9435f4f4a6a16856"
+			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},
 		{
 			"ImportPath": "github.com/shiena/ansicolor",
@@ -72,11 +72,11 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
-			"Rev": "07b51741c1d6423d4a6abab1c49940ec09cb1aaf"
+			"Rev": "6c23252515492caf9b228a9d5cabcdbde29f7f82"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html/atom",
-			"Rev": "07b51741c1d6423d4a6abab1c49940ec09cb1aaf"
+			"Rev": "6c23252515492caf9b228a9d5cabcdbde29f7f82"
 		}
 	]
 }

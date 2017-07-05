@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-const timeRangeFrom string = "07:00:00"
+const timeRangeFrom string = "00:00:00"
 const timeRangeTo string = "24:00:00"
 
 // check within range for applicable time
@@ -19,16 +19,17 @@ func isTimeApplicable(strDate string) bool {
 
 // Html text replace into json
 func htmlStringDecode(jsondata *string) {
-	lst := [9][2]string{
+	lst := [10][2]string{
 		{"&amp;", "&"},
 		{"&lt;", "<"},
 		{"&gt;", ">"},
 		{"&quot;", "\""},
 		{"a:3:", ""},
+		{"a:4:", ""},
 		{"s:", "\"field"},
 		{";", ","},
 		{":\"", "\":\""},
-		{",}", "}"},
+		{",N,", ""},
 	}
 
 	for _, data := range lst {
@@ -59,6 +60,7 @@ func perseHTML(htmldata *goquery.Document) []string {
 
 			//extract date from json object
 			//e.g. 2016-02-27 03:30:00
+
 			strDate := jsonObject["field19"].(string)
 			if isTimeApplicable(strDate) {
 				dates = append(dates, strDate)
