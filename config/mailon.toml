@@ -5,16 +5,16 @@ status_file = "./status.log"
 
 [redis]
 encrypted = true
-url = "Scx3B/7qmzC6e0x0GWWxsmV4oUfNSFpOiZ8cVNM4DeQtZWuZAFiA8ltNGTLun7N5gUJX4exo5kDXXACmgbP8jdre8n0LBJavB1Ul8BdxKOyigTmUWijetM7LSpr0FPQL"
+url = "Scx3B/7qmzC6e0x0GWWxsmV4oUfNSFpOiZ8cVNM4DeSX4L2ebwwOfP2uBkKdWhxmC1XVUaF1xL/Mzk8xHklQ28jKy8k3/H5NOo6ZpWx8xPuqppzehaVFqoUcec8qYQq3"
 
 [mail]
 encrypted = true
 mail_to = "FcQjhb5ErsSBlh6EDwe69eLdcW/eJPKWtnTWmDPoAAM="
-mail_from = "rbQELet6NtgU1RE77OdDMknVqlZDqAO7UIQlqIe2LEs="
+mail_from = "NnrrawdLR5gZ+YD0wtsIjwQf5UPBDVXDeej1GrYW8+E="
 
 [mail.smtp]
-address = "rbQELet6NtgU1RE77OdDMknVqlZDqAO7UIQlqIe2LEs="
-pass = "tJ5MG5PQ43SRZHWJzV2gYQ=="
-server = "+rjgS1GqgekF90B3Jyuxsg=="
+address = "NnrrawdLR5gZ+YD0wtsIjwQf5UPBDVXDeej1GrYW8+E="
+pass = "2kh28ukhCnQ6uCdlt9BK9tklGK21r7uZrEZSe1HqOx4="
+server = "o4jKKaglwawhX58iGLqBvg=="
 port = 587
 
