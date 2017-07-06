@@ -10,6 +10,32 @@ Go-book-teacher is for booking specific teachers on English lesson service by we
 When running on local PC, it continues to run until stop.
 It notices available teachers every 2 minutes when finding and changing state. 
 
+```
+----------- Rita M / Portugal / 7093 -----------
+----------- Gagga / Serbia / 5252 -----------
+----------- Kaytee / Serbia / 7646 -----------
+----------- Anna O / Rossiya / 1381 -----------
+----------- Milica J / Serbia / 6294 -----------
+----------- Marine / France / 8519 -----------
+----------- Lavinija / Serbia / 5656 -----------
+2017-07-06 20:30:00
+2017-07-07 16:00:00
+2017-07-07 18:00:00
+2017-07-07 18:30:00
+----------- Aleksandra S / Serbia / 6214 -----------
+----------- Jekica / Serbia / 4806 -----------
+----------- Yovana / Serbia / 6550 -----------
+2017-07-07 03:30:00
+2017-07-07 04:00:00
+2017-07-07 04:30:00
+----------- Olivera V / Serbia / 5380 -----------
+----------- Emilia / Serbia / 2464 -----------
+----------- Indre / Lithuania / 3486 -----------
+----------- Joxyly / Serbia / 4808 -----------
+----------- Milica Ml / Serbia / 4107 -----------
+```
+
+
 
 ## Installation
 ```
