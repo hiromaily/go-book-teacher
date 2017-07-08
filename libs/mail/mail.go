@@ -1,8 +1,8 @@
 package mail
 
 import (
-	conf "github.com/hiromaily/go-book-teacher/config"
-	th "github.com/hiromaily/go-book-teacher/teacher"
+	conf "github.com/hiromaily/go-book-teacher/libs/config"
+	th "github.com/hiromaily/go-book-teacher/libs/teacher"
 	lg "github.com/hiromaily/golibs/log"
 	ml "github.com/hiromaily/golibs/mail"
 	"github.com/hiromaily/golibs/tmpl"

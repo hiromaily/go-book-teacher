@@ -3,7 +3,7 @@ package redis
 import (
 	"fmt"
 	"github.com/garyburd/redigo/redis"
-	conf "github.com/hiromaily/go-book-teacher/config"
+	conf "github.com/hiromaily/go-book-teacher/libs/config"
 	rds "github.com/hiromaily/golibs/db/redis"
 	hrk "github.com/hiromaily/golibs/heroku"
 	lg "github.com/hiromaily/golibs/log"

@@ -68,7 +68,7 @@ hirokuinfo:
 # Test
 ###############################################################################
 tst1:
-	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/config/settings.toml
+	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/libs/config/mailon.toml
 
 tst2:
 	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson

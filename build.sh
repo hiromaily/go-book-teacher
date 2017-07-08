@@ -112,7 +112,7 @@ if [ $TEST_MODE -ne 0 ]; then
         echo '1.All'
         #1.All
         go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go \
-        -t ${PWD}/config/settings.toml
+        -t ${PWD}/libs/config/settings.toml
     fi
 
     if [ $TEST_MODE -eq 2 ]; then
@@ -207,7 +207,7 @@ fi
 #heroku config:add HEROKU_FLG=1
 #heroku addons:create scheduler:standard
 
-#heroku run book -t /app/config/settings.toml
+#heroku run book -t /app/libs/config/settings.toml
 #heroku run bash
 #heroku logs -t
 #heroku ps -a book

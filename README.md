@@ -54,7 +54,7 @@ $ ./docker-create.sh
 #### TOML file
 
 ```
-${PWD}/config/settings.toml
+${PWD}/libs/config/settings.toml
 ```
 
 * mail settings

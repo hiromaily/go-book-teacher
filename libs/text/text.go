@@ -2,7 +2,7 @@ package text
 
 import (
 	"bufio"
-	conf "github.com/hiromaily/go-book-teacher/config"
+	conf "github.com/hiromaily/go-book-teacher/libs/config"
 	lg "github.com/hiromaily/golibs/log"
 	"io/ioutil"
 	"os"

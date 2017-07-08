@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	conf "github.com/hiromaily/go-book-teacher/config"
-	rd "github.com/hiromaily/go-book-teacher/redis"
-	th "github.com/hiromaily/go-book-teacher/teacher"
-	tt "github.com/hiromaily/go-book-teacher/text"
+	conf "github.com/hiromaily/go-book-teacher/libs/config"
+	rd "github.com/hiromaily/go-book-teacher/libs/redis"
+	th "github.com/hiromaily/go-book-teacher/libs/teacher"
+	tt "github.com/hiromaily/go-book-teacher/libs/text"
 	lg "github.com/hiromaily/golibs/log"
 	"os"
 	"testing"
@@ -54,8 +54,12 @@ func TestMain(m *testing.M) {
 // functions
 //-----------------------------------------------------------------------------
 func checkParam() {
-	path := os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/config/mailon.toml"
-	conf.New(path, true)
+	lg.Debugf("*tomlPath: %s", *tomlPath)
+	if *tomlPath == "" {
+		*tomlPath = os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/libs/config/mailon.toml"
+	}
+	//path := os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/libs/config/mailon.toml"
+	conf.New(*tomlPath, true)
 
 	m := conf.GetConf().Mail
 
