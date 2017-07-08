@@ -19,13 +19,14 @@ type SlackMsg struct {
 
 var (
 	tmplSlackMsg = `
-The following tachers are available now!
+🤓😎😴 The following tachers are available now! 🤓😎😴
 {{range .Teachers}}
 *[{{.Name}} / {{.Country}}]*
 {{$.URL}}teacher/index/{{.ID}}/
-
 {{end}}
-Enjoy!😄`
+Enjoy!😄
+
+`
 )
 
 // Send is to send mail

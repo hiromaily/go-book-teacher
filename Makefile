@@ -41,8 +41,11 @@ bld:
 	rm -rf ./vendor
 	go build -i -v -o ${GOPATH}/bin/book ./cmd/book/
 
+full: bld godep
+
 run:
-	go run ./cmd/book/main.go -t libs/config/slackon.toml
+	rm -rf ./status.log
+	go run ./cmd/book/main.go -t libs/config/local.toml
 	#go run ./cmd/book/main.go -i 90
 	#go run ./cmd/book/main.go -t libs/config/settings.toml -i 90
 
