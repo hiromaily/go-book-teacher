@@ -42,9 +42,9 @@ bld:
 	go build -i -v -o ${GOPATH}/bin/book ./cmd/book/
 
 run:
-	go run ./cmd/book/main.go
+	go run ./cmd/book/main.go -t libs/config/slackon.toml
 	#go run ./cmd/book/main.go -i 90
-	#go run ./cmd/book/main.go -t settings.toml -i 90
+	#go run ./cmd/book/main.go -t libs/config/settings.toml -i 90
 
 godep:
 	#Save
@@ -59,7 +59,7 @@ godep:
 heroku:
 	git push -f heroku master
 
-hirokuinfo:
+herokuinfo:
 	heroku config
 	heroku ps
 
@@ -71,13 +71,16 @@ tst1:
 	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/libs/config/mailon.toml
 
 tst2:
-	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson
+	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/libs/config/slackon.toml
 
 tst3:
-	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
+	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson
 
 tst4:
-	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingRedisAndMail
+	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
 
 tst5:
+	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingRedisAndMail
+
+tst6:
 	godep go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser

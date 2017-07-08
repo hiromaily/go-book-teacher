@@ -6,6 +6,10 @@ status_file = "/tmp/status.log"
 encrypted = false
 url = ""
 
+[slack]
+encrypted = false
+url = ""
+
 [mail]
 encrypted = false
 mail_to = ""

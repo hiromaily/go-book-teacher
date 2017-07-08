@@ -6,6 +6,7 @@ import (
 	conf "github.com/hiromaily/go-book-teacher/libs/config"
 	ioo "github.com/hiromaily/go-book-teacher/libs/io"
 	ml "github.com/hiromaily/go-book-teacher/libs/mail"
+	sl "github.com/hiromaily/go-book-teacher/libs/slack"
 	rd "github.com/hiromaily/go-book-teacher/libs/redis"
 	th "github.com/hiromaily/go-book-teacher/libs/teacher"
 	tt "github.com/hiromaily/go-book-teacher/libs/text"
@@ -45,12 +46,13 @@ var (
 	//judge ment
 	herokuFlg = os.Getenv("HEROKU_FLG")
 	mailFlg   = false
+	slackFlg   = false
 	redisFlg  = false
 )
 
 func checkHeroku() error {
 	//heroku mode
-	if herokuFlg == "1" && (!mailFlg || !redisFlg) {
+	if herokuFlg == "1" && ((!mailFlg && !slackFlg) || !redisFlg) {
 		return fmt.Errorf("%s", "mail settings is required for HEROKU")
 	}
 	return nil
@@ -93,6 +95,12 @@ func checkSavedTeachers() {
 			if mailFlg {
 				// for sending mail
 				ml.Send(ths)
+			} else if slackFlg {
+				// for sending slack
+				err := sl.Send(ths)
+				if err != nil{
+					lg.Error(err)
+				}
 			} else {
 				//Browser Mode
 				openBrowser(ths)
@@ -186,6 +194,10 @@ func setupMain() {
 
 		//Mail Check
 		ml.Setup()
+	}
+
+	if conf.GetConf().Slack.Key != "" {
+		slackFlg = true
 	}
 
 	//th.SetPrintOn(true)

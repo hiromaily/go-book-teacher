@@ -51,6 +51,10 @@
 			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},
 		{
+			"ImportPath": "github.com/hiromaily/golibs/runtimes",
+			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
+		},
+		{
 			"ImportPath": "github.com/hiromaily/golibs/signal",
 			"Rev": "bba90f98c069e2079036ae7661612b771e4bfd4c"
 		},

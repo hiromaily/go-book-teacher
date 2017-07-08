@@ -20,6 +20,7 @@ type Config struct {
 	Environment int    `toml:"environment"`
 	StatusFile  string `toml:"status_file"`
 	Redis       *RedisConfig
+	Slack       *SlackConfig
 	Mail        *MailConfig
 }
 
@@ -27,6 +28,12 @@ type Config struct {
 type RedisConfig struct {
 	Encrypted bool   `toml:"encrypted"`
 	URL       string `toml:"url"`
+}
+
+// SlackConfig is for slack
+type SlackConfig struct {
+	Encrypted bool   `toml:"encrypted"`
+	Key       string `toml:"key"`
 }
 
 // MailConfig is for mail
@@ -49,6 +56,8 @@ var checkTomlKeys = [][]string{
 	{"environment"},
 	{"redis", "encrypted"},
 	{"redis", "url"},
+	{"slack", "encrypted"},
+	{"slack", "key"},
 	{"mail", "encrypted"},
 	{"mail", "mail_to"},
 	{"mail", "mail_from"},
@@ -165,6 +174,11 @@ func Cipher() {
 	if conf.Redis.Encrypted {
 		c := conf.Redis
 		c.URL, _ = crypt.DecryptBase64(c.URL)
+	}
+
+	if conf.Slack.Encrypted {
+		c := conf.Slack
+		c.Key, _ = crypt.DecryptBase64(c.Key)
 	}
 
 	if conf.Mail.Encrypted {

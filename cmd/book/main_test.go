@@ -7,8 +7,10 @@ import (
 	th "github.com/hiromaily/go-book-teacher/libs/teacher"
 	tt "github.com/hiromaily/go-book-teacher/libs/text"
 	lg "github.com/hiromaily/golibs/log"
+	r "github.com/hiromaily/golibs/runtimes"
 	"os"
 	"testing"
+	"fmt"
 )
 
 var txtPath = "./status.log"
@@ -58,15 +60,14 @@ func checkParam() {
 	if *tomlPath == "" {
 		*tomlPath = os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/libs/config/mailon.toml"
 	}
-	//path := os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/libs/config/mailon.toml"
 	conf.New(*tomlPath, true)
 
-	m := conf.GetConf().Mail
-
-	if m.MailTo == "" || m.MailFrom == "" || m.SMTP.Pass == "" ||
-		m.SMTP.Server == "" || m.SMTP.Port == 0 || conf.GetConf().Redis.URL == "" {
-		panic("parameter is wrong.")
-	}
+	//In this case, skip mail test
+	//m := conf.GetConf().Mail
+	//if m.MailTo == "" || m.MailFrom == "" || m.SMTP.Pass == "" ||
+	//	m.SMTP.Server == "" || m.SMTP.Port == 0 || conf.GetConf().Redis.URL == "" {
+	//	panic("parameter is wrong.")
+	//}
 }
 
 func clear() {
@@ -104,6 +105,7 @@ func TestIntegrationOnLocalUsingTxtAndBrowser(t *testing.T) {
 	herokuFlg = "0"
 	redisFlg = false
 	mailFlg = false
+	slackFlg = false
 
 	//#1
 	bRet := ExecMain(1)
@@ -122,12 +124,15 @@ func TestIntegrationOnLocalUsingTxtAndBrowser(t *testing.T) {
 
 // 2. on local and redis and mail
 func TestIntegrationOnLocalUsingRedisAndMail(t *testing.T) {
-	//t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
+	if conf.GetConf().Mail.MailTo == ""{
+		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
+	}
 
 	//settings
 	herokuFlg = "0"
 	redisFlg = true
 	mailFlg = true
+	slackFlg = false
 
 	//#1
 	bRet := ExecMain(1)
@@ -144,7 +149,34 @@ func TestIntegrationOnLocalUsingRedisAndMail(t *testing.T) {
 	clear()
 }
 
-// 3. on local and txt file and load json and browser
+// 3. on local and redis and mail
+func TestIntegrationOnLocalUsingRedisAndSlack(t *testing.T) {
+	if conf.GetConf().Slack.Key == ""{
+		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
+	}
+
+	//settings
+	herokuFlg = "0"
+	redisFlg = true
+	mailFlg = false
+	slackFlg = true
+
+	//#1
+	bRet := ExecMain(1)
+	if !bRet {
+		t.Error("failed something.")
+	}
+
+	//#2. using saved data.
+	bRet = ExecMain(1)
+	if !bRet {
+		t.Error("failed something.")
+	}
+
+	clear()
+}
+
+// 4. on local and txt file and load json and browser
 func TestIntegrationOnLocalUsingTxtAndBrowserAndJson(t *testing.T) {
 	//t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
 
@@ -152,6 +184,7 @@ func TestIntegrationOnLocalUsingTxtAndBrowserAndJson(t *testing.T) {
 	herokuFlg = "0"
 	redisFlg = false
 	mailFlg = false
+	slackFlg = false
 
 	*jsPath = jsonPath
 
@@ -164,16 +197,18 @@ func TestIntegrationOnLocalUsingTxtAndBrowserAndJson(t *testing.T) {
 	clear()
 }
 
-// 4. on heroku and txt file and mail
+// 5. on heroku and txt file and mail
 // It supposes not to work intentionally.
 func TestIntegrationOnHerokuUsingTxtAndMail(t *testing.T) {
-	//t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
-	//TODO:still failed
+	if conf.GetConf().Mail.MailTo == "" {
+		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
+	}
 
 	//settings
 	herokuFlg = "1"
 	redisFlg = false
 	mailFlg = true
+	slackFlg = false
 
 	//#1
 	err := checkHeroku()
@@ -184,7 +219,29 @@ func TestIntegrationOnHerokuUsingTxtAndMail(t *testing.T) {
 	clear()
 }
 
-// 5. on heroku and redis and browser
+// 6. on heroku and txt file and mail
+// It supposes not to work intentionally.
+func TestIntegrationOnHerokuUsingTxtAndSlack(t *testing.T) {
+	if conf.GetConf().Slack.Key == ""{
+		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
+	}
+
+	//settings
+	herokuFlg = "1"
+	redisFlg = false
+	mailFlg = false
+	slackFlg = true
+
+	//#1
+	err := checkHeroku()
+	if err == nil {
+		t.Error("failed something.")
+	}
+
+	clear()
+}
+
+// 7. on heroku and redis and browser
 // It supposes not to work intentionally.
 func TestIntegrationOnHerokuUsingRedisAndBrowser(t *testing.T) {
 	//t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
@@ -194,6 +251,7 @@ func TestIntegrationOnHerokuUsingRedisAndBrowser(t *testing.T) {
 	herokuFlg = "1"
 	redisFlg = true
 	mailFlg = false
+	slackFlg = false
 
 	//#1
 	err := checkHeroku()
@@ -204,14 +262,38 @@ func TestIntegrationOnHerokuUsingRedisAndBrowser(t *testing.T) {
 	clear()
 }
 
-// 6. on heroku and redis and mail
+// 8. on heroku and redis and mail
 func TestIntegrationOnHerokuUsingRedisAndMail(t *testing.T) {
-	//t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
+	if conf.GetConf().Mail.MailTo == "" {
+		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
+	}
 
 	//settings
 	herokuFlg = "1"
 	redisFlg = true
 	mailFlg = true
+	slackFlg = false
+
+	//#1
+	bRet := ExecMain(1)
+	if !bRet {
+		t.Error("failed something.")
+	}
+
+	clear()
+}
+
+// 9. on heroku and redis and mail
+func TestIntegrationOnHerokuUsingRedisAndSlack(t *testing.T) {
+	if conf.GetConf().Slack.Key == ""{
+		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
+	}
+
+	//settings
+	herokuFlg = "1"
+	redisFlg = true
+	mailFlg = false
+	slackFlg = true
 
 	//#1
 	bRet := ExecMain(1)

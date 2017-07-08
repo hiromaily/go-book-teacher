@@ -136,6 +136,7 @@ func GetDefinedData() *SiteInfo {
 		{6550, "Yovana", "Serbia"},
 		{7646, "Kaytee", "Serbia"},
 		{8160, "Gaja", "Serbia"},
+		{16837, "Yolene", "Serbia"},
 		{3486, "Indre", "Lithuania"},
 		{7093, "Rita M", "Portugal"},
 		{8519, "Marine", "France"},
