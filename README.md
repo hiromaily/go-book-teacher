@@ -35,6 +35,8 @@ It notices available teachers every 2 minutes when finding and changing state.
 ----------- Milica Ml / Serbia / 4107 -----------
 ```
 
+![slack](https://raw.githubusercontent.com/hiromaily/go-book-teacher/master/images/slack_image.png)
+
 
 
 ## Installation
@@ -57,7 +59,8 @@ $ ./docker-create.sh
 ${PWD}/libs/config/settings.toml
 ```
 
-* mail settings
+* Mail settings
+* Slack settings  
 * Redis settings  
 ※ As needed, secret information can be ciphered.(using AES encryption)
 
@@ -70,7 +73,9 @@ ${PWD}/libs/config/settings.toml
 1. Web browser  
   or
 2. mail: To set mail info on settins.toml
-
+  or
+3. slack: To set slack info on settins.toml
+  
 #### save current state
 1. txt file: To set status_file on settings.toml  
  or
