@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	conf "github.com/hiromaily/go-book-teacher/libs/config"
 	rd "github.com/hiromaily/go-book-teacher/libs/redis"
 	th "github.com/hiromaily/go-book-teacher/libs/teacher"
@@ -10,11 +11,10 @@ import (
 	r "github.com/hiromaily/golibs/runtimes"
 	"os"
 	"testing"
-	"fmt"
 )
 
 var txtPath = "./status.log"
-var jsonPath = "../../json/teachers.json"
+var jsonPath = "../../data/json/teachers.json"
 
 //-----------------------------------------------------------------------------
 // Test Framework
@@ -58,7 +58,7 @@ func TestMain(m *testing.M) {
 func checkParam() {
 	lg.Debugf("*tomlPath: %s", *tomlPath)
 	if *tomlPath == "" {
-		*tomlPath = os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/libs/config/mailon.toml"
+		*tomlPath = os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/data/toml/mailon.toml"
 	}
 	conf.New(*tomlPath, true)
 
@@ -124,7 +124,7 @@ func TestIntegrationOnLocalUsingTxtAndBrowser(t *testing.T) {
 
 // 2. on local and redis and mail
 func TestIntegrationOnLocalUsingRedisAndMail(t *testing.T) {
-	if conf.GetConf().Mail.MailTo == ""{
+	if conf.GetConf().Mail.MailTo == "" {
 		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
 	}
 
@@ -151,7 +151,7 @@ func TestIntegrationOnLocalUsingRedisAndMail(t *testing.T) {
 
 // 3. on local and redis and mail
 func TestIntegrationOnLocalUsingRedisAndSlack(t *testing.T) {
-	if conf.GetConf().Slack.Key == ""{
+	if conf.GetConf().Slack.Key == "" {
 		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
 	}
 
@@ -222,7 +222,7 @@ func TestIntegrationOnHerokuUsingTxtAndMail(t *testing.T) {
 // 6. on heroku and txt file and mail
 // It supposes not to work intentionally.
 func TestIntegrationOnHerokuUsingTxtAndSlack(t *testing.T) {
-	if conf.GetConf().Slack.Key == ""{
+	if conf.GetConf().Slack.Key == "" {
 		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
 	}
 
@@ -285,7 +285,7 @@ func TestIntegrationOnHerokuUsingRedisAndMail(t *testing.T) {
 
 // 9. on heroku and redis and mail
 func TestIntegrationOnHerokuUsingRedisAndSlack(t *testing.T) {
-	if conf.GetConf().Slack.Key == ""{
+	if conf.GetConf().Slack.Key == "" {
 		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
 	}
 

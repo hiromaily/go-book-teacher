@@ -1,6 +1,5 @@
 environment = 0    #0:local, 1:docker, 2:heroku
 
-#status_file = "/tmp/status.log"
 status_file = "./status.log"
 
 [redis]

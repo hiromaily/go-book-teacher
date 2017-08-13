@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	tomlFileName = "./libs/config/settings.toml"
+	tomlFileName = "./data/toml/settings.toml"
 	conf         *Config
 )
 
@@ -68,7 +68,7 @@ var checkTomlKeys = [][]string{
 }
 
 func init() {
-	tomlFileName = os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/libs/config/settings.toml"
+	tomlFileName = os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/data/toml/settings.toml"
 }
 
 //check validation of config

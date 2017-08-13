@@ -1,6 +1,5 @@
 environment = 0    #0:local, 1:docker, 2:heroku
 
-#status_file = "/tmp/status.log"
 status_file = "./status.log"
 
 [redis]
@@ -9,7 +8,7 @@ url = "Scx3B/7qmzC6e0x0GWWxsmV4oUfNSFpOiZ8cVNM4DeSX4L2ebwwOfP2uBkKdWhxmC1XVUaF1x
 
 [slack]
 encrypted = false
-url = ""
+key = ""
 
 [mail]
 encrypted = true

@@ -1,5 +1,29 @@
 # Note: tabs by space can't not used for Makefile!
 
+CURRENTDIR=`pwd`
+
+###############################################################################
+# Managing Dependencies
+###############################################################################
+update:
+	go get -u github.com/tools/godep
+	go get -u -d -v ./...
+
+godep:
+	rm -rf Godeps
+	rm -rf ./vendor
+	godep save ./...
+
+
+#godep_build:
+#    #Build
+#    godep go build -o book ./cmd/book/
+
+#godep_restore:
+#    #Restore
+#    godep restore
+
+
 ###############################################################################
 # Golang formatter and detection
 ###############################################################################
@@ -26,11 +50,11 @@ chk:
 	ineffassign .
 
 
-###############################################################################
-# Settings
-###############################################################################
-init:
-	go get -u github.com/tools/godep
+###########################################################
+# go list for check import package
+###########################################################
+golist:
+	go list -f '{{.ImportPath}} -> {{join .Imports "\n"}}' ./cmd/book/main.go
 
 
 ###############################################################################
@@ -45,19 +69,65 @@ full: bld godep
 
 run:
 	rm -rf ./status.log
-	go run ./cmd/book/main.go -t libs/config/local.toml
+	go run ./cmd/book/main.go -t data/toml/local.toml
 	#go run ./cmd/book/main.go -i 90
-	#go run ./cmd/book/main.go -t libs/config/settings.toml -i 90
+	#go run ./cmd/book/main.go -t data/toml/settings.toml -i 90
 
-godep:
-	#Save
-	rm -rf Godeps
-	rm -rf vendor
-	godep save ./...
+
+###############################################################################
+# Docker
+###############################################################################
+dc_create:
+	./docker-create.sh
+
+dclogin:
+	docker-compose exec book bash
+
+dcbld:
+	docker-compose exec book bash ./docker-entrypoint.sh
+	#docker-compose exec book /bin/sh -c "go build -v -o /go/bin/book ./cmd/book/"
+
+dcexec:
+	docker-compose exec book /bin/sh -c "book -t ./data/toml/settings.toml"
+
+
+###############################################################################
+# Test
+###############################################################################
+test1:
+	# mail mode
+	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/data/toml/mailon.toml
+
+test2:
+	# slack mode
+	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/data/toml/slackon.toml
+
+test3:
+	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson
+
+test4:
+	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
+
+test5:
+	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingRedisAndMail
+
+test6:
+	godep go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
 
 
 ###############################################################################
 # Build Heroku
+#
+#heroku config:add HEROKU_FLG=1
+#heroku addons:create scheduler:standard
+
+#heroku run book -t /app/data/toml/settings.toml
+#heroku run bash
+#heroku logs -t
+#heroku ps -a book
+#heroku ps
+#heroku config
+#
 ###############################################################################
 heroku:
 	git push -f heroku master
@@ -65,25 +135,3 @@ heroku:
 herokuinfo:
 	heroku config
 	heroku ps
-
-
-###############################################################################
-# Test
-###############################################################################
-tst1:
-	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/libs/config/mailon.toml
-
-tst2:
-	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/libs/config/slackon.toml
-
-tst3:
-	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson
-
-tst4:
-	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
-
-tst5:
-	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingRedisAndMail
-
-tst6:
-	godep go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser

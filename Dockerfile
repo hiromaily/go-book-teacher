@@ -1,14 +1,15 @@
 # Dcokerfile for go-book-teacher
-
-FROM golang:1.6
+FROM golang:1.8
 
 ARG redisHostName=default-redis-server
 
 RUN mkdir -p /go/src/github.com/hiromaily/go-book-teacher
-#COPY ./go-book-teacher /go/src/github.com/hiromaily/go-book-teacher/
+WORKDIR /go/src/github.com/hiromaily/go-book-teacher
+COPY . .
 
 ENV REDIS_URL=redis://h:password@${redisHostName}:6379
 
-WORKDIR /go/src/github.com/hiromaily/go-book-teacher
+#RUN go get -u -d -v ./...
+RUN CGO_ENABLED=0 GOOS=linux go build -o /go/bin/book ./cmd/book/main.go
 
-#RUN go get -d -v ./... && go build -v -o /go/bin/book ./cmd/book/
+CMD ["bash"]

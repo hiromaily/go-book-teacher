@@ -1,0 +1,15 @@
+#- redis:3.2
+#- book from Dockerfile of book (build is required)
+version: '3.0'
+
+services:
+  # Redis
+  redis:
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
+  # golang:go-book-teacher
+  book:
+    volumes:
+      - ./:/go/src/github.com/hiromaily/go-book-teacher
+    command: bash

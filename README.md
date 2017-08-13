@@ -46,7 +46,7 @@ $ go get github.com/hiromaily/go-book-teacher ./...
 
 #### For docker environment
 ```
-$ ./docker-create.sh
+$ docker-compose up --build
 ```
 
 
@@ -56,7 +56,7 @@ $ ./docker-create.sh
 #### TOML file
 
 ```
-${PWD}/libs/config/settings.toml
+${PWD}/data/toml/settings.toml
 ```
 
 * Mail settings
@@ -105,11 +105,11 @@ $ git push -f heroku master
 ### 3. On Docker
 
 #### Docker related files
-* docker-create.sh
 * docker-compose.yml
+* docker-compose.override.yml
 * docker-entrypoint.sh
 * Dockerfile
-* ./docker_build/*
+* ./docker/*
 
 
 ## Environment valuable e.g.
@@ -132,6 +132,6 @@ Options:
   -i     Interval for scraping
 
 e.g.
- $ book -j /var/go/teacher.json -t settings.toml -i 120
+ $ book -j /var/go/teacher.json -t data/toml/settings.toml -i 120
 ```
 

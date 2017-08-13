@@ -1,14 +1,14 @@
 environment = 0    #0:local, 1:docker, 2:heroku
 
-status_file = "/tmp/status.log"
+status_file = "./status.log"
 
 [redis]
 encrypted = false
 url = ""
 
 [slack]
-encrypted = false
-url = ""
+encrypted = true
+key = "HP/9upIf+CwLGuDj2V0xfqulICwv1nHhQXy+S2TSEhFzYfEnt9zzWjVtoMT/8Rb7"
 
 [mail]
 encrypted = false

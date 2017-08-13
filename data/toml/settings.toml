@@ -1,0 +1,22 @@
+environment = 1    #0:local, 1:docker, 2:heroku
+
+status_file = "/tmp/status.log"
+
+[redis]
+encrypted = false
+url = "redis://h:password@127.0.0.1:6379"
+
+[slack]
+encrypted = false
+key = ""
+
+[mail]
+encrypted = false
+mail_to = ""
+mail_from = ""
+
+[mail.smtp]
+address = ""
+pass = ""
+server = ""
+port = 587

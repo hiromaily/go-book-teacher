@@ -1,2 +1,2 @@
 #use name of directory of main.go
-worker: book -t /app/libs/config/slackon.toml
+worker: book -t /app/data/toml/slackon.toml

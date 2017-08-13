@@ -2,19 +2,20 @@ package slack
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	conf "github.com/hiromaily/go-book-teacher/libs/config"
 	th "github.com/hiromaily/go-book-teacher/libs/teacher"
 	lg "github.com/hiromaily/golibs/log"
 	"github.com/hiromaily/golibs/tmpl"
-	"fmt"
-	"encoding/json"
 	"io/ioutil"
 	"net/http"
 )
 
 type SlackMsg struct {
-	Text string     `json:"text"`
+	Text string `json:"text"`
 }
+
 //{"text": "New comic book alert! _The Further Adventures of Slackbot_, Volume 1, Issue 3."}
 
 var (
@@ -30,7 +31,7 @@ Enjoy!😄
 )
 
 // Send is to send mail
-func Send(ths []th.Info) error{
+func Send(ths []th.Info) error {
 	//make body
 	si := th.CreateSiteInfo(ths)
 	msg, err := tmpl.StrTempParser(tmplSlackMsg, &si)
@@ -38,7 +39,7 @@ func Send(ths []th.Info) error{
 		lg.Debugf("slack couldn't be send caused by err : %s\n", err)
 	} else {
 		//crate json
-		sm := SlackMsg{Text:msg}
+		sm := SlackMsg{Text: msg}
 		data, err := json.Marshal(&sm)
 		if err != nil {
 			return fmt.Errorf("[ERROR] When calling `json.Marshal`: %v\n", err)
@@ -54,8 +55,8 @@ func Send(ths []th.Info) error{
 }
 
 // getURL is to get URL
-func getURL() string{
-	return 	fmt.Sprintf("https://hooks.slack.com/services/%s", conf.GetConf().Slack.Key)
+func getURL() string {
+	return fmt.Sprintf("https://hooks.slack.com/services/%s", conf.GetConf().Slack.Key)
 }
 
 func sendPost(data []byte, url string) ([]byte, error) {

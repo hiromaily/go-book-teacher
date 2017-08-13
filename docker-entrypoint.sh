@@ -3,5 +3,5 @@
 # initialize for docker environment
 ###
 
-go get -d -v ./...
+#go get -u -d -v ./...
 go build -v -o /go/bin/book ./cmd/book/

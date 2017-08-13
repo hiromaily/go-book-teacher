@@ -6,8 +6,8 @@ import (
 	conf "github.com/hiromaily/go-book-teacher/libs/config"
 	ioo "github.com/hiromaily/go-book-teacher/libs/io"
 	ml "github.com/hiromaily/go-book-teacher/libs/mail"
-	sl "github.com/hiromaily/go-book-teacher/libs/slack"
 	rd "github.com/hiromaily/go-book-teacher/libs/redis"
+	sl "github.com/hiromaily/go-book-teacher/libs/slack"
 	th "github.com/hiromaily/go-book-teacher/libs/teacher"
 	tt "github.com/hiromaily/go-book-teacher/libs/text"
 	enc "github.com/hiromaily/golibs/cipher/encryption"
@@ -46,7 +46,7 @@ var (
 	//judge ment
 	herokuFlg = os.Getenv("HEROKU_FLG")
 	mailFlg   = false
-	slackFlg   = false
+	slackFlg  = false
 	redisFlg  = false
 )
 
@@ -98,7 +98,7 @@ func checkSavedTeachers() {
 			} else if slackFlg {
 				// for sending slack
 				err := sl.Send(ths)
-				if err != nil{
+				if err != nil {
 					lg.Error(err)
 				}
 			} else {
