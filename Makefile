@@ -17,7 +17,7 @@ godep:
 
 #godep_build:
 #    #Build
-#    godep go build -o book ./cmd/book/
+#    godep go build -i -race -o book ./cmd/book/
 
 #godep_restore:
 #    #Restore
@@ -63,7 +63,7 @@ golist:
 bld:
 	rm -rf Godeps
 	rm -rf ./vendor
-	go build -i -v -o ${GOPATH}/bin/book ./cmd/book/
+	go build -i -race -v -o ${GOPATH}/bin/book ./cmd/book/
 
 full: bld godep
 
@@ -85,7 +85,7 @@ dclogin:
 
 dcbld:
 	docker-compose exec book bash ./docker-entrypoint.sh
-	#docker-compose exec book /bin/sh -c "go build -v -o /go/bin/book ./cmd/book/"
+	#docker-compose exec book /bin/sh -c "go build -i -race -v -o /go/bin/book ./cmd/book/"
 
 dcexec:
 	docker-compose exec book /bin/sh -c "book -t ./data/toml/settings.toml"
