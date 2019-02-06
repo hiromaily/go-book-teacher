@@ -124,22 +124,12 @@ func LoadJSONFile(filePath string) *SiteInfo {
 func GetDefinedData() *SiteInfo {
 	ti := []Info{
 		{ID: 6214, Name: "Aleksandra S", Country: "Serbia"},
-		//{1381, "Anna O", "Rossiya"},
-		//{3437, "Nia", "Serbia"},
-		//{4107, "Milica Ml", "Serbia"},
-		//{4806, "Jekica", "Serbia"},
 		{4808, "Joxyly", "Serbia"},
-		//{5252, "Gagga", "Serbia"},
-		//{5380, "Olivera V", "Serbia"},
-		//{5656, "Lavinija", "Serbia"},
-		//{6294, "Milica J", "Serbia"},
-		//{6550, "Yovana", "Serbia"},
-		//{7646, "Kaytee", "Serbia"},
-		//{8160, "Gaja", "Serbia"},
-		//{16837, "Yolene", "Serbia"},
-		//{3486, "Indre", "Lithuania"},
-		//{7093, "Rita M", "Portugal"},
-		//{8519, "Marine", "France"},
+		{10157, "Patrick B", "New Zealand"},
+		{25473, "Oliver B", "Ireland"},
+		{25622, "Shannon J", "UK"},
+		{24397, "Elisabeth L", "USA"},
+		{25475, "Dan Cr", "USA"},
 	}
 	siteInfo = SiteInfo{URL: "http://eikaiwa.dmm.com/", Teachers: ti}
 	return &siteInfo

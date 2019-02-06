@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	conf "github.com/hiromaily/go-book-teacher/libs/config"
-	ioo "github.com/hiromaily/go-book-teacher/libs/io"
-	ml "github.com/hiromaily/go-book-teacher/libs/mail"
-	rd "github.com/hiromaily/go-book-teacher/libs/redis"
-	sl "github.com/hiromaily/go-book-teacher/libs/slack"
-	th "github.com/hiromaily/go-book-teacher/libs/teacher"
-	tt "github.com/hiromaily/go-book-teacher/libs/text"
+	conf "github.com/hiromaily/go-book-teacher/pkg/config"
+	ioo "github.com/hiromaily/go-book-teacher/pkg/io"
+	ml "github.com/hiromaily/go-book-teacher/pkg/mail"
+	rd "github.com/hiromaily/go-book-teacher/pkg/redis"
+	sl "github.com/hiromaily/go-book-teacher/pkg/slack"
+	th "github.com/hiromaily/go-book-teacher/pkg/teacher"
+	tt "github.com/hiromaily/go-book-teacher/pkg/text"
 	enc "github.com/hiromaily/golibs/cipher/encryption"
 	lg "github.com/hiromaily/golibs/log"
 	"github.com/hiromaily/golibs/signal"
@@ -152,7 +152,7 @@ func handleTeachers(si *th.SiteInfo) {
 }
 
 func init() {
-	lg.InitializeLog(lg.DebugStatus, lg.LogOff, 99, "[BookingTeacher]", "/var/log/go/book.log")
+	lg.InitializeLog(lg.DebugStatus, lg.TimeShortFile,  "[BookingTeacher]", "/var/log/go/book.log", "hiromaily")
 
 	flag.Usage = func() {
 		fmt.Fprint(os.Stderr, fmt.Sprintf(usage, os.Args[0]))
@@ -165,7 +165,7 @@ func init() {
 	go signal.StartSignal()
 
 	//cipher
-	_, err := enc.NewCryptDefault()
+	_, err := enc.NewCryptWithEnv()
 	if err != nil {
 		panic(err)
 	}

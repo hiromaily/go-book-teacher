@@ -6,6 +6,7 @@ import (
 	"io"
 	"regexp"
 	"runtime"
+	"runtime/debug"
 	"strings"
 )
 
@@ -54,6 +55,10 @@ func dumpStackTrace(separator string) (callerInfo []*CallerInfo) {
 	return callerInfo[1:]
 }
 
+func GetOS() string {
+	return runtime.GOOS
+}
+
 func GetStackTrace(separator string) []*CallerInfo {
 	info := dumpStackTrace(separator)
 	return info
@@ -64,7 +69,6 @@ func TraceAllHistory(w io.Writer, separator string) {
 	for i := len(info) - 1; i > -1; i-- {
 		v := info[i]
 		//fmt.Printf("%02d: %s%s@%s:%d\n", i, v.PackageName, v.FunctionName, v.FileName, v.FileLine)
-		//fmt.Printf("%02d: [Function]%s [File]%s:%d\n", i, v.FunctionName, v.FileName, v.FileLine)
 		fmt.Fprintf(w, "%02d: [Function]%s [File]%s:%d\n", i, v.FunctionName, v.FileName, v.FileLine)
 	}
 }
@@ -97,4 +101,15 @@ func CurrentFuncV2() []byte {
 	}
 
 	return b[:i]
+}
+
+func DebugStack() {
+	// Stack returns a formatted stack trace of the goroutine that calls it.
+	// It calls runtime.Stack with a large enough buffer to capture the entire trace.
+	fmt.Println(string(debug.Stack()))
+}
+
+func DebugPrintStack() {
+	// PrintStack prints to standard error the stack trace returned by runtime.Stack.
+	debug.PrintStack()
 }

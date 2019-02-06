@@ -6,22 +6,14 @@ CURRENTDIR=`pwd`
 # Managing Dependencies
 ###############################################################################
 update:
-	go get -u github.com/tools/godep
+	go get -u github.com/golang/dep/cmd/dep
 	go get -u -d -v ./...
 
-godep:
-	rm -rf Godeps
-	rm -rf ./vendor
-	godep save ./...
+dep-init:
+	dep init
 
-
-#godep_build:
-#    #Build
-#    godep go build -i -race -o book ./cmd/book/
-
-#godep_restore:
-#    #Restore
-#    godep restore
+dep-ensure:
+	dep ensure
 
 
 ###############################################################################
@@ -61,11 +53,7 @@ golist:
 # Build Local
 ###############################################################################
 bld:
-	rm -rf Godeps
-	rm -rf ./vendor
 	go build -i -race -v -o ${GOPATH}/bin/book ./cmd/book/
-
-full: bld godep
 
 run:
 	rm -rf ./status.log
@@ -112,7 +100,7 @@ test5:
 	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingRedisAndMail
 
 test6:
-	godep go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
+	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
 
 
 ###############################################################################

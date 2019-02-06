@@ -7,6 +7,7 @@ import (
 	"os"
 	"reflect"
 	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -433,6 +434,30 @@ func SearchStringLower(ary []string, str string) int {
 }
 
 //**********************************************************
+// Slice Struct Sort
+//**********************************************************
+func SortStructSlice() {
+	type ExamResult struct {
+		Name  string
+		Score int
+	}
+	exams := make([]ExamResult, 5)
+	exams[0] = ExamResult{Name: "Jon", Score: 37}
+	exams[1] = ExamResult{Name: "Mike", Score: 14}
+	exams[2] = ExamResult{Name: "Rob", Score: 74}
+	exams[3] = ExamResult{Name: "Oscar", Score: 94}
+	exams[4] = ExamResult{Name: "Jan", Score: 92}
+
+	sort.Slice(exams, func(i, j int) bool {
+		//small to big
+		return exams[i].Score < exams[j].Score
+	})
+
+	fmt.Printf("%+v\n", exams)
+	//[{Name:Mike Score:14} {Name:Jon Score:37} {Name:Rob Score:74} {Name:Jan Score:92} {Name:Oscar Score:94}]
+}
+
+//**********************************************************
 // Slice Convert
 //**********************************************************
 // Convet string array into int array
@@ -491,6 +516,22 @@ func CopySlice32(arr []int32) []int32 {
 	ret := make([]int32, len(arr))
 	copy(ret, arr)
 	return ret
+}
+
+//**********************************************************
+// Slice: Remove overlapped element
+//**********************************************************
+// UniqueStringSlice is to remove overlapped element
+func UniqueStringSlice(arr []string) (uniq []string) {
+	m := make(map[string]bool)
+
+	for _, ele := range arr {
+		if !m[ele] {
+			m[ele] = true
+			uniq = append(uniq, ele)
+		}
+	}
+	return
 }
 
 //**********************************************************
