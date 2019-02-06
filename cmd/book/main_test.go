@@ -39,7 +39,9 @@ func setup() {
 }
 
 func teardown() {
-	rd.Get().RD.Close()
+	if rd.Get() != nil {
+		rd.Get().RD.Close()
+	}
 }
 
 func TestMain(m *testing.M) {
