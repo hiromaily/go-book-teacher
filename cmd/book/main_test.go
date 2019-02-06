@@ -244,7 +244,9 @@ func TestIntegrationOnHerokuUsingTxtAndSlack(t *testing.T) {
 // 7. on heroku and redis and browser
 // It supposes not to work intentionally.
 func TestIntegrationOnHerokuUsingRedisAndBrowser(t *testing.T) {
-	//t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
+	if conf.GetConf().Redis.URL == "" {
+		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
+	}
 	//TODO:still failed
 
 	//settings
@@ -264,7 +266,7 @@ func TestIntegrationOnHerokuUsingRedisAndBrowser(t *testing.T) {
 
 // 8. on heroku and redis and mail
 func TestIntegrationOnHerokuUsingRedisAndMail(t *testing.T) {
-	if conf.GetConf().Mail.MailTo == "" {
+	if conf.GetConf().Redis.URL == "" || conf.GetConf().Mail.MailTo == "" {
 		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
 	}
 
@@ -285,7 +287,7 @@ func TestIntegrationOnHerokuUsingRedisAndMail(t *testing.T) {
 
 // 9. on heroku and redis and mail
 func TestIntegrationOnHerokuUsingRedisAndSlack(t *testing.T) {
-	if conf.GetConf().Slack.Key == "" {
+	if conf.GetConf().Redis.URL == "" || conf.GetConf().Slack.Key == "" {
 		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
 	}
 
