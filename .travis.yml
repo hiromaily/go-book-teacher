@@ -22,7 +22,7 @@ install:
 script:
   - go fmt ./...
   - go vet $(go list ./... | grep -v /vendor/)
-  - cd ${GO_PROJ_PATH};go test -v -covermode=count -coverprofile=profile.cov ./cmd/book/ -t ../../data/toml/local.toml
+  - cd ${GO_PROJ_PATH};go test -v -covermode=count -coverprofile=profile.cov ./cmd/book/... -t ../../data/toml/local.toml
   - cd ${GO_PROJ_PATH};goveralls -coverprofile=profile.cov -service=travis-ci
 
 branches:
