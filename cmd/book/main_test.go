@@ -24,7 +24,7 @@ func init() {
 	flag.Parse()
 
 	//lg.InitializeLog(lg.DebugStatus, lg.LogOff, 99, "[GO-BOOK-TEACHER_TEST]", "/var/log/go/test.log")
-	lg.InitializeLog(lg.InfoStatus, lg.LogOff, 99, "[GO-BOOK-TEACHER_TEST]", "/var/log/go/test.log")
+	lg.InitializeLog(lg.InfoStatus, lg.TimeShortFile, "[GO-BOOK-TEACHER_TEST]", "", "hiromaily")
 }
 
 func setup() {

@@ -10,6 +10,7 @@ data.txt
 
 #compiled
 book
+!cmd/book/
 profile.cov
 
 #docker
