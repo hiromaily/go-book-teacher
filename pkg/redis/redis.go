@@ -35,7 +35,7 @@ func Setup() (*StoreRedis, error) {
 
 // Get is to get StoreRedis instance
 func Get() *StoreRedis {
-	if rd.RD.Pool == nil {
+	if rd.RD == nil || rd.RD.Pool == nil {
 		//panic("Before call this, call New in addition to arguments")
 		return nil
 	}
