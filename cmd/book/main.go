@@ -152,7 +152,8 @@ func handleTeachers(si *th.SiteInfo) {
 }
 
 func init() {
-	lg.InitializeLog(lg.DebugStatus, lg.TimeShortFile, "[BookingTeacher]", "/var/log/go/book.log", "hiromaily")
+	//lg.InitializeLog(lg.DebugStatus, lg.TimeShortFile, "[BookingTeacher]", "/var/log/go/book.log", "hiromaily")
+	lg.InitializeLog(lg.DebugStatus, lg.TimeShortFile, "[BookingTeacher]", "", "hiromaily")
 
 	flag.Usage = func() {
 		fmt.Fprint(os.Stderr, fmt.Sprintf(usage, os.Args[0]))
