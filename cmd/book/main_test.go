@@ -151,7 +151,7 @@ func TestIntegrationOnLocalUsingRedisAndMail(t *testing.T) {
 
 // 3. on local and redis and mail
 func TestIntegrationOnLocalUsingRedisAndSlack(t *testing.T) {
-	if conf.GetConf().Slack.Key == "" {
+	if conf.GetConf().Slack.Key == "" || conf.GetConf().Redis.URL == "" {
 		t.Skip(fmt.Sprintf("skipping %s", r.CurrentFunc(1)))
 	}
 
