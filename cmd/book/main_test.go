@@ -3,14 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	conf "github.com/hiromaily/go-book-teacher/pkg/config"
-	rd "github.com/hiromaily/go-book-teacher/pkg/redis"
-	th "github.com/hiromaily/go-book-teacher/pkg/teacher"
-	tt "github.com/hiromaily/go-book-teacher/pkg/text"
-	lg "github.com/hiromaily/golibs/log"
-	r "github.com/hiromaily/golibs/runtimes"
 	"os"
 	"testing"
+
+	conf "github.com/hiromaily/go-book-teacher/pkg/config"
+	"github.com/hiromaily/go-book-teacher/pkg/storages"
+	th "github.com/hiromaily/go-book-teacher/pkg/teacher"
+	lg "github.com/hiromaily/golibs/log"
+	r "github.com/hiromaily/golibs/runtimes"
 )
 
 var txtPath = "./status.log"
@@ -39,8 +39,8 @@ func setup() {
 }
 
 func teardown() {
-	if rd.Get() != nil {
-		rd.Get().RD.Close()
+	if storages.GetRedis() != nil {
+		storages.GetRedis().RD.Close()
 	}
 }
 
@@ -74,9 +74,9 @@ func checkParam() {
 
 func clear() {
 	if redisFlg {
-		clearData(rd.Get())
+		clearData(storages.GetRedis())
 	} else {
-		clearData(tt.Get())
+		clearData(storages.GetText())
 	}
 	//deleteTxt(txtPath)
 	//deleteRedisKey()

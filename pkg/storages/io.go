@@ -1,4 +1,4 @@
-package io
+package storages
 
 // Saver is to save
 type Saver interface {

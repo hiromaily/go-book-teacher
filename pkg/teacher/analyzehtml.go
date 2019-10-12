@@ -2,8 +2,9 @@ package teacher
 
 import (
 	"encoding/json"
-	"github.com/PuerkitoBio/goquery"
 	"strings"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 const timeRangeFrom string = "00:00:00"

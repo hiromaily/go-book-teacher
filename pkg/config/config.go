@@ -3,11 +3,13 @@ package config
 import (
 	"errors"
 	"fmt"
-	"github.com/BurntSushi/toml"
-	enc "github.com/hiromaily/golibs/cipher/encryption"
-	u "github.com/hiromaily/golibs/utils"
 	"io/ioutil"
 	"os"
+
+	"github.com/BurntSushi/toml"
+
+	enc "github.com/hiromaily/golibs/cipher/encryption"
+	u "github.com/hiromaily/golibs/utils"
 )
 
 var (

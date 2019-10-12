@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+
 	conf "github.com/hiromaily/go-book-teacher/pkg/config"
 	th "github.com/hiromaily/go-book-teacher/pkg/teacher"
 	lg "github.com/hiromaily/golibs/log"
 	"github.com/hiromaily/golibs/tmpl"
-	"io/ioutil"
-	"net/http"
 )
 
 type SlackMsg struct {

@@ -1,36 +1,37 @@
-package text
+package storages
 
 import (
 	"bufio"
-	conf "github.com/hiromaily/go-book-teacher/pkg/config"
-	lg "github.com/hiromaily/golibs/log"
 	"io/ioutil"
 	"os"
+
+	conf "github.com/hiromaily/go-book-teacher/pkg/config"
+	lg "github.com/hiromaily/golibs/log"
 )
 
 // Text object
-type Text struct {
+type TextRepo struct {
 	filePath string
 }
 
-var txt = Text{
+var txt = TextRepo{
 	filePath: "/tmp/status.log",
 }
 
 // Setup is settings
-func Setup() {
+func SetupText() {
 	if conf.GetConf().StatusFile != "" {
 		txt.filePath = conf.GetConf().StatusFile
 	}
 }
 
 // Get is to get Text instance
-func Get() *Text {
+func GetText() *TextRepo {
 	return &txt
 }
 
 // Save is to save data to text
-func (t Text) Save(newData string) bool {
+func (t TextRepo) Save(newData string) bool {
 	lg.Debug("Using TxtFile")
 
 	//open saved log
@@ -57,7 +58,7 @@ func (t Text) Save(newData string) bool {
 }
 
 // Delete is to delete file
-func (t Text) Delete() error {
+func (t TextRepo) Delete() error {
 	//func (t Text) Delete(txtPath string) {
 	//os.Remove(txtPath)
 	return os.Remove(t.filePath)

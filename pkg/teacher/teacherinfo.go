@@ -3,9 +3,11 @@ package teacher
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
-	lg "github.com/hiromaily/golibs/log"
 	"io/ioutil"
+
+	"github.com/PuerkitoBio/goquery"
+
+	lg "github.com/hiromaily/golibs/log"
 	//"os"
 	//"path"
 )

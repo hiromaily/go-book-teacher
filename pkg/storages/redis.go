@@ -1,32 +1,34 @@
-package redis
+package storages
 
 import (
 	"fmt"
+
 	"github.com/garyburd/redigo/redis"
+
 	conf "github.com/hiromaily/go-book-teacher/pkg/config"
 	rds "github.com/hiromaily/golibs/db/redis"
 	hrk "github.com/hiromaily/golibs/heroku"
 	lg "github.com/hiromaily/golibs/log"
 )
 
-// StoreRedis is Redis object
-type StoreRedis struct {
+// RedisRepo is Redis object
+type RedisRepo struct {
 	RD *rds.RD
 }
 
 var (
 	redisKey = "bookteacher:save"
-	rd       StoreRedis
+	rd       RedisRepo
 )
 
-// Setup is settings
-func Setup() (*StoreRedis, error) {
+// SetupRedis is settings
+func SetupRedis() (*RedisRepo, error) {
 	redisURL := conf.GetConf().Redis.URL
 	host, pass, port, err := hrk.GetRedisInfo(redisURL)
 	if err != nil {
 		return nil, err
 	}
-	rd = StoreRedis{}
+	rd = RedisRepo{}
 	rd.RD = rds.New(host, uint16(port), pass, 0)
 	//rd.RD.Connection(0)
 
@@ -34,7 +36,7 @@ func Setup() (*StoreRedis, error) {
 }
 
 // Get is to get StoreRedis instance
-func Get() *StoreRedis {
+func GetRedis() *RedisRepo {
 	if rd.RD == nil || rd.RD.Pool == nil {
 		//panic("Before call this, call New in addition to arguments")
 		return nil
@@ -43,7 +45,7 @@ func Get() *StoreRedis {
 }
 
 // Save is to save data on Redis
-func (rd *StoreRedis) Save(newData string) bool {
+func (rd *RedisRepo) Save(newData string) bool {
 	lg.Debug("Using Redis")
 
 	//close
@@ -66,7 +68,7 @@ func (rd *StoreRedis) Save(newData string) bool {
 }
 
 // Delete is to delete value by key
-func (rd *StoreRedis) Delete() error {
+func (rd *RedisRepo) Delete() error {
 	c := rd.RD.Conn
 	_, err := c.Do("DEL", redisKey)
 	if err != nil {

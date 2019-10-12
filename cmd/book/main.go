@@ -3,22 +3,21 @@ package main
 import (
 	"flag"
 	"fmt"
-	conf "github.com/hiromaily/go-book-teacher/pkg/config"
-	ioo "github.com/hiromaily/go-book-teacher/pkg/io"
-	ml "github.com/hiromaily/go-book-teacher/pkg/mail"
-	rd "github.com/hiromaily/go-book-teacher/pkg/redis"
-	sl "github.com/hiromaily/go-book-teacher/pkg/slack"
-	th "github.com/hiromaily/go-book-teacher/pkg/teacher"
-	tt "github.com/hiromaily/go-book-teacher/pkg/text"
-	enc "github.com/hiromaily/golibs/cipher/encryption"
-	lg "github.com/hiromaily/golibs/log"
-	"github.com/hiromaily/golibs/signal"
-	tm "github.com/hiromaily/golibs/time"
 	"os"
 	"os/exec"
 	"strconv"
 	"sync"
 	"time"
+
+	conf "github.com/hiromaily/go-book-teacher/pkg/config"
+	ml "github.com/hiromaily/go-book-teacher/pkg/mail"
+	sl "github.com/hiromaily/go-book-teacher/pkg/slack"
+	"github.com/hiromaily/go-book-teacher/pkg/storages"
+	th "github.com/hiromaily/go-book-teacher/pkg/teacher"
+	enc "github.com/hiromaily/golibs/cipher/encryption"
+	lg "github.com/hiromaily/golibs/log"
+	"github.com/hiromaily/golibs/signal"
+	tm "github.com/hiromaily/golibs/time"
 )
 
 //ENVIRONMENT VARIABLE
@@ -73,7 +72,7 @@ func openBrowser(ths []th.Info) {
 	}
 }
 
-func clearData(s ioo.Deleter) {
+func clearData(s storages.Deleter) {
 	err := s.Delete()
 	lg.Error(err)
 }
@@ -86,9 +85,9 @@ func checkSavedTeachers() {
 	if len(ths) != 0 {
 		//save status
 		if redisFlg {
-			openFlg = saveStatusLog(rd.Get(), ths)
+			openFlg = saveStatusLog(storages.GetRedis(), ths)
 		} else {
-			openFlg = saveStatusLog(tt.Get(), ths)
+			openFlg = saveStatusLog(storages.GetText(), ths)
 		}
 		fmt.Println(openFlg)
 		if openFlg {
@@ -114,7 +113,7 @@ func checkSavedTeachers() {
 
 //save teacher status to log
 // check how to use interface
-func saveStatusLog(s ioo.Saver, ths []th.Info) bool {
+func saveStatusLog(s storages.Saver, ths []th.Info) bool {
 
 	//create string from ids slice
 	var sum int
@@ -182,13 +181,13 @@ func setupMain() {
 	//flg
 	if conf.GetConf().Redis.URL != "" {
 		//Redis
-		_, err := rd.Setup()
+		_, err := storages.SetupRedis()
 		if err == nil {
 			redisFlg = true
 		}
 	}
 	//saved file
-	tt.Setup()
+	storages.SetupText()
 
 	if conf.GetConf().Mail.MailTo != "" {
 		mailFlg = true
@@ -233,8 +232,8 @@ func execMain(testFlg uint8) bool {
 		//execuite only once on heroku
 
 		if herokuFlg == "1" {
-			if rd.Get() != nil {
-				rd.Get().RD.Close()
+			if storages.GetRedis() != nil {
+				storages.GetRedis().RD.Close()
 			}
 			return true
 		} else if testFlg == 1 {
