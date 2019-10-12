@@ -2,6 +2,7 @@ package notifier
 
 import (
 	"fmt"
+	lg "github.com/hiromaily/golibs/log"
 	"os/exec"
 
 	"github.com/pkg/errors"
@@ -14,16 +15,20 @@ const dmmURL = "http://eikaiwa.dmm.com/" //FIXME: it should be dynamic
 // NewBrowser is settings for executing open command
 func NewBrowser() *Browser {
 	return &Browser{
-		url: dmmURL,
+		mode: "browser",
+		url:  dmmURL,
 	}
 }
 
 // Browser is Browser object
 type Browser struct {
-	url string
+	mode string
+	url  string
 }
 
 func (b *Browser) Send(ths []models.TeacherInfo) error {
+	lg.Debugf("Send by %s", b.mode)
+
 	for _, t := range ths {
 		//during test, it doesn't work.
 

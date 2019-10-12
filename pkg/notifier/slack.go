@@ -16,7 +16,8 @@ import (
 )
 
 type Slack struct {
-	url string
+	mode string
+	url  string
 }
 
 type Message struct {
@@ -39,7 +40,8 @@ Enjoy!😄
 
 func NewSlack(conf *config.SlackConfig) *Slack {
 	return &Slack{
-		url: getURL(conf.Key),
+		mode: "slack",
+		url:  getURL(conf.Key),
 	}
 }
 
@@ -50,6 +52,8 @@ func getURL(key string) string {
 
 // Send is to send mail
 func (s *Slack) Send(ths []models.TeacherInfo) error {
+	lg.Debugf("Send by %s", s.mode)
+
 	//make body
 	//FIXME: handle as interface
 	si := &models.SiteInfo{URL: "http://eikaiwa.dmm.com/", Teachers: ths}

@@ -19,12 +19,6 @@ import (
 const MaxGoRoutine uint16 = 20 //FIXME: this should be defined in config
 const dmmURL = "http://eikaiwa.dmm.com/"
 
-//var (
-//	siteInfo      SiteInfo
-//	savedTeachers []TeacherInfo
-//	printOn       = true
-//)
-
 type DMM struct {
 	url      string
 	jsonFile string
@@ -106,7 +100,6 @@ func (d *DMM) HandleTeachers() {
 		wg.Add(1)
 		chanSemaphore <- true
 
-		//chanSemaphore <- true
 		go func() {
 			defer func() {
 				<-chanSemaphore
@@ -129,7 +122,6 @@ func (d *DMM) getHTML(th *models.TeacherInfo) {
 	var flg = false
 
 	//HTTP connection
-	fmt.Println(th.ID)
 	doc, err := goquery.NewDocument(fmt.Sprintf("%steacher/index/%d/", d.URL, th.ID))
 	if err != nil {
 		lg.Fatal(err) //FIXME: change

@@ -19,6 +19,7 @@ import (
 
 type Booker interface {
 	Start() error
+	Cleanup()
 }
 
 func NewBooker(
@@ -51,13 +52,18 @@ func NewBook(
 	notifier notifier.Notifier,
 	siter siter.Siter) *Book {
 
+	var isLoop bool
+	if interval != 0 {
+		isLoop = true
+	}
+
 	book := Book{
 		conf:     conf,
 		interval: interval,
 		storager: storager,
 		notifier: notifier,
 		siter:    siter,
-		isLoop:   false, //FIXME: it should be changed from dynamic data
+		isLoop:   isLoop, //FIXME: it should be changed from dynamic data, testmode, heroku env should be false
 	}
 	return &book
 }
@@ -77,11 +83,11 @@ func (b *Book) Start() error {
 		b.siter.HandleTeachers()
 
 		//save
-		b.checkSavedTeachers()
+		b.saveAndNotify()
 
 		//TODO:when integration test, send channel
 
-		//execute only once on heroku
+		//execute only once
 		if !b.isLoop {
 			b.storager.Close()
 			return nil
@@ -91,8 +97,12 @@ func (b *Book) Start() error {
 	}
 }
 
+func (b *Book) Cleanup() {
+	b.storager.Close()
+}
+
 //check saved data and run browser if needed
-func (b *Book) checkSavedTeachers() {
+func (b *Book) saveAndNotify() {
 	ths := b.siter.GetSavedTeachers()
 	if len(ths) != 0 {
 		//create string from ids slice
@@ -101,6 +111,8 @@ func (b *Book) checkSavedTeachers() {
 			sum += t.ID
 		}
 		newData := strconv.Itoa(sum)
+
+		// save
 		ok, err := b.storager.Save(newData)
 		if err != nil {
 			lg.Errorf("fail to save() %v", err)
@@ -126,3 +138,5 @@ func NewDummyBook() *DummyBook {
 func (b *DummyBook) Start() error {
 	return nil
 }
+
+func (b *DummyBook) Cleanup() {}

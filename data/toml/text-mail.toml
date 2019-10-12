@@ -1,8 +1,9 @@
 # heroku
 
 [redis]
-encrypted = true
-url = "Scx3B/7qmzC6e0x0GWWxsmV4oUfNSFpOiZ8cVNM4DeSX4L2ebwwOfP2uBkKdWhxmC1XVUaF1xL/Mzk8xHklQ28jKy8k3/H5NOo6ZpWx8xPuqppzehaVFqoUcec8qYQq3"
+encrypted = false
+url = ""
+#url = "Scx3B/7qmzC6e0x0GWWxsmV4oUfNSFpOiZ8cVNM4DeSX4L2ebwwOfP2uBkKdWhxmC1XVUaF1xL/Mzk8xHklQ28jKy8k3/H5NOo6ZpWx8xPuqppzehaVFqoUcec8qYQq3"
 
 [text]
 path = "./status.log"

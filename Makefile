@@ -55,8 +55,30 @@ golist:
 build:
 	go build -i -v -o ${GOPATH}/bin/book ./cmd/book/
 
+# run by save:text, notify:command using defined teacher data
 exec1:
-	book -t ./data/toml/local.toml
+	book -t ./data/toml/text-command.toml
+
+# run by save:text, notify:command using defined teacher jsondata
+exec2:
+	book -t ./data/toml/text-command.toml -j ./data/json/teachers.json
+
+# run by save:text, notify:command using defined teacher data with loop
+exec3:
+	book -t ./data/toml/text-command.toml  -i 10
+
+# run by save:text, notify:slack using defined teacher data
+exec4:
+	book -t ./data/toml/text-slack.toml
+
+# run by save:redis, notify:command using defined teacher data
+exec5:
+	book -t ./data/toml/redis-command.toml
+
+# run by save:text, notify:mail using defined teacher data
+# for now, mail is not available because of security issue
+exec6:
+	book -t ./data/toml/text-mail.toml
 
 run:
 	rm -rf ./status.log
@@ -64,6 +86,10 @@ run:
 	#go run ./cmd/book/main.go -i 90
 	#go run ./cmd/book/main.go -t data/toml/settings.toml -i 90
 
+
+.PHONY: clean
+clean:
+	rm -rf status.log
 
 ###############################################################################
 # Docker
@@ -80,7 +106,6 @@ dcbld:
 
 dcexec:
 	docker-compose exec book /bin/sh -c "book -t ./data/toml/settings.toml"
-
 
 ###############################################################################
 # Test

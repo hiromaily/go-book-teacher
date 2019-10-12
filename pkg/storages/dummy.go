@@ -5,16 +5,18 @@ import (
 )
 
 // DummyRepo object
-type DummyRepo struct{}
+type DummyRepo struct {
+	mode string
+}
 
 // NewDummy
 func NewDummy() *DummyRepo {
-	return &DummyRepo{}
+	return &DummyRepo{mode: "dummy"}
 }
 
 // Save is to save data to text
 func (d *DummyRepo) Save(newData string) (bool, error) {
-	lg.Debug("Using Dummy")
+	lg.Debugf("Save by %s", d.mode)
 	return true, nil
 }
 

@@ -12,14 +12,13 @@ import (
 )
 
 //ENVIRONMENT VARIABLE
-//HEROKU_FLG
 //ENC_KEY
 //ENC_IV
 
 var (
 	jsPath   = flag.String("j", "", "Json file path")
 	tomlPath = flag.String("t", "", "Toml file path")
-	interval = flag.Int("i", 120, "Interval for scraping")
+	interval = flag.Int("i", 0, "Interval for scraping")
 )
 
 var usage = `Usage: %s [options...]
@@ -59,5 +58,9 @@ func main() {
 
 	regi := NewRegistry(config.GetConf())
 	booker := regi.NewBooker(*jsPath, *interval)
-	booker.Start()
+	if err := booker.Start(); err != nil {
+		lg.Error(err)
+	}
+	//
+	booker.Cleanup()
 }

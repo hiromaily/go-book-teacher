@@ -10,19 +10,21 @@ import (
 
 // TextRepo object
 type TextRepo struct {
+	mode     string
 	filePath string
 }
 
 // NewText
 func NewText(path string) *TextRepo {
 	return &TextRepo{
+		mode:     "text",
 		filePath: path,
 	}
 }
 
 // Save is to save data to text
 func (t *TextRepo) Save(newData string) (bool, error) {
-	lg.Debug("Using TxtFile")
+	lg.Debugf("Save by %s", t.mode)
 
 	//open saved log
 	fp, err := os.OpenFile(t.filePath, os.O_CREATE, 0664)

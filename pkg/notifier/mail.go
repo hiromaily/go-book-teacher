@@ -1,6 +1,7 @@
 package notifier
 
 import (
+	lg "github.com/hiromaily/golibs/log"
 	"github.com/pkg/errors"
 
 	"github.com/hiromaily/go-book-teacher/pkg/config"
@@ -11,6 +12,7 @@ import (
 
 // Mail is Mail object
 type Mail struct {
+	mode string
 	info *ml.Info
 }
 
@@ -26,7 +28,11 @@ Enjoy!`
 
 // Setup is settings for sending mail
 func NewMail(conf *config.MailConfig) *Mail {
-	//get environment variable
+	//lg.Debug(conf.SMTP.Address)
+	//lg.Debug(conf.SMTP.Pass)
+	//lg.Debug(conf.SMTP.Server)
+	//lg.Debug(conf.MailTo)
+	//lg.Debug(conf.MailFrom)
 
 	smtp := ml.SMTP{Address: conf.SMTP.Address, Pass: conf.SMTP.Pass,
 		Server: conf.SMTP.Server, Port: conf.SMTP.Port}
@@ -35,12 +41,15 @@ func NewMail(conf *config.MailConfig) *Mail {
 		Subject: subject, Body: "", SMTP: smtp}
 
 	return &Mail{
+		mode: "mail",
 		info: info,
 	}
 }
 
 // Send is to send mail
 func (m *Mail) Send(ths []models.TeacherInfo) error {
+	lg.Debugf("Send by %s", m.mode)
+
 	//make body
 	//FIXME: handle as interface
 	si := &models.SiteInfo{URL: "http://eikaiwa.dmm.com/", Teachers: ths}

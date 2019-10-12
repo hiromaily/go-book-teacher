@@ -20,5 +20,6 @@ func NewNotifier(conf *config.Config) Notifier {
 		return NewMail(conf.Mail)
 	}
 	//set dummy
-	return NewDummy()
+	//return NewDummy()
+	return NewCommand()
 }
