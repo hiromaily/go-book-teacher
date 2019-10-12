@@ -3,8 +3,8 @@
 .idea/
 
 #main
-mail.sh
-heroku.sh
+scripts/mail.sh
+scripts/heroku.sh
 status.log
 data.txt
 

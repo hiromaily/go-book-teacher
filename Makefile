@@ -6,14 +6,7 @@ CURRENTDIR=`pwd`
 # Managing Dependencies
 ###############################################################################
 update:
-	go get -u github.com/golang/dep/cmd/dep
 	go get -u -d -v ./...
-
-dep-init:
-	dep init
-
-dep-ensure:
-	dep ensure
 
 
 ###############################################################################
@@ -53,7 +46,7 @@ golist:
 # Build Local
 ###############################################################################
 bld:
-	go build -i -race -v -o ${GOPATH}/bin/book ./cmd/book/
+	go build -i -v -o ${GOPATH}/bin/book ./cmd/book/
 
 run:
 	rm -rf ./status.log
