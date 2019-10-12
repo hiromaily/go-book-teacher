@@ -1,4 +1,4 @@
-package teacher
+package dmmer
 
 import (
 	"encoding/json"

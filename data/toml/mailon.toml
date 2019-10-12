@@ -1,15 +1,17 @@
-environment = 0    #0:local, 1:docker, 2:heroku
-
-status_file = "./status.log"
+# heroku
 
 [redis]
 encrypted = true
 url = "Scx3B/7qmzC6e0x0GWWxsmV4oUfNSFpOiZ8cVNM4DeSX4L2ebwwOfP2uBkKdWhxmC1XVUaF1xL/Mzk8xHklQ28jKy8k3/H5NOo6ZpWx8xPuqppzehaVFqoUcec8qYQq3"
 
+[text]
+path = "./status.log"
+
 [slack]
 encrypted = false
 key = ""
 
+# mail should be enabled on Heroku environment
 [mail]
 encrypted = true
 mail_to = "FcQjhb5ErsSBlh6EDwe69eLdcW/eJPKWtnTWmDPoAAM="

@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/garyburd/redigo/redis"
+	"github.com/pkg/errors"
 
-	conf "github.com/hiromaily/go-book-teacher/pkg/config"
 	rds "github.com/hiromaily/golibs/db/redis"
 	hrk "github.com/hiromaily/golibs/heroku"
 	lg "github.com/hiromaily/golibs/log"
@@ -22,30 +22,30 @@ var (
 )
 
 // SetupRedis is settings
-func SetupRedis() (*RedisRepo, error) {
-	redisURL := conf.GetConf().Redis.URL
+func NewRedis(redisURL string) (*RedisRepo, error) {
 	host, pass, port, err := hrk.GetRedisInfo(redisURL)
 	if err != nil {
 		return nil, err
 	}
-	rd = RedisRepo{}
-	rd.RD = rds.New(host, uint16(port), pass, 0)
+	rd = RedisRepo{
+		RD: rds.New(host, uint16(port), pass, 0),
+	}
 	//rd.RD.Connection(0)
 
 	return &rd, nil
 }
 
-// Get is to get StoreRedis instance
-func GetRedis() *RedisRepo {
-	if rd.RD == nil || rd.RD.Pool == nil {
-		//panic("Before call this, call New in addition to arguments")
-		return nil
-	}
-	return &rd
-}
+//// Get is to get StoreRedis instance
+//func GetRedis() *RedisRepo {
+//	if rd.RD == nil || rd.RD.Pool == nil {
+//		//panic("Before call this, call New in addition to arguments")
+//		return nil
+//	}
+//	return &rd
+//}
 
 // Save is to save data on Redis
-func (rd *RedisRepo) Save(newData string) bool {
+func (rd *RedisRepo) Save(newData string) (bool, error) {
 	lg.Debug("Using Redis")
 
 	//close
@@ -53,18 +53,17 @@ func (rd *RedisRepo) Save(newData string) bool {
 
 	c := rd.RD.Conn
 	val, err := redis.String(c.Do("GET", redisKey))
-
 	if err != nil {
-		lg.Errorf("redis error is %s\n", err)
+		return false, errors.Wrapf(err, "fail to call redis.GET by %s", redisKey)
 	}
 	lg.Debugf("new value is %s, old value is %s\n", newData, val)
 
-	if err != nil || newData != val {
+	if newData != val {
 		//save
 		c.Do("SET", redisKey, newData)
-		return true
+		return true, nil
 	}
-	return false
+	return false, nil
 }
 
 // Delete is to delete value by key
@@ -75,4 +74,8 @@ func (rd *RedisRepo) Delete() error {
 		return fmt.Errorf("%s", "delete key on redis is failed.")
 	}
 	return nil
+}
+
+func (rd *RedisRepo) Close() {
+	rd.RD.Close()
 }

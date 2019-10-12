@@ -1,3 +1,3 @@
 package main
 
-var ExecMain = execMain
+//var ExecMain = execMain

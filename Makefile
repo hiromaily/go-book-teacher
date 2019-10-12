@@ -55,6 +55,9 @@ golist:
 build:
 	go build -i -v -o ${GOPATH}/bin/book ./cmd/book/
 
+exec1:
+	book -t ./data/toml/local.toml
+
 run:
 	rm -rf ./status.log
 	go run ./cmd/book/main.go -t data/toml/local.toml
