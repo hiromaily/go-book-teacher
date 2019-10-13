@@ -8,19 +8,19 @@ import (
 	lg "github.com/hiromaily/golibs/log"
 )
 
-// NewCommand is settings for executing say command
-func NewCommand() *Command {
-	return &Command{mode: "command"}
+// NewConsole is settings for executing say command
+func NewConsole() *Console {
+	return &Console{mode: "console"}
 }
 
-// Command is Command object
-type Command struct {
+// Console is Console object
+type Console struct {
 	mode string
 }
 
 // Send
 // TODO: time should be displayed
-func (c *Command) Send(ths []models.TeacherInfo) error {
+func (c *Console) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", c.mode)
 
 	//emit a sound

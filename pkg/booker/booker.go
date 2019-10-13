@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/hiromaily/go-book-teacher/pkg/config"
+	"github.com/hiromaily/go-book-teacher/pkg/models"
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
 	"github.com/hiromaily/go-book-teacher/pkg/siter"
 	"github.com/hiromaily/go-book-teacher/pkg/storages"
@@ -79,12 +80,10 @@ func (b *Book) Start() error {
 		b.siter.InitializeSavedTeachers()
 
 		//scraping
-		b.siter.HandleTeachers()
+		teachers := b.siter.FindTeachers()
 
 		//save
-		b.saveAndNotify()
-
-		//TODO:when integration test, send channel
+		b.saveAndNotify(teachers)
 
 		//execute only once
 		if !b.isLoop {
@@ -101,8 +100,7 @@ func (b *Book) Cleanup() {
 }
 
 //check saved data and run browser if needed
-func (b *Book) saveAndNotify() {
-	ths := b.siter.GetSavedTeachers()
+func (b *Book) saveAndNotify(ths []models.TeacherInfo) {
 	if len(ths) != 0 {
 		// create string from ids slice
 		var sum int

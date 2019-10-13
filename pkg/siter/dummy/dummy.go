@@ -16,8 +16,6 @@ func (d *DummySite) FetchInitialData() error {
 
 func (d *DummySite) InitializeSavedTeachers() {}
 
-func (d *DummySite) HandleTeachers() {}
-
-func (d *DummySite) GetSavedTeachers() []models.TeacherInfo {
+func (d *DummySite) FindTeachers() []models.TeacherInfo {
 	return nil
 }

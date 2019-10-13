@@ -10,8 +10,7 @@ import (
 type Siter interface {
 	FetchInitialData() error
 	InitializeSavedTeachers()
-	HandleTeachers()
-	GetSavedTeachers() []models.TeacherInfo
+	FindTeachers() []models.TeacherInfo
 }
 
 func NewSiter(jsonPath string, siteConf *config.SiteConfig) Siter {

@@ -1,15 +1,13 @@
 package dmmer
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"sync"
 	"time"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/pkg/errors"
 
+	"github.com/hiromaily/go-book-teacher/pkg/httpdoc"
 	"github.com/hiromaily/go-book-teacher/pkg/models"
 	lg "github.com/hiromaily/golibs/log"
 	tm "github.com/hiromaily/golibs/time"
@@ -36,24 +34,6 @@ func NewDMM(jsonFile, url string, concurrency int) *DMM {
 		url:          url,
 		jsonFile:     jsonFile,
 	}
-}
-
-// LoadJSONFile is to load json file
-func loadJSON(jsonFile string) (*models.SiteInfo, error) {
-	lg.Debugf("load json file: %s", jsonFile)
-	siteInfo := models.SiteInfo{}
-	file, err := ioutil.ReadFile(jsonFile)
-	if err != nil {
-		return nil, errors.Wrapf(err, "fail to call ReadFile() %s", jsonFile)
-	}
-	err = json.Unmarshal(file, &siteInfo)
-	if err != nil {
-		return nil, errors.Wrapf(err, "fail to Unmarshal json binary: %s", jsonFile)
-	}
-	lg.Debugf("SiteInfo.Url: %v", siteInfo.URL)
-	lg.Debugf("SiteInfo.Teachers[0].Id: %d, Name: %s, Country: %s", siteInfo.Teachers[0].ID, siteInfo.Teachers[0].Name, siteInfo.Teachers[0].Country)
-
-	return &siteInfo, nil
 }
 
 // definedTeachers is defined teachers info
@@ -84,7 +64,8 @@ func (d *DMM) definedTeachers() *models.SiteInfo {
 func (d *DMM) FetchInitialData() error {
 	if d.jsonFile != "" {
 		//call json file
-		siteInfo, err := loadJSON(d.jsonFile)
+		lg.Debugf("Load json file: %s", d.jsonFile)
+		siteInfo, err := models.LoadJSON(d.jsonFile)
 		if err != nil {
 			return err
 		}
@@ -98,7 +79,7 @@ func (d *DMM) InitializeSavedTeachers() {
 	d.savedTeachers = make([]models.TeacherInfo, 0)
 }
 
-func (d *DMM) HandleTeachers() {
+func (d *DMM) FindTeachers() []models.TeacherInfo {
 	defer tm.Track(time.Now(), "handleTeachers()")
 
 	wg := &sync.WaitGroup{}
@@ -117,26 +98,27 @@ func (d *DMM) HandleTeachers() {
 				wg.Done()
 			}()
 			//concurrent func
-			d.getHTML(&teacher)
+			err := d.getHTML(&teacher)
+			if err != nil {
+				//TODO: this err shouold emit by channel
+				lg.Error(err)
+			}
 		}()
 	}
 	wg.Wait()
-}
 
-// GetsavedTeachers is to get savedTeachers
-func (d *DMM) GetSavedTeachers() []models.TeacherInfo {
 	return d.savedTeachers
 }
 
 // GetHTML is to get scraped HTML from web page
-func (d *DMM) getHTML(th *models.TeacherInfo) {
+func (d *DMM) getHTML(th *models.TeacherInfo) error {
 	var flg = false
 
 	//HTTP connection
-	doc, err := goquery.NewDocument(fmt.Sprintf("%steacher/index/%d/", d.URL, th.ID))
+	url := fmt.Sprintf("%steacher/index/%d/", d.URL, th.ID)
+	doc, err := httpdoc.GetHTMLDocs(url)
 	if err != nil {
-		lg.Fatal(err) //FIXME: change
-		return
+		return errors.Wrapf(err, "fail to call GetHTMLDocs() %s", url)
 	} else if isTeacherActive(doc) {
 		parsedHTML := perseHTML(doc)
 
@@ -155,6 +137,7 @@ func (d *DMM) getHTML(th *models.TeacherInfo) {
 		//no teacher
 		fmt.Printf("teacher [%d]%s quit \n", th.ID, th.Name)
 	}
+	return nil
 }
 
 //save teacher id to variable

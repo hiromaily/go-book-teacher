@@ -25,5 +25,5 @@ func NewNotifier(conf *config.Config) Notifier {
 	}
 	//set dummy
 	//return NewDummy()
-	return NewCommand()
+	return NewConsole()
 }
