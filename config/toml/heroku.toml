@@ -11,7 +11,7 @@ concurrency = 20
 # redis should be enabled on Heroku environment
 [redis]
 encrypted = true
-url = "Scx3B/7qmzC6e0x0GWWxsmV4oUfNSFpOiZ8cVNM4DeSX4L2ebwwOfP2uBkKdWhxmC1XVUaF1xL/Mzk8xHklQ28jKy8k3/H5NOo6ZpWx8xPuqppzehaVFqoUcec8qYQq3"
+url = "bPLOW06msIeCN0fPuvqP/1S58yozAMsNYwGfJ3F77Mw7xpz/revQufXGvj8iZExil3+j0wuhEhHlM+enVq70kU479UfVnPPepIezKQg80kEfUS3Bi/+5QLKkpHN1U7na65Le9niYPS/SU/aN/vdNUZb+lPvulvL/ZqudhLTsie8="
 
 [text]
 path = "./status.log"

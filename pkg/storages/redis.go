@@ -7,15 +7,13 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"github.com/pkg/errors"
 
-	rds "github.com/hiromaily/golibs/db/redis"
-	hrk "github.com/hiromaily/golibs/heroku"
 	lg "github.com/hiromaily/golibs/log"
 )
 
 // RedisRepo is Redis object
 type RedisRepo struct {
 	mode string
-	RD   *rds.RD
+	RD   redis.Conn
 }
 
 var (
@@ -25,14 +23,23 @@ var (
 
 // NewRedis is to return RedisRepo object
 func NewRedis(redisURL string) (*RedisRepo, error) {
-	host, pass, port, err := hrk.GetRedisInfo(redisURL)
+	c, err := redis.DialURL(redisURL)
 	if err != nil {
 		return nil, err
 	}
 	rd = RedisRepo{
 		mode: "redis",
-		RD:   rds.New(host, uint16(port), pass, 0),
+		RD:   c,
 	}
+
+	//host, pass, port, err := hrk.GetRedisInfo(redisURL)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//rd = RedisRepo{
+	//	mode: "redis",
+	//	RD:   rds.New(host, uint16(port), pass, 0),
+	//}
 	//rd.RD.Connection(0)
 	//_, err = rd.RD.Conn.Do("SELECT", 0)
 
@@ -46,7 +53,7 @@ func (rd *RedisRepo) Save(newData string) (bool, error) {
 	//close
 	//defer rd.RD.Close()
 
-	c := rd.RD.Conn
+	c := rd.RD
 	val, err := redis.String(c.Do("GET", redisKey))
 	if err != nil && !strings.Contains(err.Error(), "nil returned") {
 		return false, errors.Wrapf(err, "fail to call redis.GET by %s", redisKey)
@@ -63,7 +70,7 @@ func (rd *RedisRepo) Save(newData string) (bool, error) {
 
 // Delete is to delete value by key
 func (rd *RedisRepo) Delete() error {
-	c := rd.RD.Conn
+	c := rd.RD
 	_, err := c.Do("DEL", redisKey)
 	if err != nil {
 		return fmt.Errorf("%s", "delete key on redis is failed.")
