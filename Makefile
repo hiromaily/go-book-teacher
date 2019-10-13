@@ -146,5 +146,6 @@ heroku:
 	git push -f heroku master
 
 herokuinfo:
+    #heroku config | grep REDIS
 	heroku config
 	heroku ps

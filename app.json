@@ -6,10 +6,6 @@
   "logo": "https://raw.githubusercontent.com/hiromaily/go-gin-wrapper/master/gopher.png",
   "website": "https://github.com/hiromaily/go-book-teacher",
   "env" : {
-    "HEROKU_FLG": {
-      "description": "set environment as Heroku",
-      "value": 1
-    },
     "ENC_KEY": {
       "description": "encode key",
       "value": ""
