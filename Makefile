@@ -134,12 +134,16 @@ test6:
 #heroku config:add HEROKU_FLG=1
 #heroku addons:create scheduler:standard
 
-#heroku run book -t /app/data/toml/settings.toml
+#heroku run book -t /app/config/toml/heroku.toml -crypto
 #heroku run bash
 #heroku logs -t
 #heroku ps -a book
 #heroku ps
 #heroku config
+#
+# $ git push -f heroku master
+#  The go.mod file for this project does not specify a Go version
+#  https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration
 #
 ###############################################################################
 heroku:
