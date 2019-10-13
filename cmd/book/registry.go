@@ -8,6 +8,7 @@ import (
 	"github.com/hiromaily/go-book-teacher/pkg/storages"
 )
 
+// Registry is for registry interface
 type Registry interface {
 	NewBooker(string, int) booker.Booker
 }
@@ -17,10 +18,12 @@ type registry struct {
 	//storager   *storages.Storager
 }
 
+// NewRegistry is to register regstry interface
 func NewRegistry(conf *config.Config) Registry {
 	return &registry{conf: conf}
 }
 
+// NewBooker is to register for booker interface
 func (r *registry) NewBooker(jsonPath string, interval int) booker.Booker {
 	return booker.NewBooker(
 		r.conf,

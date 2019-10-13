@@ -35,27 +35,29 @@ type SiteConfig struct {
 	Concurrency int    `toml:"concurrency"`
 }
 
-// RedisConfig is for redis server
+// RedisConfig is storage by redis server
 type RedisConfig struct {
 	Encrypted bool   `toml:"encrypted"`
 	URL       string `toml:"url"`
 }
 
+// TextConfig is storage by text
 type TextConfig struct {
 	Path string `toml:"path"`
 }
 
-// SlackConfig is for slack
+// SlackConfig is notification by slack
 type SlackConfig struct {
 	Encrypted bool   `toml:"encrypted"`
 	Key       string `toml:"key"`
 }
 
+// BrowserConfig is notification by browser
 type BrowserConfig struct {
 	Enabled bool `toml:"enabled"`
 }
 
-// MailConfig is for mail
+// MailConfig is notification by mail
 type MailConfig struct {
 	Encrypted bool        `toml:"encrypted"`
 	MailTo    string      `toml:"mail_to"`
@@ -63,7 +65,7 @@ type MailConfig struct {
 	SMTP      *SMTPConfig `toml:"smtp"`
 }
 
-// SMTPConfig is for smtp server of mail
+// SMTPConfig is configuraion of smtp server
 type SMTPConfig struct {
 	Address string `toml:"address"`
 	Pass    string `toml:"pass"`
@@ -148,7 +150,7 @@ func GetConf() *Config {
 	return conf
 }
 
-//check validation of config
+//validateConfig is to validate config settings
 func (c *Config) validateConfig(md *toml.MetaData) error {
 	//for protection when debugging on non production environment
 	var errStrings []string
@@ -174,7 +176,7 @@ func (c *Config) validateConfig(md *toml.MetaData) error {
 		}
 	}
 
-	// Error
+	// error
 	if len(errStrings) != 0 {
 		return errors.Errorf("There are lacks of keys : %#v", errStrings)
 	}
@@ -207,6 +209,7 @@ func (c *Config) Cipher() {
 	}
 }
 
+// ValidateSlack to validate slack is enabled or not
 func (c *Config) ValidateSlack() bool {
 	if conf.Slack == nil || conf.Slack.Key == "" {
 		return false
@@ -214,6 +217,7 @@ func (c *Config) ValidateSlack() bool {
 	return true
 }
 
+// ValidateMail to validate mail is enabled or not
 func (c *Config) ValidateMail() bool {
 	if conf.Mail == nil {
 		return false
@@ -231,6 +235,7 @@ func (c *Config) ValidateMail() bool {
 	return true
 }
 
+// ValidateRedis to validate redis is enabled or not
 func (c *Config) ValidateRedis() bool {
 	if conf.Redis == nil || conf.Redis.URL == "" {
 		return false
@@ -238,6 +243,7 @@ func (c *Config) ValidateRedis() bool {
 	return true
 }
 
+// ValidateText to validate text is enabled or not
 func (c *Config) ValidateText() bool {
 	if conf.Text == nil || conf.Text.Path == "" {
 		return false

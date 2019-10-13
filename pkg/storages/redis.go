@@ -23,7 +23,7 @@ var (
 	rd       RedisRepo
 )
 
-// SetupRedis is settings
+// NewRedis is to return RedisRepo object
 func NewRedis(redisURL string) (*RedisRepo, error) {
 	host, pass, port, err := hrk.GetRedisInfo(redisURL)
 	if err != nil {
@@ -71,6 +71,7 @@ func (rd *RedisRepo) Delete() error {
 	return nil
 }
 
+// Close is to close connection from Redis
 func (rd *RedisRepo) Close() {
 	if rd != nil && rd.RD != nil {
 		rd.RD.Close()

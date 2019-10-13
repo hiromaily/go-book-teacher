@@ -13,9 +13,7 @@ import (
 	tm "github.com/hiromaily/golibs/time"
 )
 
-// MaxGoRoutine is number of goroutine running at the same time
-//const MaxGoRoutine uint16 = 20 //FIXME: this should be defined in config
-
+// DMM is DMM object
 type DMM struct {
 	maxGoRoutine int
 	url          string
@@ -24,6 +22,7 @@ type DMM struct {
 	savedTeachers []models.TeacherInfo
 }
 
+// NewDMM is to return DMM object
 func NewDMM(jsonFile, url string, concurrency int) *DMM {
 	if concurrency < 2 {
 		lg.Warnf("concurrency in config is invalid: %d", concurrency)
@@ -36,7 +35,7 @@ func NewDMM(jsonFile, url string, concurrency int) *DMM {
 	}
 }
 
-// definedTeachers is defined teachers info
+// definedTeachers is to return defined teachers info
 func (d *DMM) definedTeachers() *models.SiteInfo {
 	lg.Debug("use defined data for dmm teacher")
 	ti := []models.TeacherInfo{
@@ -61,6 +60,7 @@ func (d *DMM) definedTeachers() *models.SiteInfo {
 	}
 }
 
+// FetchInitialData is to fetch target teacher data
 func (d *DMM) FetchInitialData() error {
 	if d.jsonFile != "" {
 		//call json file
@@ -75,10 +75,12 @@ func (d *DMM) FetchInitialData() error {
 	return nil
 }
 
+// InitializeSavedTeachers is to initialize saved available teachers
 func (d *DMM) InitializeSavedTeachers() {
 	d.savedTeachers = make([]models.TeacherInfo, 0)
 }
 
+// FindTeachers is to find available teachers by scraping web site
 func (d *DMM) FindTeachers() []models.TeacherInfo {
 	defer tm.Track(time.Now(), "handleTeachers()")
 
@@ -110,7 +112,7 @@ func (d *DMM) FindTeachers() []models.TeacherInfo {
 	return d.savedTeachers
 }
 
-// GetHTML is to get scraped HTML from web page
+// getHTML is to get teacher information from HTML document
 func (d *DMM) getHTML(th *models.TeacherInfo) error {
 	var flg = false
 
@@ -120,7 +122,7 @@ func (d *DMM) getHTML(th *models.TeacherInfo) error {
 	if err != nil {
 		return errors.Wrapf(err, "fail to call GetHTMLDocs() %s", url)
 	} else if isTeacherActive(doc) {
-		parsedHTML := perseHTML(doc)
+		parsedHTML := parseDate(doc)
 
 		//show teacher's id, name, date
 		fmt.Printf("----------- %s / %s / %d ----------- \n", th.Name, th.Country, th.ID)
@@ -140,7 +142,7 @@ func (d *DMM) getHTML(th *models.TeacherInfo) error {
 	return nil
 }
 
-//save teacher id to variable
+// saveTeacer is to save teacher id to variable
 func (d *DMM) saveTeacer(th *models.TeacherInfo) {
 	//FIXME: mutex
 	d.savedTeachers = append(d.savedTeachers, *th)

@@ -4,21 +4,14 @@ import (
 	"github.com/hiromaily/go-book-teacher/pkg/config"
 )
 
-// Saver is to save
-type Saver interface {
-}
-
-// Deleter is to Notice
-type Deleter interface {
-}
-
-// SaveDeleter is to Save and Delete
+// Storager is Storager interface
 type Storager interface {
 	Save(string) (bool, error)
 	Delete() error
 	Close()
 }
 
+// NewStorager is to return Storager interface
 func NewStorager(conf *config.Config) (Storager, error) {
 	if conf.ValidateRedis() {
 		//redis mode

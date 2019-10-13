@@ -26,7 +26,7 @@ Enjoy!`
 	subject = "[ENGLISH LESSON] It's Available."
 )
 
-// Setup is settings for sending mail
+// NewMail is to return Mail object
 func NewMail(conf *config.MailConfig) *Mail {
 	//lg.Debug(conf.SMTP.Address)
 	//lg.Debug(conf.SMTP.Pass)
@@ -46,7 +46,7 @@ func NewMail(conf *config.MailConfig) *Mail {
 	}
 }
 
-// Send is to send mail
+// Send is notification by sending mail
 func (m *Mail) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", m.mode)
 

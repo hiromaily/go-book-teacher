@@ -18,11 +18,13 @@ import (
 // Booker interface
 // ----------------------------------------------------------------------------
 
+// Booker is interface
 type Booker interface {
 	Start() error
 	Cleanup()
 }
 
+// NewBooker is to return booker interface
 func NewBooker(
 	conf *config.Config,
 	interval int,
@@ -37,6 +39,7 @@ func NewBooker(
 // Book
 // ----------------------------------------------------------------------------
 
+// Book is Book object
 type Book struct {
 	conf     *config.Config
 	interval int
@@ -46,6 +49,7 @@ type Book struct {
 	isLoop   bool
 }
 
+// NewBook is to return book object
 func NewBook(
 	conf *config.Config,
 	interval int,
@@ -69,6 +73,7 @@ func NewBook(
 	return &book
 }
 
+// Start is to start book execution
 func (b *Book) Start() error {
 
 	if err := b.siter.FetchInitialData(); err != nil {
@@ -95,11 +100,12 @@ func (b *Book) Start() error {
 	}
 }
 
+// Cleanup is to clean up middleware object
 func (b *Book) Cleanup() {
 	b.storager.Close()
 }
 
-//check saved data and run browser if needed
+//saveAndNotify is to save and notify if something saved
 func (b *Book) saveAndNotify(ths []models.TeacherInfo) {
 	if len(ths) != 0 {
 		// create string from ids slice
@@ -126,14 +132,18 @@ func (b *Book) saveAndNotify(ths []models.TeacherInfo) {
 // DummyBook
 // ----------------------------------------------------------------------------
 
+// DummyBook is DummyBook object
 type DummyBook struct{}
 
+// NewDummyBook is to return NewDummyBook object
 func NewDummyBook() *DummyBook {
 	return &DummyBook{}
 }
 
+// Start is to do nothing
 func (b *DummyBook) Start() error {
 	return nil
 }
 
+// Cleanup is to do nothing
 func (b *DummyBook) Cleanup() {}

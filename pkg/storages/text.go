@@ -8,13 +8,13 @@ import (
 	lg "github.com/hiromaily/golibs/log"
 )
 
-// TextRepo object
+// TextRepo is TextRepo object
 type TextRepo struct {
 	mode     string
 	filePath string
 }
 
-// NewText
+// NewText is to return TextRepo object
 func NewText(path string) *TextRepo {
 	return &TextRepo{
 		mode:     "text",
@@ -53,4 +53,5 @@ func (t *TextRepo) Delete() error {
 	return os.Remove(t.filePath)
 }
 
+// Close is to do nothing
 func (t *TextRepo) Close() {}

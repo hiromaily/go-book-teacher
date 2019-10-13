@@ -7,19 +7,20 @@ import (
 	"github.com/pkg/errors"
 )
 
+// SiteInfo is site and teacher information
 type SiteInfo struct {
 	URL      string        `json:"url"`
 	Teachers []TeacherInfo `json:"teachers"`
 }
 
-// Info is json structure for teacher information
+// TeacherInfo is json structure of teacher information
 type TeacherInfo struct {
 	ID      int    `json:"id"`
 	Name    string `json:"name"`
 	Country string `json:"country"`
 }
 
-// LoadJSONFile is to load json file
+// LoadJSON is to load json file
 func LoadJSON(jsonFile string) (*SiteInfo, error) {
 	siteInfo := SiteInfo{}
 	file, err := ioutil.ReadFile(jsonFile)

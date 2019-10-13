@@ -5,15 +5,16 @@ import (
 	"github.com/hiromaily/go-book-teacher/pkg/models"
 )
 
-// Mailer is to Notice
+// Notifier is Notifier interface
 type Notifier interface {
 	Send([]models.TeacherInfo) error
 }
 
+// NewNotifier is to return NewNotifier interface
 func NewNotifier(conf *config.Config) Notifier {
 	if conf.ValidateSlack() {
 		//slack mode
-		return NewSlack(conf.Slack)
+		return NewSlack(conf.Slack, conf.Site.URL)
 	}
 	if conf.Browser.Enabled {
 		//browser mode

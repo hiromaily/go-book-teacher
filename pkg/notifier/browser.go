@@ -10,7 +10,7 @@ import (
 	lg "github.com/hiromaily/golibs/log"
 )
 
-// NewBrowser is settings for executing open command
+// NewBrowser is to return Browser object
 func NewBrowser(url string) *Browser {
 	return &Browser{
 		mode: "browser",
@@ -24,7 +24,8 @@ type Browser struct {
 	url  string
 }
 
-//Note:during test, it should not use
+// Send is notification by executing open command
+// Note:during test, it should not use
 func (b *Browser) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", b.mode)
 

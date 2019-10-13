@@ -5,7 +5,7 @@ import (
 	lg "github.com/hiromaily/golibs/log"
 )
 
-// NewDummy is to create Dummy
+// NewDummy is to return Dummy object
 func NewDummy() *Dummy {
 	return &Dummy{mode: "dummy"}
 }
@@ -15,6 +15,7 @@ type Dummy struct {
 	mode string
 }
 
+// Send is to do nothing
 func (d *Dummy) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", d.mode)
 

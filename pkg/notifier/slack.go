@@ -15,11 +15,14 @@ import (
 	"github.com/hiromaily/golibs/tmpl"
 )
 
+// Slack is Slack object
 type Slack struct {
-	mode string
-	url  string
+	mode          string
+	slackURL      string
+	targetSiteURL string
 }
 
+// Message is Message object
 type Message struct {
 	Text string `json:"text"`
 }
@@ -38,25 +41,27 @@ Enjoy!😄
 `
 )
 
-func NewSlack(conf *config.SlackConfig) *Slack {
+// NewSlack is to return Slack object
+func NewSlack(conf *config.SlackConfig, targetSiteURL string) *Slack {
 	return &Slack{
-		mode: "slack",
-		url:  getURL(conf.Key),
+		mode:          "slack",
+		slackURL:      getSlackURL(conf.Key),
+		targetSiteURL: targetSiteURL,
 	}
 }
 
-// getURL is to get URL
-func getURL(key string) string {
+// getSlackURL is to get URL for slack notification
+func getSlackURL(key string) string {
 	return fmt.Sprintf("https://hooks.slack.com/services/%s", key)
 }
 
-// Send is to send mail
+// Send is notification by Slack
 func (s *Slack) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", s.mode)
 
 	//make body
 	//FIXME: handle as interface
-	si := &models.SiteInfo{URL: "http://eikaiwa.dmm.com/", Teachers: ths}
+	si := &models.SiteInfo{URL: s.targetSiteURL, Teachers: ths}
 	msg, err := tmpl.StrTempParser(tmplSlackMsg, &si)
 	if err != nil {
 		return errors.Wrap(err, "fail to parse message for slack")
@@ -83,7 +88,7 @@ func (s *Slack) sendPost(data []byte) ([]byte, error) {
 	//1. prepare NewRequest data
 	req, err := http.NewRequest(
 		"POST",
-		s.url,
+		s.slackURL,
 		//bytes.NewBuffer(jsonStr),
 		bytes.NewReader(data),
 	)
@@ -103,7 +108,7 @@ func (s *Slack) sendPost(data []byte) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	//5. read response
+	//4. read response
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	return body, err

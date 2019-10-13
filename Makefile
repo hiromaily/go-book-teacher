@@ -75,6 +75,9 @@ exec4:
 exec5:
 	book -t ./config/toml/redis-command.toml -crypto
 
+exec-heroku:
+	book -t ./config/toml/heroku.toml -crypto
+
 # run by save:text, notify:mail using defined teacher data
 # for now, mail is not available because of security issue
 # exec10:

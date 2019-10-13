@@ -8,7 +8,7 @@ import (
 	lg "github.com/hiromaily/golibs/log"
 )
 
-// NewConsole is settings for executing say command
+// NewConsole is to return Console object
 func NewConsole() *Console {
 	return &Console{mode: "console"}
 }
@@ -18,7 +18,7 @@ type Console struct {
 	mode string
 }
 
-// Send
+// Send is notification by executing say command and stdout
 // TODO: time should be displayed
 func (c *Console) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", c.mode)
