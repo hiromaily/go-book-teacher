@@ -16,16 +16,18 @@ import (
 //ENC_IV
 
 var (
-	jsPath   = flag.String("j", "", "Json file path")
-	tomlPath = flag.String("t", "", "Toml file path")
-	interval = flag.Int("i", 0, "Interval for scraping")
+	jsPath          = flag.String("j", "", "Json file path")
+	tomlPath        = flag.String("t", "", "Toml file path")
+	interval        = flag.Int("i", 0, "Interval for scraping") //if value is 0, it scrapes only once
+	isEncryptedConf = flag.Bool("crypto", false, "if true, config file is handled as encrypted value")
 )
 
 var usage = `Usage: %s [options...]
 Options:
-  -j     Json file path
-  -t     Toml file path
-  -i     Interval for scraping
+  -j      Json file path for teacher information
+  -t      Toml file path for config
+  -i      Interval for scraping, if 0 it scrapes only once
+  -crypto true is that conf file is handled as encrypted value
 `
 
 func init() {
@@ -43,13 +45,15 @@ func init() {
 // Main
 func main() {
 	//cipher
-	_, err := enc.NewCryptWithEnv()
-	if err != nil {
-		panic(err)
+	if *isEncryptedConf {
+		_, err := enc.NewCryptWithEnv()
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	//config
-	if err = config.New(*tomlPath, true); err != nil {
+	if err := config.New(*tomlPath, *isEncryptedConf); err != nil {
 		panic(err)
 	}
 

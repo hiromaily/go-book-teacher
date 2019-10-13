@@ -63,7 +63,7 @@ func NewBook(
 		storager: storager,
 		notifier: notifier,
 		siter:    siter,
-		isLoop:   isLoop, //FIXME: it should be changed from dynamic data, testmode, heroku env should be false
+		isLoop:   isLoop, //TODO: testmode, heroku env should be false
 	}
 	return &book
 }
@@ -75,7 +75,6 @@ func (b *Book) Start() error {
 	}
 
 	for {
-		//FIXME: this logic would be better to move into siter/dmm.go
 		//reset
 		b.siter.InitializeSavedTeachers()
 
@@ -105,7 +104,7 @@ func (b *Book) Cleanup() {
 func (b *Book) saveAndNotify() {
 	ths := b.siter.GetSavedTeachers()
 	if len(ths) != 0 {
-		//create string from ids slice
+		// create string from ids slice
 		var sum int
 		for _, t := range ths {
 			sum += t.ID
@@ -113,13 +112,13 @@ func (b *Book) saveAndNotify() {
 		newData := strconv.Itoa(sum)
 
 		// save
-		ok, err := b.storager.Save(newData)
+		isUpdated, err := b.storager.Save(newData)
 		if err != nil {
 			lg.Errorf("fail to save() %v", err)
 		}
 
-		if ok {
-			//notify
+		if isUpdated {
+			// notify
 			b.notifier.Send(ths)
 		}
 	}

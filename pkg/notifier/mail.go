@@ -1,11 +1,11 @@
 package notifier
 
 import (
-	lg "github.com/hiromaily/golibs/log"
 	"github.com/pkg/errors"
 
 	"github.com/hiromaily/go-book-teacher/pkg/config"
 	"github.com/hiromaily/go-book-teacher/pkg/models"
+	lg "github.com/hiromaily/golibs/log"
 	ml "github.com/hiromaily/golibs/mail"
 	"github.com/hiromaily/golibs/tmpl"
 )

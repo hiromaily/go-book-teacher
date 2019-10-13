@@ -2,12 +2,12 @@ package notifier
 
 import (
 	"fmt"
-	lg "github.com/hiromaily/golibs/log"
 	"os/exec"
 
 	"github.com/pkg/errors"
 
 	"github.com/hiromaily/go-book-teacher/pkg/models"
+	lg "github.com/hiromaily/golibs/log"
 )
 
 const dmmURL = "http://eikaiwa.dmm.com/" //FIXME: it should be dynamic

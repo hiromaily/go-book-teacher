@@ -2,10 +2,10 @@ package notifier
 
 import (
 	"fmt"
-	lg "github.com/hiromaily/golibs/log"
 	"os/exec"
 
 	"github.com/hiromaily/go-book-teacher/pkg/models"
+	lg "github.com/hiromaily/golibs/log"
 )
 
 // NewCommand is settings for executing say command
