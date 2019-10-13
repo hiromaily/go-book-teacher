@@ -1,5 +1,13 @@
-# heroku
+# for mail, but mail is not available
 
+[site]
+type = "DMM"
+url = "http://eikaiwa.dmm.com/"
+concurrency = 20
+
+# -----------------------------------------------------------------------------
+# Storage
+# -----------------------------------------------------------------------------
 [redis]
 encrypted = false
 url = ""
@@ -8,9 +16,15 @@ url = ""
 [text]
 path = "./status.log"
 
+# -----------------------------------------------------------------------------
+# Notification
+# -----------------------------------------------------------------------------
 [slack]
 encrypted = false
 key = ""
+
+[browser]
+enabled = false
 
 # mail should be enabled on Heroku environment
 [mail]

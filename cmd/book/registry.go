@@ -44,5 +44,5 @@ func (r *registry) newNotifier() notifier.Notifier {
 }
 
 func (r *registry) newSiter(jsonPath string) siter.Siter {
-	return siter.NewSiter(jsonPath)
+	return siter.NewSiter(jsonPath, r.conf.Site)
 }

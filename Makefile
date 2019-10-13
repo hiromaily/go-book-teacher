@@ -57,34 +57,28 @@ build:
 
 # run by save:text, notify:command using defined teacher data
 exec1:
-	book -t ./data/toml/text-command.toml -crypto
+	book -t ./config/toml/text-command.toml -crypto
 
 # run by save:text, notify:command using defined teacher jsondata
 exec2:
-	book -t ./data/toml/text-command.toml -j ./data/json/teachers.json -crypto
+	book -t ./config/toml/text-command.toml -j ./testdata/json/teachers.json -crypto
 
 # run by save:text, notify:command using defined teacher data with loop
 exec3:
-	book -t ./data/toml/text-command.toml  -i 10 -crypto
+	book -t ./config/toml/text-command.toml  -i 10 -crypto
 
 # run by save:text, notify:slack using defined teacher data
 exec4:
-	book -t ./data/toml/text-slack.toml -crypto
+	book -t ./config/toml/text-slack.toml -crypto
 
 # run by save:redis, notify:command using defined teacher data
 exec5:
-	book -t ./data/toml/redis-command.toml -crypto
+	book -t ./config/toml/redis-command.toml -crypto
 
 # run by save:text, notify:mail using defined teacher data
 # for now, mail is not available because of security issue
-exec6:
-	book -t ./data/toml/text-mail.toml
-
-run:
-	rm -rf ./status.log
-	go run ./cmd/book/main.go -t data/toml/local.toml
-	#go run ./cmd/book/main.go -i 90
-	#go run ./cmd/book/main.go -t data/toml/settings.toml -i 90
+# exec10:
+# 	book -t ./config/toml/text-mail.toml
 
 
 .PHONY: clean

@@ -18,6 +18,8 @@ type Command struct {
 	mode string
 }
 
+// Send
+// TODO: time should be displayed
 func (c *Command) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", c.mode)
 

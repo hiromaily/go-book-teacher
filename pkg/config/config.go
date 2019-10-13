@@ -19,11 +19,20 @@ var (
 
 // Config is root of toml config
 type Config struct {
-	//Environment int `toml:"environment"`
-	Redis *RedisConfig
-	Text  *TextConfig
-	Slack *SlackConfig
-	Mail  *MailConfig
+	//Concurrency int `toml:"concurrency"`
+	Site    *SiteConfig
+	Redis   *RedisConfig
+	Text    *TextConfig
+	Slack   *SlackConfig
+	Browser *BrowserConfig
+	Mail    *MailConfig
+}
+
+// SiteConfig is for site information
+type SiteConfig struct {
+	Type        string `toml:"type"`
+	URL         string `toml:"url"`
+	Concurrency int    `toml:"concurrency"`
 }
 
 // RedisConfig is for redis server
@@ -40,6 +49,10 @@ type TextConfig struct {
 type SlackConfig struct {
 	Encrypted bool   `toml:"encrypted"`
 	Key       string `toml:"key"`
+}
+
+type BrowserConfig struct {
+	Enabled bool `toml:"enabled"`
 }
 
 // MailConfig is for mail
@@ -59,12 +72,16 @@ type SMTPConfig struct {
 }
 
 var checkTomlKeys = [][]string{
-	//{"environment"},
+	//{"concurrency"},
+	{"site", "type"},
+	{"site", "url"},
+	{"site", "concurrency"},
 	{"redis", "encrypted"},
 	{"redis", "url"},
 	{"text", "path"},
 	{"slack", "encrypted"},
 	{"slack", "key"},
+	{"browser", "enabled"},
 	{"mail", "encrypted"},
 	{"mail", "mail_to"},
 	{"mail", "mail_from"},
@@ -75,7 +92,7 @@ var checkTomlKeys = [][]string{
 }
 
 func init() {
-	tomlFileName = os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/data/toml/settings.toml"
+	tomlFileName = os.Getenv("GOPATH") + "/src/github.com/hiromaily/go-book-teacher/config/toml/text-command.toml"
 }
 
 // load configfile

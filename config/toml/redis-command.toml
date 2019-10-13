@@ -1,0 +1,39 @@
+# docker
+
+[site]
+type = "DMM"
+url = "http://eikaiwa.dmm.com/"
+concurrency = 20
+
+# -----------------------------------------------------------------------------
+# Storage
+# -----------------------------------------------------------------------------
+# use docker container
+[redis]
+encrypted = false
+url = "redis://h:password@127.0.0.1:6379"
+
+[text]
+path = "/tmp/status.log"
+
+# -----------------------------------------------------------------------------
+# Notification
+# -----------------------------------------------------------------------------
+[slack]
+encrypted = false
+key = ""
+
+[browser]
+enabled = false
+
+# mail should be enabled on Heroku environment
+[mail]
+encrypted = false
+mail_to = ""
+mail_from = ""
+
+[mail.smtp]
+address = ""
+pass = ""
+server = ""
+port = 587

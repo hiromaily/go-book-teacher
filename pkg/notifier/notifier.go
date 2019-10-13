@@ -15,6 +15,10 @@ func NewNotifier(conf *config.Config) Notifier {
 		//slack mode
 		return NewSlack(conf.Slack)
 	}
+	if conf.Browser.Enabled {
+		//browser mode
+		return NewBrowser(conf.Site.URL)
+	}
 	if conf.ValidateMail() {
 		//mail mode
 		return NewMail(conf.Mail)

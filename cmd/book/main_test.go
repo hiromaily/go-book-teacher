@@ -15,7 +15,7 @@ package main
 //)
 //
 //var txtPath = "./status.log"
-//var jsonPath = "../../data/json/teachers.json"
+//var jsonPath = "../../testdata/json/teachers.json"
 //
 ////-----------------------------------------------------------------------------
 //// Test Framework

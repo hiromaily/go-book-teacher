@@ -16,20 +16,25 @@ import (
 )
 
 // MaxGoRoutine is number of goroutine running at the same time
-const MaxGoRoutine uint16 = 20 //FIXME: this should be defined in config
-const dmmURL = "http://eikaiwa.dmm.com/"
+//const MaxGoRoutine uint16 = 20 //FIXME: this should be defined in config
 
 type DMM struct {
-	url      string
-	jsonFile string
+	maxGoRoutine int
+	url          string
+	jsonFile     string
 	*models.SiteInfo
 	savedTeachers []models.TeacherInfo
 }
 
-func NewDMM(jsonFile string) *DMM {
+func NewDMM(jsonFile, url string, concurrency int) *DMM {
+	if concurrency < 2 {
+		lg.Warnf("concurrency in config is invalid: %d", concurrency)
+		concurrency = 2
+	}
 	return &DMM{
-		url:      dmmURL,
-		jsonFile: jsonFile,
+		maxGoRoutine: concurrency,
+		url:          url,
+		jsonFile:     jsonFile,
 	}
 }
 
@@ -52,20 +57,26 @@ func loadJSON(jsonFile string) (*models.SiteInfo, error) {
 }
 
 // definedTeachers is defined teachers info
-func definedTeachers() *models.SiteInfo {
+func (d *DMM) definedTeachers() *models.SiteInfo {
 	lg.Debug("use defined data for dmm teacher")
 	ti := []models.TeacherInfo{
 		{ID: 6214, Name: "Aleksandra S", Country: "Serbia"},
 		{ID: 4808, Name: "Joxyly", Country: "Serbia"},
 		{ID: 10157, Name: "Patrick B", Country: "New Zealand"},
-		{ID: 25473, Name: "Oliver B", Country: "Ireland"},
-		{ID: 25622, Name: "Shannon J", Country: "UK"},
+		{ID: 25473, Name: "Oliver B", Country: "Ireland"}, //quit
+		{ID: 25622, Name: "Shannon J", Country: "UK"},     //quit
 		{ID: 24397, Name: "Elisabeth L", Country: "USA"},
-		{ID: 25475, Name: "Dan Cr", Country: "USA"},
+		{ID: 23979, Name: "Lina Bianca", Country: "USA"},
+		{ID: 25070, Name: "Celene", Country: "Australia"},
+		{ID: 24721, Name: "Kenzie", Country: "USA"},
+		{ID: 27828, Name: "Sanndy", Country: "UK"},
+		{ID: 28302, Name: "Danni", Country: "South Africa"},
+		{ID: 30216, Name: "Tamm", Country: "UK"},
+		{ID: 25302, Name: "Nami", Country: "USA"},
 	}
 
 	return &models.SiteInfo{
-		URL:      dmmURL,
+		URL:      d.url,
 		Teachers: ti,
 	}
 }
@@ -79,7 +90,7 @@ func (d *DMM) FetchInitialData() error {
 		}
 		d.SiteInfo = siteInfo
 	}
-	d.SiteInfo = definedTeachers()
+	d.SiteInfo = d.definedTeachers()
 	return nil
 }
 
@@ -91,7 +102,7 @@ func (d *DMM) HandleTeachers() {
 	defer tm.Track(time.Now(), "handleTeachers()")
 
 	wg := &sync.WaitGroup{}
-	chanSemaphore := make(chan bool, MaxGoRoutine)
+	chanSemaphore := make(chan bool, d.maxGoRoutine)
 
 	//d.Teachers
 	for _, teacher := range d.Teachers {
