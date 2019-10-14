@@ -19,7 +19,6 @@ type DMM struct {
 	url          string
 	jsonFile     string
 	*models.SiteInfo
-	savedTeachers []models.TeacherInfo
 }
 
 // NewDMM is to return DMM object
@@ -76,19 +75,14 @@ func (d *DMM) FetchInitialData() error {
 	return nil
 }
 
-// InitializeSavedTeachers is to initialize saved available teachers
-func (d *DMM) InitializeSavedTeachers() {
-	d.savedTeachers = make([]models.TeacherInfo, 0)
-}
-
 // FindTeachers is to find available teachers by scraping web site
 func (d *DMM) FindTeachers() []models.TeacherInfo {
-	defer tm.Track(time.Now(), "handleTeachers()")
+	defer tm.Track(time.Now(), "dmm.FindTeachers()")
 
 	wg := &sync.WaitGroup{}
 	chanSemaphore := make(chan bool, d.maxGoRoutine)
+	chanTh := make(chan *models.TeacherInfo) //response of found teacher by channel
 
-	//d.Teachers
 	for _, teacher := range d.Teachers {
 		teacher := teacher
 
@@ -101,20 +95,29 @@ func (d *DMM) FindTeachers() []models.TeacherInfo {
 				wg.Done()
 			}()
 			//concurrent func
-			err := d.getHTML(&teacher)
+			err := d.getHTML(&teacher, chanTh)
 			if err != nil {
 				//TODO: this err shouold emit by channel
 				lg.Error(err)
 			}
 		}()
 	}
-	wg.Wait()
+	go func() {
+		wg.Wait()
+		close(chanTh)
+	}()
 
-	return d.savedTeachers
+	savedTeachers := make([]models.TeacherInfo, 0)
+	// wait until results channel is closed.
+	for th := range chanTh {
+		savedTeachers = append(savedTeachers, *th)
+	}
+
+	return savedTeachers
 }
 
 // getHTML is to get teacher information from HTML document
-func (d *DMM) getHTML(th *models.TeacherInfo) error {
+func (d *DMM) getHTML(th *models.TeacherInfo, chTh chan *models.TeacherInfo) error {
 	var flg = false
 
 	//HTTP connection
@@ -131,20 +134,13 @@ func (d *DMM) getHTML(th *models.TeacherInfo) error {
 			fmt.Println(dt)
 			flg = true
 		}
-		//save teacher
+		//send teacher by channel
 		if flg {
-			//FIXME: mutex
-			d.saveTeacer(th)
+			chTh <- th
 		}
 	} else {
 		//no teacher
 		fmt.Printf("teacher [%d]%s quit \n", th.ID, th.Name)
 	}
 	return nil
-}
-
-// saveTeacer is to save teacher id to variable
-func (d *DMM) saveTeacer(th *models.TeacherInfo) {
-	//FIXME: mutex
-	d.savedTeachers = append(d.savedTeachers, *th)
 }

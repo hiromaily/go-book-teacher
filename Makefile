@@ -85,12 +85,8 @@ dcexec:
 # Test
 ###############################################################################
 test:
-	go test -v ./cmd/book
-
-# test1:
-# 	# mail mode
-# 	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/data/toml/mailon.toml
-
+	go test -v -race ./cmd/book
+	#go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/data/toml/mailon.toml
 
 ###############################################################################
 # Build Heroku
@@ -114,6 +110,6 @@ heroku:
 	git push -f heroku master
 
 herokuinfo:
-    #heroku config | grep REDIS
+	#heroku config | grep REDIS
 	heroku config
 	heroku ps

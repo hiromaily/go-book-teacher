@@ -81,9 +81,6 @@ func (b *Book) Start() error {
 	}
 
 	for {
-		//reset
-		b.siter.InitializeSavedTeachers()
-
 		//scraping
 		teachers := b.siter.FindTeachers()
 
