@@ -9,7 +9,7 @@
 Go-book-teacher is notifier for specific teachers are available on English lesson service.  
 
 
-Console
+#### Console
 ```
 ----------- Rita M / Portugal / 7093 -----------
 ----------- Gagga / Serbia / 5252 -----------
@@ -35,7 +35,7 @@ Console
 ```
 
 
-Slack
+#### Slack
 ![slack](https://raw.githubusercontent.com/hiromaily/go-book-teacher/master/images/slack_image.png)
 
 
