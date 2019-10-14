@@ -6,8 +6,10 @@
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/hiromaily/go-book-teacher/master/LICENSE)
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/hiromaily/go-book-teacher)
 
-Go-book-teacher is notifier for specific teachers are available on English lesson service.
+Go-book-teacher is notifier for specific teachers are available on English lesson service.  
 
+
+Console
 ```
 ----------- Rita M / Portugal / 7093 -----------
 ----------- Gagga / Serbia / 5252 -----------
@@ -32,6 +34,8 @@ Go-book-teacher is notifier for specific teachers are available on English lesso
 ----------- Milica Ml / Serbia / 4107 -----------
 ```
 
+
+Slack
 ![slack](https://raw.githubusercontent.com/hiromaily/go-book-teacher/master/images/slack_image.png)
 
 
