@@ -49,7 +49,6 @@ func (t *TextRepo) Save(newData string) (bool, error) {
 
 // Delete is to delete file
 func (t *TextRepo) Delete() error {
-	//os.Remove(txtPath)
 	return os.Remove(t.filePath)
 }
 

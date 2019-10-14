@@ -55,6 +55,7 @@ func TestIntegrationBooker(t *testing.T) {
 		if err := booker.Start(); err != nil {
 			t.Errorf("fail: %s", tt.explanation)
 		}
+		booker.Cleanup()
 	}
 	//create config
 }

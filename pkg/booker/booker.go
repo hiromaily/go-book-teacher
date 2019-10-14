@@ -22,6 +22,7 @@ import (
 type Booker interface {
 	Start() error
 	Cleanup()
+	Close()
 }
 
 // NewBooker is to return booker interface
@@ -99,6 +100,11 @@ func (b *Book) Start() error {
 
 // Cleanup is to clean up middleware object
 func (b *Book) Cleanup() {
+	b.storager.Delete()
+}
+
+// Close is to clean up middleware object
+func (b *Book) Close() {
 	b.storager.Close()
 }
 
@@ -144,3 +150,6 @@ func (b *DummyBook) Start() error {
 
 // Cleanup is to do nothing
 func (b *DummyBook) Cleanup() {}
+
+// Close is to do nothing
+func (b *DummyBook) Close() {}
