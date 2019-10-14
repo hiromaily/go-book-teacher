@@ -9,20 +9,20 @@ services:
 env:
   global:
     - GO111MODULE=on
-    - GO_PROJ_PATH='/home/travis/gopath/src/github.com/hiromaily/go-book-teacher/cmd/book/'
+    #- GO_PROJ_PATH='/home/travis/gopath/src/github.com/hiromaily/go-book-teacher/cmd/book/'
 
 before_install:
   - go get github.com/mattn/goveralls
   - go get golang.org/x/tools/cmd/cover
+  - go get github.com/golangci/golangci-lint/cmd/golangci-lint
 
 install:
   - go mod download
 
 script:
-  - go fmt ./...
-  - go vet $(go list ./... | grep -v /vendor/)
-  - cd ${GO_PROJ_PATH};go test -v -race -covermode=count -coverprofile=profile.cov ./cmd/book
-  - cd ${GO_PROJ_PATH};goveralls -coverprofile=profile.cov -service=travis-ci
+  - golangci-lint run
+  - go test -v -race -covermode=atomic -coverprofile=profile.cov ./cmd/book/...
+  - goveralls -coverprofile=profile.cov -service=travis-ci
 
 branches:
   only:
