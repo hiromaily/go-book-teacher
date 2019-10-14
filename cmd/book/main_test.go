@@ -18,6 +18,7 @@ var bookerTests = []struct {
 }{
 	{1, 99, "", "text storage should work", nil},
 	{2, 99, "", "redis storage should work", nil},
+	{1, 99, "../../testdata/json/teachers.json", "initial data is created from json file", nil},
 }
 
 func setup() {
@@ -57,7 +58,6 @@ func TestIntegrationBooker(t *testing.T) {
 		}
 		booker.Cleanup()
 	}
-	//create config
 }
 
 func createConfig(storage, notification int) *config.Config {
