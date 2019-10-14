@@ -74,7 +74,14 @@ e.g.
 ※ As needed, secret information can be encrypted.(using AES encryption)
 
 ## Environment valuables
-encryption is used for secret value in config files.
+- encryption is used for secret value in config files.
+- secret value can be encrypted/decrypted by tools
+```bash
+# encode
+go run ./tools/encryption/ -m e important-password
+# decode
+go run ./tools/encryption/ -m d o5PDC2aLqoYxhY9+mL0W/IdG+rTTH0FWPUT4u1XBzko=
+```
 
 ### Option
 | NAME              | Value                               |

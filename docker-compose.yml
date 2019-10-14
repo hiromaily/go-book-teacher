@@ -20,13 +20,13 @@ services:
   # golang:go-book-teacher
   book:
     build:
-      context: .
+      context: ./build/docker/
       dockerfile: Dockerfile
       args:
         redisHostName: redis-server
     image: go-book-teacher:v1.1
     container_name: book
-    #env_file: ./docker/.env
+    #env_file: ./build/docker/.env
     environment:
       ENC_KEY: ${ENC_KEY}
       ENC_IV: ${ENC_IV}
