@@ -6,15 +6,12 @@
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/hiromaily/go-book-teacher/master/LICENSE)
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/hiromaily/go-book-teacher)
 
-Go-book-teacher is for booking specific teachers on English lesson service by web scraping.
-When running on local PC, it continues to run until stop.
-It notices available teachers every 2 minutes when finding and changing state. 
+Go-book-teacher is notifier for specific teachers are available on English lesson service.
 
 ```
 ----------- Rita M / Portugal / 7093 -----------
 ----------- Gagga / Serbia / 5252 -----------
 ----------- Kaytee / Serbia / 7646 -----------
------------ Anna O / Rossiya / 1381 -----------
 ----------- Milica J / Serbia / 6294 -----------
 ----------- Marine / France / 8519 -----------
 ----------- Lavinija / Serbia / 5656 -----------
@@ -38,50 +35,56 @@ It notices available teachers every 2 minutes when finding and changing state.
 ![slack](https://raw.githubusercontent.com/hiromaily/go-book-teacher/master/images/slack_image.png)
 
 
-
 ## Installation
 ```
 $ go get github.com/hiromaily/go-book-teacher ./...
 ```
 
-#### For docker environment
+## Usage
 ```
-$ docker-compose up --build
-```
+Usage: book [options...]
 
+Options:
+  -j      Json file path for teacher information
+  -t      Toml file path for config
+  -i      Interval for scraping, if 0 it scrapes only once
+  -crypto true is that conf file is handled as encrypted value
+
+e.g.
+ $ book -j testdata/json/teachers.json -t config/toml/text-command.toml
+```
 
 ## Configration
-
-### 1. Common settings
-#### TOML file
-
 ```
-${PWD}/data/toml/settings.toml
+${PWD}/config/toml/*.toml
 ```
+* site
+* storage
+    * redis
+    * text
+* notification
+    * slack
+    * browser
+    * mail
 
-* Mail settings
-* Slack settings  
-* Redis settings  
-※ As needed, secret information can be ciphered.(using AES encryption)
+※ As needed, secret information can be encrypted.(using AES encryption)
 
-#### registration for target teacher's ids
-1. Inside ./teacher/teacherinfo.go  
-  or
-2. Outer json file: To use command line arguments ```-f jsonfile```
+## Environment valuables
+encryption is used for secret value in config files.
 
-#### notification
-1. Web browser  
-  or
-2. mail: To set mail info on settins.toml
-  or
-3. slack: To set slack info on settins.toml
-  
-#### save current state
-1. txt file: To set status_file on settings.toml  
- or
-2. redis server: To set redis_url on settings.toml
+### Option
+| NAME              | Value                               |
+|:------------------|:------------------------------------|
+| ENC_KEY           | xxxxx                               |
+| ENC_IV            | xxxxx                               |
 
-### 2. On heroku
+
+## registration for target teacher's ids
+json file can be used with command line argument `-j`
+`testdata/json/teachers.json`
+
+
+## deploy on heroku
 ```
 ## Install 
 $ heroku create bookteacher --buildpack heroku/go
@@ -101,37 +104,3 @@ $ heroku ps -a bookteacher
 $ git push -f heroku master
 
 ```
-
-### 3. On Docker
-
-#### Docker related files
-* docker-compose.yml
-* docker-compose.override.yml
-* docker-entrypoint.sh
-* Dockerfile
-* ./docker/*
-
-
-## Environment valuable e.g.
-### 1. Option
-| NAME              | Value                               |
-|:------------------|:------------------------------------|
-| ENC_KEY           | xxxxx                               |
-| ENC_IV            | xxxxx                               |
-| HEROKU_FLG        | 1                                   |
-
-
-## Usage
-
-```
-Usage: book [options...]
-
-Options:
-  -j     Json file path
-  -t     Toml file path
-  -i     Interval for scraping
-
-e.g.
- $ book -j /var/go/teacher.json -t data/toml/settings.toml -i 120
-```
-

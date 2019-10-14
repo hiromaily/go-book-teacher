@@ -1,5 +1,3 @@
-# local
-
 [site]
 type = "DMM"
 url = "http://eikaiwa.dmm.com/"
@@ -19,7 +17,6 @@ path = "./status.log"
 # -----------------------------------------------------------------------------
 # Notification
 # -----------------------------------------------------------------------------
-# mail or slack should be enabled on Heroku environment
 [slack]
 encrypted = true
 key = "HP/9upIf+CwLGuDj2V0xfqulICwv1nHhQXy+S2TSEhFzYfEnt9zzWjVtoMT/8Rb7"

@@ -1,4 +1,4 @@
-# local
+# heroku
 
 [site]
 type = "DMM"
@@ -19,7 +19,6 @@ path = "./status.log"
 # -----------------------------------------------------------------------------
 # Notification
 # -----------------------------------------------------------------------------
-# mail or slack should be enabled on Heroku environment
 [slack]
 encrypted = true
 key = "bPLOW06msIeCN0fPuvqP/1S58yozAMsNYwGfJ3F77Mw7xpz/revQufXGvj8iZExil3+j0wuhEhHlM+enVq70kU479UfVnPPepIezKQg80kEfUS3Bi/+5QLKkpHN1U7na65Le9niYPS/SU/aN/vdNUZb+lPvulvL/ZqudhLTsie8="

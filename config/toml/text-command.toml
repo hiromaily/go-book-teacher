@@ -1,5 +1,3 @@
-# local
-
 [site]
 type = "DMM"
 url = "http://eikaiwa.dmm.com/"
@@ -8,7 +6,6 @@ concurrency = 20
 # -----------------------------------------------------------------------------
 # Storage
 # -----------------------------------------------------------------------------
-# redis should be enabled on Heroku environment
 [redis]
 encrypted = false
 url = ""
@@ -19,7 +16,6 @@ path = "./status.log"
 # -----------------------------------------------------------------------------
 # Notification
 # -----------------------------------------------------------------------------
-# mail or slack should be enabled on Heroku environment
 [slack]
 encrypted = false
 key = ""

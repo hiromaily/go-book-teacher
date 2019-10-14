@@ -1,5 +1,3 @@
-#- redis:3.2
-#- book from Dockerfile of book (build is required)
 version: '3.0'
 
 services:
