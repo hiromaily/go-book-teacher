@@ -4,15 +4,8 @@
 
 #main
 scripts/mail.sh
-scripts/heroku.sh
 status.log
-data.txt
+cmd/book/test.log
 
 #compiled
-book
-!cmd/book/
 profile.cov
-
-#docker
-#.env
-.golangci.yml

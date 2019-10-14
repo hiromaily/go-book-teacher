@@ -30,10 +30,11 @@ Options:
   -crypto true is that conf file is handled as encrypted value
 `
 
+// init() can not be used because it affects main_test.go as well.
 func init() {
-	//log
-	lg.InitializeLog(lg.DebugStatus, lg.TimeShortFile, "[BookingTeacher]", "", "hiromaily")
+}
 
+func parseFlag() {
 	flag.Usage = func() {
 		fmt.Fprint(os.Stderr, fmt.Sprintf(usage, os.Args[0]))
 	}
@@ -44,6 +45,11 @@ func init() {
 
 // Main
 func main() {
+	parseFlag()
+
+	//log
+	lg.InitializeLog(lg.DebugStatus, lg.TimeShortFile, "[BookingTeacher]", "", "hiromaily")
+
 	//cipher
 	if *isEncryptedConf {
 		_, err := enc.NewCryptWithEnv()

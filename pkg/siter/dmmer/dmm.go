@@ -70,6 +70,7 @@ func (d *DMM) FetchInitialData() error {
 			return err
 		}
 		d.SiteInfo = siteInfo
+		return nil
 	}
 	d.SiteInfo = d.definedTeachers()
 	return nil

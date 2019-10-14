@@ -188,21 +188,21 @@ func (c *Config) Cipher() {
 	crypt := enc.GetCrypt()
 
 	if c.Redis.Encrypted {
-		cf := conf.Redis
+		cf := c.Redis
 		cf.URL, _ = crypt.DecryptBase64(cf.URL)
 	}
 
 	if c.Slack.Encrypted {
-		cf := conf.Slack
+		cf := c.Slack
 		cf.Key, _ = crypt.DecryptBase64(cf.Key)
 	}
 
 	if c.Mail.Encrypted {
-		cf := conf.Mail
+		cf := c.Mail
 		cf.MailTo, _ = crypt.DecryptBase64(cf.MailTo)
 		cf.MailFrom, _ = crypt.DecryptBase64(cf.MailFrom)
 
-		cf2 := conf.Mail.SMTP
+		cf2 := c.Mail.SMTP
 		cf2.Address, _ = crypt.DecryptBase64(cf2.Address)
 		cf2.Pass, _ = crypt.DecryptBase64(cf2.Pass)
 		cf2.Server, _ = crypt.DecryptBase64(cf2.Server)
@@ -211,7 +211,15 @@ func (c *Config) Cipher() {
 
 // ValidateSlack to validate slack is enabled or not
 func (c *Config) ValidateSlack() bool {
-	if conf.Slack == nil || conf.Slack.Key == "" {
+	if c.Slack == nil || c.Slack.Key == "" {
+		return false
+	}
+	return true
+}
+
+// ValidateBrowser to validate browser is enabled or not
+func (c *Config) ValidateBrowser() bool {
+	if c.Browser == nil || !c.Browser.Enabled {
 		return false
 	}
 	return true
@@ -219,16 +227,16 @@ func (c *Config) ValidateSlack() bool {
 
 // ValidateMail to validate mail is enabled or not
 func (c *Config) ValidateMail() bool {
-	if conf.Mail == nil {
+	if c.Mail == nil {
 		return false
 	}
-	if conf.Mail.MailFrom == "" || conf.Mail.MailTo == "" {
+	if c.Mail.MailFrom == "" || c.Mail.MailTo == "" {
 		return false
 	}
-	if conf.Mail.SMTP == nil {
+	if c.Mail.SMTP == nil {
 		return false
 	}
-	smtp := conf.Mail.SMTP
+	smtp := c.Mail.SMTP
 	if smtp.Address == "" || smtp.Port == 0 || smtp.Server == "" {
 		return false
 	}
@@ -237,7 +245,7 @@ func (c *Config) ValidateMail() bool {
 
 // ValidateRedis to validate redis is enabled or not
 func (c *Config) ValidateRedis() bool {
-	if conf.Redis == nil || conf.Redis.URL == "" {
+	if c.Redis == nil || c.Redis.URL == "" {
 		return false
 	}
 	return true
@@ -245,7 +253,7 @@ func (c *Config) ValidateRedis() bool {
 
 // ValidateText to validate text is enabled or not
 func (c *Config) ValidateText() bool {
-	if conf.Text == nil || conf.Text.Path == "" {
+	if c.Text == nil || c.Text.Path == "" {
 		return false
 	}
 	return true

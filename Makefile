@@ -107,25 +107,12 @@ dcexec:
 ###############################################################################
 # Test
 ###############################################################################
-test1:
-	# mail mode
-	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/data/toml/mailon.toml
+test:
+	go test -v ./cmd/book
 
-test2:
-	# slack mode
-	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/data/toml/slackon.toml
-
-test3:
-	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowserAndJson
-
-test4:
-	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
-
-test5:
-	go test -covermode=count -coverprofile=profile.cov -v cmd/book/*.go -run TestIntegrationOnLocalUsingRedisAndMail
-
-test6:
-	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -run TestIntegrationOnLocalUsingTxtAndBrowser
+# test1:
+# 	# mail mode
+# 	go test -v -covermode=count -coverprofile=profile.cov cmd/book/*.go -t ${PWD}/data/toml/mailon.toml
 
 
 ###############################################################################
