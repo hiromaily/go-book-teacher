@@ -51,12 +51,12 @@ Options:
   -crypto true is that conf file is handled as encrypted value
 
 e.g.
- $ book -j testdata/json/teachers.json -t config/toml/text-command.toml
+ $ book -j ./testdata/json/teachers.json -t ./config/toml/text-command.toml
 ```
 
 ## Configration
 ```
-${PWD}/config/toml/*.toml
+./config/toml/*.toml
 ```
 * site
 * storage
