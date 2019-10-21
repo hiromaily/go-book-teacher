@@ -5,7 +5,7 @@ import (
 	"github.com/hiromaily/go-book-teacher/pkg/config"
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
 	"github.com/hiromaily/go-book-teacher/pkg/siter"
-	"github.com/hiromaily/go-book-teacher/pkg/storages"
+	storages "github.com/hiromaily/go-book-teacher/pkg/storager"
 )
 
 // Registry is for registry interface
