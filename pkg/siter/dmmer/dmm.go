@@ -49,7 +49,7 @@ func (d *DMM) FetchInitialData() error {
 }
 
 // FindTeachers is to find available teachers by scraping web site
-func (d *DMM) FindTeachers() []models.TeacherInfo {
+func (d *DMM) FindTeachers(day int) []models.TeacherInfo {
 	defer tm.Track(time.Now(), "dmm.FindTeachers()")
 
 	wg := &sync.WaitGroup{}
@@ -68,7 +68,7 @@ func (d *DMM) FindTeachers() []models.TeacherInfo {
 				wg.Done()
 			}()
 			// concurrent func
-			err := d.getHTML(&teacher, chanTh)
+			err := d.getHTML(&teacher, chanTh, day)
 			if err != nil {
 				// TODO: this err shouold emit by channel
 				lg.Error(err)
@@ -90,7 +90,7 @@ func (d *DMM) FindTeachers() []models.TeacherInfo {
 }
 
 // getHTML is to get teacher information from HTML document
-func (d *DMM) getHTML(th *models.TeacherInfo, chTh chan *models.TeacherInfo) error {
+func (d *DMM) getHTML(th *models.TeacherInfo, chTh chan *models.TeacherInfo, day int) error {
 	flg := false
 
 	// HTTP connection
@@ -99,7 +99,7 @@ func (d *DMM) getHTML(th *models.TeacherInfo, chTh chan *models.TeacherInfo) err
 	if err != nil {
 		return errors.Wrapf(err, "fail to call GetHTMLDocs() %s", url)
 	} else if isTeacherActive(doc) {
-		parsedHTML := parseDate(doc)
+		parsedHTML := parseDate(doc, day)
 
 		// show teacher's id, name, date
 		fmt.Printf("----------- %s / %s / %d ----------- \n", th.Name, th.Country, th.ID)

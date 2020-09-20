@@ -11,7 +11,7 @@ import (
 type Siter interface {
 	FetchInitialData() error
 	// InitializeSavedTeachers()
-	FindTeachers() []models.TeacherInfo
+	FindTeachers(day int) []models.TeacherInfo
 }
 
 // NewSiter is to return Siter interface

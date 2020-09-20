@@ -56,6 +56,9 @@ exec1:
 .PHONY: exec2
 exec2:
 	book -t ./config/toml/text-command.toml -j ./testdata/json/teachers.json
+#	book -t ./config/toml/text-command.toml -d 1 -j ./testdata/json/teachers.json
+#	book -t ./config/toml/text-command.toml -d 2 -j ./testdata/json/teachers.json
+#	book -t ./config/toml/text-command.toml -d 2 -i 30 -j ./testdata/json/teachers.json
 
 # run by save:text, notify:command using defined teacher data with loop
 .PHONY: exec3

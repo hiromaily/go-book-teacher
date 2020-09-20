@@ -10,7 +10,7 @@ import (
 
 // Registry is for registry interface
 type Registry interface {
-	NewBooker(string, int) booker.Booker
+	NewBooker(string, int, int) booker.Booker
 }
 
 type registry struct {
@@ -24,9 +24,10 @@ func NewRegistry(conf *config.Config) Registry {
 }
 
 // NewBooker is to register for booker interface
-func (r *registry) NewBooker(jsonPath string, interval int) booker.Booker {
+func (r *registry) NewBooker(jsonPath string, day, interval int) booker.Booker {
 	return booker.NewBooker(
 		r.conf,
+		day,
 		interval,
 		r.newStorager(),
 		r.newNotifier(),

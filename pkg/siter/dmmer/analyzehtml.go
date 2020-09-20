@@ -3,21 +3,46 @@ package dmmer
 import (
 	"encoding/json"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-const (
-	timeRangeFrom string = "00:00:00"
-	timeRangeTo   string = "24:00:00"
-)
+//const (
+//	// TODO: configuration on toml
+//	timeRangeFrom string = "12:00:00"
+//	timeRangeTo   string = "20:30:00"
+//)
+
+var today time.Time
+
+func init() {
+	today = time.Now()
+}
 
 // isTimeApplicable is to check within range for applicable time
-func isTimeApplicable(strDate string) bool {
+func isTimeApplicable(strDate string, day int) bool {
 	// e.g. 2016-02-27 03:30:00
-	strTarget := strings.Split(strDate, " ")[1]
+	dt := strings.Split(strDate, " ")
 
-	return strTarget >= timeRangeFrom && strTarget <= timeRangeTo
+	// check day
+	t, _ := time.Parse("2006-01-02", dt[0])
+	if day == 1 {
+		// only today
+		if today.Year() != t.Year() || today.Month() != t.Month() || today.Day() != t.Day() {
+			return false
+		}
+	} else if day == 2 {
+		// only tomorrow{
+		tomorrow := today.AddDate(0, 0, 1)
+		if tomorrow.Year() != t.Year() || tomorrow.Month() != t.Month() || tomorrow.Day() != t.Day() {
+			return false
+		}
+	}
+
+	// check time range
+	// return dt[1] >= timeRangeFrom && dt[1] <= timeRangeTo
+	return true
 }
 
 // htmlStringDecode is replace string in HTML into json
@@ -50,7 +75,7 @@ func isTeacherActive(htmldata *goquery.Document) bool {
 }
 
 // parseDate is to parse html date
-func parseDate(htmldata *goquery.Document) []string {
+func parseDate(htmldata *goquery.Document, day int) []string {
 	var dates []string
 
 	htmldata.Find("a.bt-open").Each(func(_ int, s *goquery.Selection) {
@@ -66,7 +91,7 @@ func parseDate(htmldata *goquery.Document) []string {
 			// e.g. 2016-02-27 03:30:00
 
 			strDate := jsonObject["field19"].(string)
-			if isTimeApplicable(strDate) {
+			if isTimeApplicable(strDate, day) {
 				dates = append(dates, strDate)
 			}
 		}

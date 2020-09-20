@@ -28,11 +28,12 @@ type Booker interface {
 // NewBooker is to return booker interface
 func NewBooker(
 	conf *config.Config,
+	day int,
 	interval int,
 	storager storages.Storager,
 	notifier notifier.Notifier,
 	siter siter.Siter) Booker {
-	return NewBook(conf, interval, storager, notifier, siter)
+	return NewBook(conf, day, interval, storager, notifier, siter)
 }
 
 // ----------------------------------------------------------------------------
@@ -42,6 +43,7 @@ func NewBooker(
 // Book is Book object
 type Book struct {
 	conf     *config.Config
+	day      int
 	interval int
 	storager storages.Storager
 	notifier notifier.Notifier
@@ -52,6 +54,7 @@ type Book struct {
 // NewBook is to return book object
 func NewBook(
 	conf *config.Config,
+	day int,
 	interval int,
 	storager storages.Storager,
 	notifier notifier.Notifier,
@@ -63,6 +66,7 @@ func NewBook(
 
 	book := Book{
 		conf:     conf,
+		day:      day,
 		interval: interval,
 		storager: storager,
 		notifier: notifier,
@@ -80,7 +84,7 @@ func (b *Book) Start() error {
 
 	for {
 		// scraping
-		teachers := b.siter.FindTeachers()
+		teachers := b.siter.FindTeachers(b.day)
 
 		// save
 		b.saveAndNotify(teachers)

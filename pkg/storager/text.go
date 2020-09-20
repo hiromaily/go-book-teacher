@@ -2,9 +2,10 @@ package storages
 
 import (
 	"bufio"
-	lg "github.com/hiromaily/golibs/log"
 	"io/ioutil"
 	"os"
+
+	lg "github.com/hiromaily/golibs/log"
 )
 
 // TextRepo is TextRepo object

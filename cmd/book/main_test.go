@@ -51,7 +51,7 @@ func TestIntegrationBooker(t *testing.T) {
 		regi := NewRegistry(conf)
 
 		// run
-		booker := regi.NewBooker(tt.jsonPath, 0)
+		booker := regi.NewBooker(tt.jsonPath, 0, 0)
 		if err := booker.Start(); err != nil {
 			t.Errorf("fail: %s", tt.explanation)
 		}
