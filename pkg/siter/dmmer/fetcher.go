@@ -62,10 +62,6 @@ func (d *dummyFetcher) FetchInitialData() (*models.SiteInfo, error) {
 	ti := []models.TeacherInfo{
 		{ID: 6214, Name: "Aleksandra S", Country: "Serbia"},
 		{ID: 4808, Name: "Joxyly", Country: "Serbia"},
-		{ID: 10157, Name: "Patrick B", Country: "New Zealand"},
-		{ID: 25473, Name: "Oliver B", Country: "Ireland"}, //quit
-		{ID: 25622, Name: "Shannon J", Country: "UK"},     //quit
-		{ID: 24397, Name: "Elisabeth L", Country: "USA"},
 		{ID: 23979, Name: "Lina Bianca", Country: "USA"},
 		{ID: 25070, Name: "Celene", Country: "Australia"},
 		{ID: 24721, Name: "Kenzie", Country: "USA"},
