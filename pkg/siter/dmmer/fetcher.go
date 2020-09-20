@@ -33,7 +33,7 @@ func newJSONFetcher(jsonFile string) Fetcher {
 
 // FetchInitialData is to return siteInfo by loading json
 func (f *jsonFetcher) FetchInitialData() (*models.SiteInfo, error) {
-	//call json file
+	// call json file
 	lg.Debugf("Load json file: %s", f.jsonFile)
 	siteInfo, err := models.LoadJSON(f.jsonFile)
 	if err != nil {

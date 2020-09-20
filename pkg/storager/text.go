@@ -2,10 +2,10 @@ package storages
 
 import (
 	"bufio"
+	lg "github.com/hiromaily/golibs/log"
 	"io/ioutil"
 	"os"
 
-	lg "github.com/hiromaily/golibs/log"
 )
 
 // TextRepo is TextRepo object
@@ -26,8 +26,8 @@ func NewText(path string) *TextRepo {
 func (t *TextRepo) Save(newData string) (bool, error) {
 	lg.Debugf("Save by %s", t.mode)
 
-	//open saved log
-	fp, err := os.OpenFile(t.filePath, os.O_CREATE, 0664)
+	// open saved log
+	fp, err := os.OpenFile(t.filePath, os.O_CREATE, 0o664)
 	if err != nil {
 		return false, err
 	}
@@ -41,9 +41,9 @@ func (t *TextRepo) Save(newData string) (bool, error) {
 		return false, nil
 	}
 
-	//save latest info
+	// save latest info
 	content := []byte(newData)
-	ioutil.WriteFile(t.filePath, content, 0664)
+	ioutil.WriteFile(t.filePath, content, 0o664)
 	return true, nil
 }
 

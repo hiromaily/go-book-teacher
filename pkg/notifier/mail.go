@@ -28,17 +28,21 @@ Enjoy!`
 
 // NewMail is to return Mail object
 func NewMail(conf *config.MailConfig) *Mail {
-	//lg.Debug(conf.SMTP.Address)
-	//lg.Debug(conf.SMTP.Pass)
-	//lg.Debug(conf.SMTP.Server)
-	//lg.Debug(conf.MailTo)
-	//lg.Debug(conf.MailFrom)
+	// lg.Debug(conf.SMTP.Address)
+	// lg.Debug(conf.SMTP.Pass)
+	// lg.Debug(conf.SMTP.Server)
+	// lg.Debug(conf.MailTo)
+	// lg.Debug(conf.MailFrom)
 
-	smtp := ml.SMTP{Address: conf.SMTP.Address, Pass: conf.SMTP.Pass,
-		Server: conf.SMTP.Server, Port: conf.SMTP.Port}
+	smtp := ml.SMTP{
+		Address: conf.SMTP.Address, Pass: conf.SMTP.Pass,
+		Server: conf.SMTP.Server, Port: conf.SMTP.Port,
+	}
 
-	info := &ml.Info{ToAddress: []string{conf.MailTo}, FromAddress: conf.MailFrom,
-		Subject: subject, Body: "", SMTP: smtp}
+	info := &ml.Info{
+		ToAddress: []string{conf.MailTo}, FromAddress: conf.MailFrom,
+		Subject: subject, Body: "", SMTP: smtp,
+	}
 
 	return &Mail{
 		mode: "mail",
@@ -50,8 +54,8 @@ func NewMail(conf *config.MailConfig) *Mail {
 func (m *Mail) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", m.mode)
 
-	//make body
-	//FIXME: handle as interface
+	// make body
+	// FIXME: handle as interface
 	si := &models.SiteInfo{URL: "http://eikaiwa.dmm.com/", Teachers: ths}
 	body, err := tmpl.StrTempParser(tmplMails, &si)
 	if err != nil {

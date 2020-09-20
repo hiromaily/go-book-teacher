@@ -19,7 +19,7 @@ var (
 
 // Config is root of toml config
 type Config struct {
-	//Concurrency int `toml:"concurrency"`
+	// Concurrency int `toml:"concurrency"`
 	Site    *SiteConfig
 	Redis   *RedisConfig
 	Text    *TextConfig
@@ -114,7 +114,7 @@ func loadConfig(path string) (*Config, error) {
 		return nil, errors.Wrapf(err, "fail to parse %s: %v", tomlFileName, md)
 	}
 
-	//check validation of config
+	// check validation of config
 	err = config.validateConfig(&md)
 	if err != nil {
 		return nil, err
@@ -150,9 +150,9 @@ func GetConf() *Config {
 	return conf
 }
 
-//validateConfig is to validate config settings
+// validateConfig is to validate config settings
 func (c *Config) validateConfig(md *toml.MetaData) error {
-	//for protection when debugging on non production environment
+	// for protection when debugging on non production environment
 	var errStrings []string
 	var format string
 
@@ -165,10 +165,10 @@ func (c *Config) validateConfig(md *toml.MetaData) error {
 				format = "[%s] %s"
 			case 3:
 				format = "[%s.%s] %s"
-			//case 4:
+			// case 4:
 			//	format = "[%s.%s.%s] %s"
 			default:
-				//invalid check string
+				// invalid check string
 				return errors.New("error validation should be checked")
 			}
 			keysIfc := u.SliceStrToInterface(keys)

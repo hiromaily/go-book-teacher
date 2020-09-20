@@ -29,8 +29,7 @@ type Message struct {
 
 //{"text": "New comic book alert! _The Further Adventures of Slackbot_, Volume 1, Issue 3."}
 
-var (
-	tmplSlackMsg = `
+var tmplSlackMsg = `
 🤓😎😴 The following tachers are available now! 🤓😎😴
 {{range .Teachers}}
 *[{{.Name}} / {{.Country}}]*
@@ -39,7 +38,6 @@ var (
 Enjoy!😄
 
 `
-)
 
 // NewSlack is to return Slack object
 func NewSlack(conf *config.SlackConfig, targetSiteURL string) *Slack {
@@ -59,21 +57,21 @@ func getSlackURL(key string) string {
 func (s *Slack) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", s.mode)
 
-	//make body
-	//FIXME: handle as interface
+	// make body
+	// FIXME: handle as interface
 	si := &models.SiteInfo{URL: s.targetSiteURL, Teachers: ths}
 	msg, err := tmpl.StrTempParser(tmplSlackMsg, &si)
 	if err != nil {
 		return errors.Wrap(err, "fail to parse message for slack")
 	}
 
-	//crate json
+	// crate json
 	sm := Message{Text: msg}
 	data, err := json.Marshal(&sm)
 	if err != nil {
 		return errors.Wrap(err, "fail to call json.Marshal")
 	}
-	//send
+	// send
 	body, err := s.sendPost(data)
 	if err != nil {
 		return err
@@ -84,23 +82,22 @@ func (s *Slack) Send(ths []models.TeacherInfo) error {
 }
 
 func (s *Slack) sendPost(data []byte) ([]byte, error) {
-
-	//1. prepare NewRequest data
+	// 1. prepare NewRequest data
 	req, err := http.NewRequest(
 		"POST",
 		s.slackURL,
-		//bytes.NewBuffer(jsonStr),
+		// bytes.NewBuffer(jsonStr),
 		bytes.NewReader(data),
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "fail to call http.NewRequest()")
 	}
 
-	//2. set http header
+	// 2. set http header
 	// Content-Type:application/json; charset=utf-8
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 
-	//3. send
+	// 3. send
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -108,7 +105,7 @@ func (s *Slack) sendPost(data []byte) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	//4. read response
+	// 4. read response
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	return body, err

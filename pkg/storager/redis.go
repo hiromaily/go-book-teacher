@@ -50,8 +50,8 @@ func NewRedis(redisURL string) (*RedisRepo, error) {
 func (rd *RedisRepo) Save(newData string) (bool, error) {
 	lg.Debugf("Save by %s", rd.mode)
 
-	//close
-	//defer rd.RD.Close()
+	// close
+	// defer rd.RD.Close()
 
 	c := rd.RD
 	val, err := redis.String(c.Do("GET", redisKey))
@@ -61,7 +61,7 @@ func (rd *RedisRepo) Save(newData string) (bool, error) {
 	lg.Debugf("new value is %s, old value is %s", newData, val)
 
 	if newData != val {
-		//save
+		// save
 		c.Do("SET", redisKey, newData)
 		return true, nil
 	}

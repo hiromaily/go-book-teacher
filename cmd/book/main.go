@@ -11,14 +11,14 @@ import (
 	"github.com/hiromaily/golibs/signal"
 )
 
-//ENVIRONMENT VARIABLE
-//ENC_KEY
-//ENC_IV
+// ENVIRONMENT VARIABLE
+// ENC_KEY
+// ENC_IV
 
 var (
 	jsPath          = flag.String("j", "", "Json file path")
 	tomlPath        = flag.String("t", "", "Toml file path")
-	interval        = flag.Int("i", 0, "Interval for scraping") //if value is 0, it scrapes only once
+	interval        = flag.Int("i", 0, "Interval for scraping") // if value is 0, it scrapes only once
 	isEncryptedConf = flag.Bool("crypto", false, "if true, config file is handled as encrypted value")
 )
 
@@ -36,10 +36,10 @@ func init() {
 
 func parseFlag() {
 	flag.Usage = func() {
-		fmt.Fprint(os.Stderr, fmt.Sprintf(usage, os.Args[0]))
+		fmt.Fprintf(os.Stderr, usage, os.Args[0])
 	}
 
-	//command-line
+	// command-line
 	flag.Parse()
 }
 
@@ -47,10 +47,10 @@ func parseFlag() {
 func main() {
 	parseFlag()
 
-	//log
+	// log
 	lg.InitializeLog(lg.DebugStatus, lg.TimeShortFile, "[BookingTeacher]", "", "hiromaily")
 
-	//cipher
+	// cipher
 	if *isEncryptedConf {
 		_, err := enc.NewCryptWithEnv()
 		if err != nil {
@@ -58,12 +58,12 @@ func main() {
 		}
 	}
 
-	//config
+	// config
 	if err := config.New(*tomlPath, *isEncryptedConf); err != nil {
 		panic(err)
 	}
 
-	//signal (Debug)
+	// signal (Debug)
 	go signal.StartSignal()
 
 	regi := NewRegistry(config.GetConf())

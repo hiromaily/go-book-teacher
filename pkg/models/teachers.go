@@ -31,8 +31,8 @@ func LoadJSON(jsonFile string) (*SiteInfo, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "fail to Unmarshal json binary: %s", jsonFile)
 	}
-	//lg.Debugf("SiteInfo.Url: %v", siteInfo.URL)
-	//lg.Debugf("SiteInfo.Teachers[0].Id: %d, Name: %s, Country: %s", siteInfo.Teachers[0].ID, siteInfo.Teachers[0].Name, siteInfo.Teachers[0].Country)
+	// lg.Debugf("SiteInfo.Url: %v", siteInfo.URL)
+	// lg.Debugf("SiteInfo.Teachers[0].Id: %d, Name: %s, Country: %s", siteInfo.Teachers[0].ID, siteInfo.Teachers[0].Name, siteInfo.Teachers[0].Country)
 
 	return &siteInfo, nil
 }

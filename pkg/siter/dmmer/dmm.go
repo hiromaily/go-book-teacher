@@ -54,7 +54,7 @@ func (d *DMM) FindTeachers() []models.TeacherInfo {
 
 	wg := &sync.WaitGroup{}
 	chanSemaphore := make(chan bool, d.maxGoRoutine)
-	chanTh := make(chan *models.TeacherInfo) //response of found teacher by channel
+	chanTh := make(chan *models.TeacherInfo) // response of found teacher by channel
 
 	for _, teacher := range d.Teachers {
 		teacher := teacher
@@ -67,10 +67,10 @@ func (d *DMM) FindTeachers() []models.TeacherInfo {
 				<-chanSemaphore
 				wg.Done()
 			}()
-			//concurrent func
+			// concurrent func
 			err := d.getHTML(&teacher, chanTh)
 			if err != nil {
-				//TODO: this err shouold emit by channel
+				// TODO: this err shouold emit by channel
 				lg.Error(err)
 			}
 		}()
@@ -91,9 +91,9 @@ func (d *DMM) FindTeachers() []models.TeacherInfo {
 
 // getHTML is to get teacher information from HTML document
 func (d *DMM) getHTML(th *models.TeacherInfo, chTh chan *models.TeacherInfo) error {
-	var flg = false
+	flg := false
 
-	//HTTP connection
+	// HTTP connection
 	url := fmt.Sprintf("%steacher/index/%d/", d.url, th.ID)
 	doc, err := httpdoc.GetHTMLDocs(url)
 	if err != nil {
@@ -101,18 +101,18 @@ func (d *DMM) getHTML(th *models.TeacherInfo, chTh chan *models.TeacherInfo) err
 	} else if isTeacherActive(doc) {
 		parsedHTML := parseDate(doc)
 
-		//show teacher's id, name, date
+		// show teacher's id, name, date
 		fmt.Printf("----------- %s / %s / %d ----------- \n", th.Name, th.Country, th.ID)
 		for _, dt := range parsedHTML {
 			fmt.Println(dt)
 			flg = true
 		}
-		//send teacher by channel
+		// send teacher by channel
 		if flg {
 			chTh <- th
 		}
 	} else {
-		//no teacher
+		// no teacher
 		fmt.Printf("teacher [%d]%s quit \n", th.ID, th.Name)
 	}
 	return nil

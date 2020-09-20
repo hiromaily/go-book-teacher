@@ -14,7 +14,7 @@ type Storager interface {
 // NewStorager is to return Storager interface
 func NewStorager(conf *config.Config) (Storager, error) {
 	if conf.ValidateRedis() {
-		//redis mode
+		// redis mode
 		rd, err := NewRedis(conf.Redis.URL)
 		if err == nil {
 			return rd, nil
@@ -22,7 +22,7 @@ func NewStorager(conf *config.Config) (Storager, error) {
 	}
 
 	if conf.ValidateText() {
-		//text mode
+		// text mode
 		return NewText(conf.Text.Path), nil
 	}
 

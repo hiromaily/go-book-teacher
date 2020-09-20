@@ -15,7 +15,7 @@ type Registry interface {
 
 type registry struct {
 	conf *config.Config
-	//storager   *storages.Storager
+	// storager   *storages.Storager
 }
 
 // NewRegistry is to register regstry interface

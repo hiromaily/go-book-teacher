@@ -32,7 +32,6 @@ func NewBooker(
 	storager storages.Storager,
 	notifier notifier.Notifier,
 	siter siter.Siter) Booker {
-
 	return NewBook(conf, interval, storager, notifier, siter)
 }
 
@@ -57,7 +56,6 @@ func NewBook(
 	storager storages.Storager,
 	notifier notifier.Notifier,
 	siter siter.Siter) *Book {
-
 	var isLoop bool
 	if interval != 0 {
 		isLoop = true
@@ -69,26 +67,25 @@ func NewBook(
 		storager: storager,
 		notifier: notifier,
 		siter:    siter,
-		isLoop:   isLoop, //TODO: testmode, heroku env should be false
+		isLoop:   isLoop, // TODO: testmode, heroku env should be false
 	}
 	return &book
 }
 
 // Start is to start book execution
 func (b *Book) Start() error {
-
 	if err := b.siter.FetchInitialData(); err != nil {
 		return errors.Wrap(err, "fail to call siter.FetchInitialData()")
 	}
 
 	for {
-		//scraping
+		// scraping
 		teachers := b.siter.FindTeachers()
 
-		//save
+		// save
 		b.saveAndNotify(teachers)
 
-		//execute only once
+		// execute only once
 		if !b.isLoop {
 			b.storager.Close()
 			return nil
@@ -108,7 +105,7 @@ func (b *Book) Close() {
 	b.storager.Close()
 }
 
-//saveAndNotify is to save and notify if something saved
+// saveAndNotify is to save and notify if something saved
 func (b *Book) saveAndNotify(ths []models.TeacherInfo) {
 	if len(ths) != 0 {
 		// create string from ids slice
