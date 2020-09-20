@@ -5,7 +5,6 @@ import (
 	lg "github.com/hiromaily/golibs/log"
 	"io/ioutil"
 	"os"
-
 )
 
 // TextRepo is TextRepo object
