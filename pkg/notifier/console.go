@@ -23,7 +23,7 @@ type Console struct {
 func (c *Console) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", c.mode)
 
-	//emit a sound
+	// emit a sound
 	_ = exec.Command("say", "Found").Start()
 
 	for _, th := range ths {

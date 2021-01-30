@@ -1,10 +1,20 @@
 # Note: tabs by space can't not used for Makefile!
 
 CURRENTDIR=`pwd`
+modVer=$(shell cat go.mod | head -n 3 | tail -n 1 | awk '{print $2}' | cut -d'.' -f2)
+currentVer=$(shell go version | awk '{print $3}' | sed -e "s/go//" | cut -d'.' -f2)
 
 ###############################################################################
 # Managing Dependencies
 ###############################################################################
+.PHONY: check-ver
+check-ver:
+	#echo $(modVer)
+	#echo $(currentVer)
+	@if [ ${currentVer} -lt ${modVer} ]; then\
+		echo go version ${modVer}++ is required but your go version is ${currentVer};\
+	fi
+
 .PHONY: update
 update:
 	GO111MODULE=off go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
@@ -40,17 +50,20 @@ build:
 # run by save:text, notify:command using defined teacher data
 .PHONY: exec1
 exec1:
-	book -t ./config/toml/text-command.toml -crypto
+	book -t ./config/toml/text-command.toml
 
 # run by save:text, notify:command using defined teacher jsondata
 .PHONY: exec2
 exec2:
-	book -t ./config/toml/text-command.toml -j ./testdata/json/teachers.json -crypto
+	book -t ./config/toml/text-command.toml -j ./testdata/json/teachers.json
+#	book -t ./config/toml/text-command.toml -d 1 -j ./testdata/json/teachers.json
+#	book -t ./config/toml/text-command.toml -d 2 -j ./testdata/json/teachers.json
+#	book -t ./config/toml/text-command.toml -d 2 -i 30 -j ./testdata/json/teachers.json
 
 # run by save:text, notify:command using defined teacher data with loop
 .PHONY: exec3
 exec3:
-	book -t ./config/toml/text-command.toml  -i 10 -crypto
+	book -t ./config/toml/text-command.toml -i 10
 
 # run by save:text, notify:slack using defined teacher data
 .PHONY: exec4

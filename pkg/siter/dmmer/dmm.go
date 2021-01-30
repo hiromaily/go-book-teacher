@@ -49,12 +49,12 @@ func (d *DMM) FetchInitialData() error {
 }
 
 // FindTeachers is to find available teachers by scraping web site
-func (d *DMM) FindTeachers() []models.TeacherInfo {
+func (d *DMM) FindTeachers(day int) []models.TeacherInfo {
 	defer tm.Track(time.Now(), "dmm.FindTeachers()")
 
 	wg := &sync.WaitGroup{}
 	chanSemaphore := make(chan bool, d.maxGoRoutine)
-	chanTh := make(chan *models.TeacherInfo) //response of found teacher by channel
+	chanTh := make(chan *models.TeacherInfo) // response of found teacher by channel
 
 	for _, teacher := range d.Teachers {
 		teacher := teacher
@@ -67,10 +67,10 @@ func (d *DMM) FindTeachers() []models.TeacherInfo {
 				<-chanSemaphore
 				wg.Done()
 			}()
-			//concurrent func
-			err := d.getHTML(&teacher, chanTh)
+			// concurrent func
+			err := d.getHTML(&teacher, chanTh, day)
 			if err != nil {
-				//TODO: this err shouold emit by channel
+				// TODO: this err shouold emit by channel
 				lg.Error(err)
 			}
 		}()
@@ -90,29 +90,29 @@ func (d *DMM) FindTeachers() []models.TeacherInfo {
 }
 
 // getHTML is to get teacher information from HTML document
-func (d *DMM) getHTML(th *models.TeacherInfo, chTh chan *models.TeacherInfo) error {
-	var flg = false
+func (d *DMM) getHTML(th *models.TeacherInfo, chTh chan *models.TeacherInfo, day int) error {
+	flg := false
 
-	//HTTP connection
+	// HTTP connection
 	url := fmt.Sprintf("%steacher/index/%d/", d.url, th.ID)
 	doc, err := httpdoc.GetHTMLDocs(url)
 	if err != nil {
 		return errors.Wrapf(err, "fail to call GetHTMLDocs() %s", url)
 	} else if isTeacherActive(doc) {
-		parsedHTML := parseDate(doc)
+		parsedHTML := parseDate(doc, day)
 
-		//show teacher's id, name, date
+		// show teacher's id, name, date
 		fmt.Printf("----------- %s / %s / %d ----------- \n", th.Name, th.Country, th.ID)
 		for _, dt := range parsedHTML {
 			fmt.Println(dt)
 			flg = true
 		}
-		//send teacher by channel
+		// send teacher by channel
 		if flg {
 			chTh <- th
 		}
 	} else {
-		//no teacher
+		// no teacher
 		fmt.Printf("teacher [%d]%s quit \n", th.ID, th.Name)
 	}
 	return nil

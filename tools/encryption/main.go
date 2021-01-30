@@ -9,9 +9,7 @@ import (
 	lg "github.com/hiromaily/golibs/log"
 )
 
-var (
-	mode = flag.String("m", "e", "e:encode, d:decode")
-)
+var mode = flag.String("m", "e", "e:encode, d:decode")
 
 var usage = `Usage: %s [options...]
 Options:
@@ -24,7 +22,7 @@ e.g.:
 
 func init() {
 	flag.Usage = func() {
-		fmt.Fprint(os.Stderr, fmt.Sprintf(usage, os.Args[0]))
+		fmt.Fprintf(os.Stderr, usage, os.Args[0])
 	}
 	flag.Parse()
 
@@ -58,10 +56,10 @@ func main() {
 
 	switch *mode {
 	case "e":
-		//encode
+		// encode
 		lg.Info(crypt.EncryptBase64(targetStr))
 	case "d":
-		//decode
+		// decode
 		str, err := crypt.DecryptBase64(targetStr)
 		if err != nil {
 			lg.Fatal(err)

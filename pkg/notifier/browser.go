@@ -30,7 +30,7 @@ func (b *Browser) Send(ths []models.TeacherInfo) error {
 	lg.Debugf("Send by %s", b.mode)
 
 	for _, t := range ths {
-		//out, err := exec.Command("open /Applications/Google\\ Chrome.app", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", id)).Output()
+		// out, err := exec.Command("open /Applications/Google\\ Chrome.app", fmt.Sprintf("http://eikaiwa.dmm.com/teacher/index/%d/", id)).Output()
 		err := exec.Command("open", fmt.Sprintf("%steacher/index/%d/", b.url, t.ID)).Start()
 		if err != nil {
 			return errors.Wrapf(err, "fail to exec.Command(open)")

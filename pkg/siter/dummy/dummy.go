@@ -21,6 +21,6 @@ func (d *DummySite) FetchInitialData() error {
 func (d *DummySite) InitializeSavedTeachers() {}
 
 // FindTeachers is to do nothing
-func (d *DummySite) FindTeachers() []models.TeacherInfo {
+func (d *DummySite) FindTeachers(day int) []models.TeacherInfo {
 	return nil
 }

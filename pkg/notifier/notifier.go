@@ -13,18 +13,18 @@ type Notifier interface {
 // NewNotifier is to return NewNotifier interface
 func NewNotifier(conf *config.Config) Notifier {
 	if conf.ValidateSlack() {
-		//slack mode
+		// slack mode
 		return NewSlack(conf.Slack, conf.Site.URL)
 	}
 	if conf.ValidateBrowser() {
-		//browser mode
+		// browser mode
 		return NewBrowser(conf.Site.URL)
 	}
 	if conf.ValidateMail() {
-		//mail mode
+		// mail mode
 		return NewMail(conf.Mail)
 	}
-	//set dummy
-	//return NewDummy()
+	// set dummy
+	// return NewDummy()
 	return NewConsole()
 }

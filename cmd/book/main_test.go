@@ -10,9 +10,9 @@ import (
 )
 
 var bookerTests = []struct {
-	storage      int    //1:text, 2:redis, anything else:dummy
-	notification int    //1:slack, 2:browser, 3:mail, anything else: console
-	jsonPath     string //if blank, default value should be used
+	storage      int    // 1:text, 2:redis, anything else:dummy
+	notification int    // 1:slack, 2:browser, 3:mail, anything else: console
+	jsonPath     string // if blank, default value should be used
 	explanation  string
 	err          error
 }{
@@ -24,7 +24,7 @@ var bookerTests = []struct {
 func setup() {
 	lg.InitializeLog(lg.InfoStatus, lg.TimeShortFile, "[GO-BOOK-TEACHER_TEST]", "", "hiromaily")
 
-	//Note: redis should be run in advance
+	// Note: redis should be run in advance
 	_, err := enc.NewCryptWithEnv()
 	if err != nil {
 		panic(err)
@@ -32,7 +32,6 @@ func setup() {
 }
 
 func teardown() {
-
 }
 
 func TestMain(m *testing.M) {
@@ -47,12 +46,12 @@ func TestMain(m *testing.M) {
 
 func TestIntegrationBooker(t *testing.T) {
 	for _, tt := range bookerTests {
-		//create config
+		// create config
 		conf := createConfig(tt.storage, tt.notification)
 		regi := NewRegistry(conf)
 
-		//run
-		booker := regi.NewBooker(tt.jsonPath, 0)
+		// run
+		booker := regi.NewBooker(tt.jsonPath, 0, 0)
 		if err := booker.Start(); err != nil {
 			t.Errorf("fail: %s", tt.explanation)
 		}
@@ -62,7 +61,7 @@ func TestIntegrationBooker(t *testing.T) {
 
 func createConfig(storage, notification int) *config.Config {
 	conf := config.Config{}
-	//site
+	// site
 	conf.Site = &config.SiteConfig{
 		Type:        "DMM",
 		URL:         "http://eikaiwa.dmm.com/",
@@ -72,29 +71,29 @@ func createConfig(storage, notification int) *config.Config {
 	crypt := enc.GetCrypt()
 	switch storage {
 	case 1:
-		//text
+		// text
 		conf.Text = &config.TextConfig{Path: "test.log"}
 	case 2:
-		//redis
+		// redis
 		conf.Redis = &config.RedisConfig{URL: "redis://h:password@127.0.0.1:6379"}
 	default:
-		//dummy
+		// dummy
 	}
 
 	switch notification {
 	case 1:
-		//slack
+		// slack
 		key := "HP/9upIf+CwLGuDj2V0xfqulICwv1nHhQXy+S2TSEhFzYfEnt9zzWjVtoMT/8Rb7"
 		conf.Slack.Key, _ = crypt.DecryptBase64(key)
 	case 2:
-		//browser
+		// browser
 		conf.Browser.Enabled = true
-	//case 3:
+	// case 3:
 	//	//mail
 	//	conf.Mail.Encrypted = true
 	//	conf.Mail.MailFrom = "your@mail.com"
 	default:
-		//console
+		// console
 	}
 	return &conf
 }
