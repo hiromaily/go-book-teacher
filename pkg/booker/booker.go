@@ -127,7 +127,7 @@ func (b *Book) saveAndNotify(ths []models.TeacherInfo) {
 
 		if isUpdated {
 			// notify
-			b.notifier.Send(ths)
+			b.notifier.Notify(ths)
 		}
 	}
 }

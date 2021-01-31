@@ -5,26 +5,28 @@ import (
 	"io/ioutil"
 	"os"
 
-	lg "github.com/hiromaily/golibs/log"
+	"go.uber.org/zap"
 )
 
-// TextRepo is TextRepo object
-type TextRepo struct {
-	mode     string
+// TextRepo text repository
+type textRepo struct {
+	mode     Mode
+	logger   *zap.Logger
 	filePath string
 }
 
 // NewText is to return TextRepo object
-func NewText(path string) *TextRepo {
-	return &TextRepo{
-		mode:     "text",
+func NewText(logger *zap.Logger, path string) Storager {
+	return &textRepo{
+		mode:     TextMode,
+		logger:   logger,
 		filePath: path,
 	}
 }
 
 // Save is to save data to text
-func (t *TextRepo) Save(newData string) (bool, error) {
-	lg.Debugf("Save by %s", t.mode)
+func (t *textRepo) Save(newData string) (bool, error) {
+	t.logger.Debug("save", zap.String("mode", t.mode.String()))
 
 	// open saved log
 	fp, err := os.OpenFile(t.filePath, os.O_CREATE, 0o664)
@@ -47,10 +49,10 @@ func (t *TextRepo) Save(newData string) (bool, error) {
 	return true, nil
 }
 
-// Delete is to delete file
-func (t *TextRepo) Delete() error {
+// Delete deletes file
+func (t *textRepo) Delete() error {
 	return os.Remove(t.filePath)
 }
 
-// Close is to do nothing
-func (t *TextRepo) Close() {}
+// Close closes nothing
+func (t *textRepo) Close() {}

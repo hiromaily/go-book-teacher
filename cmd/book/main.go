@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"github.com/hiromaily/go-book-teacher/pkg/config"
-	enc "github.com/hiromaily/golibs/cipher/encryption"
 	lg "github.com/hiromaily/golibs/log"
 	"github.com/hiromaily/golibs/signal"
 )
@@ -42,25 +41,12 @@ func parseFlag() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, usage, os.Args[0])
 	}
-
-	// command-line
 	flag.Parse()
 }
 
 // Main
 func main() {
 	parseFlag()
-
-	// log
-	lg.InitializeLog(lg.DebugStatus, lg.TimeShortFile, "[BookingTeacher]", "", "hiromaily")
-
-	// cipher
-	if *isEncryptedConf {
-		_, err := enc.NewCryptWithEnv()
-		if err != nil {
-			panic(err)
-		}
-	}
 
 	// config
 	conf, err := config.NewConfig(*tomlPath, *isEncryptedConf)

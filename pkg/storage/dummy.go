@@ -1,29 +1,33 @@
 package storage
 
 import (
-	lg "github.com/hiromaily/golibs/log"
+	"go.uber.org/zap"
 )
 
-// DummyRepo is DummyRepo object
-type DummyRepo struct {
-	mode string
+// dummyStorage object
+type dummyStorage struct {
+	mode   Mode
+	logger *zap.Logger
 }
 
-// NewDummy is return DummyRepo object
-func NewDummy() *DummyRepo {
-	return &DummyRepo{mode: "dummy"}
+// NewDummy returns Storager interface
+func NewDummy(logger *zap.Logger) Storager {
+	return &dummyStorage{
+		mode:   DummyMode,
+		logger: logger,
+	}
 }
 
-// Save is to do nothing
-func (d *DummyRepo) Save(newData string) (bool, error) {
-	lg.Debugf("Save by %s", d.mode)
+// Save saves nothing
+func (d *dummyStorage) Save(_ string) (bool, error) {
+	d.logger.Debug("save", zap.String("mode", d.mode.String()))
 	return true, nil
 }
 
-// Delete is to do nothing
-func (d *DummyRepo) Delete() error {
+// Delete deletes nothing
+func (d *dummyStorage) Delete() error {
 	return nil
 }
 
-// Close is to do nothing
-func (d *DummyRepo) Close() {}
+// Close closes nothing
+func (d *dummyStorage) Close() {}

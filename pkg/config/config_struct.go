@@ -7,9 +7,18 @@ import (
 
 // Root is root config
 type Root struct {
-	Site         *Site
-	Storage      *Storage
-	Notification *Notification
+	Logger       *Logger       `toml:"logger" validate:"required"`
+	Site         *Site         `toml:"site" validate:"required"`
+	Storage      *Storage      `toml:"storage"`
+	Notification *Notification `toml:"notification"`
+}
+
+// Logger is zap logger property
+type Logger struct {
+	Service      string `toml:"service" validate:"required"`
+	Env          string `toml:"env" validate:"oneof=dev prod custom"`
+	Level        string `toml:"level" validate:"required"`
+	IsStackTrace bool   `toml:"is_stacktrace"`
 }
 
 // Site is site information

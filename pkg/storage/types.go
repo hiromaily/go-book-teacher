@@ -7,3 +7,7 @@ const (
 	RedisMode Mode = "redis"
 	DummyMode Mode = "dummy"
 )
+
+func (m Mode) String() string {
+	return string(m)
+}

@@ -6,5 +6,5 @@ import (
 
 // Notifier interface
 type Notifier interface {
-	Send([]models.TeacherInfo) error
+	Notify([]models.TeacherInfo) error
 }

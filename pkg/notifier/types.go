@@ -7,3 +7,7 @@ const (
 	SlackMode   Mode = "slack"
 	DummyMode   Mode = "dummy"
 )
+
+func (m Mode) String() string {
+	return string(m)
+}

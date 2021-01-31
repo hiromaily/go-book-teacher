@@ -8,25 +8,25 @@ import (
 	"net/http"
 
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 
 	"github.com/hiromaily/go-book-teacher/pkg/models"
 	lg "github.com/hiromaily/golibs/log"
 	"github.com/hiromaily/golibs/tmpl"
 )
 
-// Slack is Slack object
-type Slack struct {
-	mode          string
+// slack object
+type slack struct {
+	mode          Mode
+	logger        *zap.Logger
 	slackURL      string
 	targetSiteURL string
 }
 
-// Message is Message object
+// Message object
 type Message struct {
 	Text string `json:"text"`
 }
-
-//{"text": "New comic book alert! _The Further Adventures of Slackbot_, Volume 1, Issue 3."}
 
 var tmplSlackMsg = `
 🤓😎😴 The following tachers are available now! 🤓😎😴
@@ -39,22 +39,18 @@ Enjoy!😄
 `
 
 // NewSlack is to return Slack object
-func NewSlack(key string, targetSiteURL string) *Slack {
-	return &Slack{
-		mode:          "slack",
-		slackURL:      getSlackURL(key),
+func NewSlack(logger *zap.Logger, key string, targetSiteURL string) Notifier {
+	return &slack{
+		mode:          SlackMode,
+		logger:        logger,
+		slackURL:      fmt.Sprintf("https://hooks.slack.com/services/%s", key),
 		targetSiteURL: targetSiteURL,
 	}
 }
 
-// getSlackURL is to get URL for slack notification
-func getSlackURL(key string) string {
-	return fmt.Sprintf("https://hooks.slack.com/services/%s", key)
-}
-
 // Send is notification by Slack
-func (s *Slack) Send(ths []models.TeacherInfo) error {
-	lg.Debugf("Send by %s", s.mode)
+func (s *slack) Notify(ths []models.TeacherInfo) error {
+	s.logger.Debug("notify", zap.String("mode", s.mode.String()))
 
 	// make body
 	// FIXME: handle as interface
@@ -80,7 +76,7 @@ func (s *Slack) Send(ths []models.TeacherInfo) error {
 	return nil
 }
 
-func (s *Slack) sendPost(data []byte) ([]byte, error) {
+func (s *slack) sendPost(data []byte) ([]byte, error) {
 	// 1. prepare NewRequest data
 	req, err := http.NewRequest(
 		"POST",

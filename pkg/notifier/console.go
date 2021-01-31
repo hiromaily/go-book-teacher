@@ -4,26 +4,31 @@ import (
 	"fmt"
 	"os/exec"
 
+	"go.uber.org/zap"
+
 	"github.com/hiromaily/go-book-teacher/pkg/models"
-	lg "github.com/hiromaily/golibs/log"
 )
 
-// NewConsole is to return Console object
-func NewConsole() *Console {
-	return &Console{mode: "console"}
+// console object
+type console struct {
+	mode   Mode
+	logger *zap.Logger
 }
 
-// Console is Console object
-type Console struct {
-	mode string
+// NewConsole returns Notifier interface
+func NewConsole(logger *zap.Logger) Notifier {
+	return &console{
+		mode:   ConsoleMode,
+		logger: logger,
+	}
 }
 
-// Send is notification by executing say command and stdout
+// Notify notifies on console
 // TODO: time should be displayed
-func (c *Console) Send(ths []models.TeacherInfo) error {
-	lg.Debugf("Send by %s", c.mode)
+func (c *console) Notify(ths []models.TeacherInfo) error {
+	c.logger.Debug("notify", zap.String("mode", c.mode.String()))
 
-	// emit a sound
+	// emit a sound (maybe macOS only)
 	_ = exec.Command("say", "Found").Start()
 
 	for _, th := range ths {
