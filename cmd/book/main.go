@@ -15,6 +15,8 @@ import (
 // ENC_KEY
 // ENC_IV
 
+// -d daemon mode
+
 var (
 	jsPath          = flag.String("j", "", "Json file path")
 	tomlPath        = flag.String("t", "", "Toml file path")

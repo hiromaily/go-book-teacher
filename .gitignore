@@ -3,9 +3,7 @@
 .idea/
 
 #main
-scripts/mail.sh
 status.log
-cmd/book/test.log
 
 #compiled
 profile.cov

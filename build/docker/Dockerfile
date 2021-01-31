@@ -1,5 +1,5 @@
 # Dcokerfile for go-book-teacher
-FROM golang:1.13.1
+FROM golang:1.15.6-alpine3.12
 
 ARG redisHostName=default-redis-server
 

@@ -1,14 +1,12 @@
-#- redis:3.2
-#- book from Dockerfile of book (build is required)
-version: '3.0'
+version: '3.9'
 
 volumes:
   rdb: {}
 
 services:
-  # Redis
+  # redis
   redis:
-    image: redis:5.0
+    image: redis:6.0.10-alpine3.12
     container_name: book-redis
     ports:
       - "6379"

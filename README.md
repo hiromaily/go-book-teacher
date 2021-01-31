@@ -6,7 +6,7 @@
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/hiromaily/go-book-teacher/master/LICENSE)
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/hiromaily/go-book-teacher)
 
-Go-book-teacher is notifier for specific teachers are available on English lesson service.  
+Go-book-teacher is notifier for that specific teachers are available on English lesson service.  
 
 
 #### Console
@@ -49,8 +49,8 @@ $ go get github.com/hiromaily/go-book-teacher ./...
 Usage: book [options...]
 
 Options:
-  -j      Json file path for teacher information
-  -t      Toml file path for config
+  -j      JSON file path for teacher information
+  -t      TOML file path for config
   -i      Interval for scraping, if 0 it scrapes only once
   -crypto true is that conf file is handled as encrypted value
 

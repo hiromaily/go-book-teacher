@@ -3,21 +3,25 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
-	enc "github.com/hiromaily/golibs/cipher/encryption"
-	lg "github.com/hiromaily/golibs/log"
+	"github.com/hiromaily/go-book-teacher/pkg/encryption"
 )
 
-var mode = flag.String("m", "e", "e:encode, d:decode")
+var (
+	isEncoded = flag.Bool("encode", false, "encode target")
+	isDecoded = flag.Bool("decode", false, "encode target")
+)
 
 var usage = `Usage: %s [options...]
 Options:
-  -m  e:encode, d:decode.
+  -encode
+  -decode
 e.g.:
-  encryption -m e xxxxxxxx
+  encryption -encode xxxxxxxx
     or
-  encryption -m d xxxxxxxx
+  encryption -decode xxxxxxxx
 `
 
 func init() {
@@ -26,46 +30,35 @@ func init() {
 	}
 	flag.Parse()
 
-	if len(os.Args) != 4 {
+	if len(os.Args) != 3 {
 		flag.Usage()
 		os.Exit(1)
 		return
 	}
 }
 
-func setup() {
-	lg.InitializeLog(lg.DebugStatus, lg.TimeShortFile, "[GOTOOLS GoChipher]", "", "hiromaily")
-
-	key := os.Getenv("ENC_KEY")
-	iv := os.Getenv("ENC_IV")
-
-	if key == "" || iv == "" {
-		lg.Fatalf("%s", "set Environment Valuable: ENC_KEY, ENC_IV")
-		os.Exit(1)
-	}
-
-	enc.NewCrypt(key, iv)
-}
-
 func main() {
-	setup()
-
-	crypt := enc.GetCrypt()
-	targetStr := os.Args[3]
-	fmt.Printf("target string is %s\n", targetStr)
-
-	switch *mode {
-	case "e":
-		// encode
-		lg.Info(crypt.EncryptBase64(targetStr))
-	case "d":
-		// decode
-		str, err := crypt.DecryptBase64(targetStr)
-		if err != nil {
-			lg.Fatal(err)
-		}
-		lg.Info(str)
-	default:
-		lg.Fatalf("%s", "arguments is wrong")
+	crypt, err := encryption.NewCryptWithEnv()
+	if err != nil {
+		panic(err)
 	}
+
+	target := os.Args[3]
+	log.Printf("target string is %s\n", target)
+
+	if *isEncoded {
+		// encode
+		log.Print(crypt.EncryptBase64(target))
+		return
+	}
+	if *isDecoded {
+		// decode
+		decrypted, err := crypt.DecryptBase64(target)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Print(decrypted)
+		return
+	}
+	flag.Usage()
 }
