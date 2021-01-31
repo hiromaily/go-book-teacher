@@ -3,34 +3,25 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/hiromaily/go-book-teacher/pkg/config"
-	lg "github.com/hiromaily/golibs/log"
-	"github.com/hiromaily/golibs/signal"
+	"github.com/hiromaily/go-book-teacher/pkg/signal"
 )
 
-// ENVIRONMENT VARIABLE
-// ENC_KEY
-// ENC_IV
-
-// -d daemon mode
-
 var (
-	jsPath          = flag.String("j", "", "Json file path")
-	tomlPath        = flag.String("t", "", "Toml file path")
-	interval        = flag.Int("i", 0, "Interval for scraping (xxx second)") // if value is 0, it scrapes only once
-	isEncryptedConf = flag.Bool("crypto", false, "if true, config file is handled as encrypted value")
-	day             = flag.Int("d", 0, "0: all day, 1:today, 2: tommorw")
+	jsPath   = flag.String("json", "", "JSON file path")
+	tomlPath = flag.String("toml", "", "TOML file path")
+	day      = flag.Int("day", 0, "0: all day, 1:today, 2: tomorrow")
+	// -d daemon mode
 )
 
 var usage = `Usage: %s [options...]
 Options:
-  -j      Json file path for teacher information
-  -t      Toml file path for config
-  -i      Interval for scraping, if 0 it scrapes only once
-  -d      Day for teacher schedule list
-  -crypto true is that conf file is handled as encrypted value
+  -json      Json file path for teacher information
+  -toml      Toml file path for config
+  -day       Day for teacher schedule list
 `
 
 // init() can not be used because it affects main_test.go as well.
@@ -44,23 +35,26 @@ func parseFlag() {
 	flag.Parse()
 }
 
-// Main
 func main() {
 	parseFlag()
 
 	// config
-	conf, err := config.NewConfig(*tomlPath, *isEncryptedConf)
+	configPath := *tomlPath
+	if configPath == "" {
+		configPath = config.GetEnvConfPath()
+	}
+	conf, err := config.NewConfig(configPath)
 	if err != nil {
 		panic(err)
 	}
 
-	// signal (Debug)
+	// signal
 	go signal.StartSignal()
 
 	regi := NewRegistry(conf)
-	booker := regi.NewBooker(*jsPath, *day, *interval)
+	booker := regi.NewBooker(*jsPath, *day)
 	if err := booker.Start(); err != nil {
-		lg.Error(err)
+		log.Fatal(err)
 	}
 	//
 	booker.Cleanup()

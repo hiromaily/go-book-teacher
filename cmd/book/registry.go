@@ -14,7 +14,7 @@ import (
 
 // Registry interface
 type Registry interface {
-	NewBooker(string, int, int) booker.Booker
+	NewBooker(string, int) booker.Booker
 }
 
 type registry struct {
@@ -29,11 +29,10 @@ func NewRegistry(conf *config.Root) Registry {
 }
 
 // NewBooker is to register for booker interface
-func (r *registry) NewBooker(jsonPath string, day, interval int) booker.Booker {
+func (r *registry) NewBooker(jsonPath string, day int) booker.Booker {
 	return booker.NewBooker(
-		r.conf,
 		day,
-		interval,
+		r.conf.Interval,
 		r.newStorager(),
 		r.newNotifier(),
 		r.newSiter(jsonPath),
@@ -74,8 +73,7 @@ func (r *registry) newNotifier() notifier.Notifier {
 			r.conf.Site.URL,
 		)
 	}
-
-	panic(errors.New("invalid notification mode"))
+	panic(errors.Errorf("invalid notification mode: %s", r.conf.Notification.Mode))
 }
 
 func (r *registry) newSiter(jsonPath string) site.Siter {

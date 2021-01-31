@@ -1,5 +1,13 @@
 # heroku
 
+interval = 60 # second :run every 60 second, run only once when interval is `0`
+
+[logger]
+service = "book-teacher"
+env = "custom" # dev, prod, custom :for only zap logger
+level = "debug" # debug, info, warn, error
+is_stacktrace = true
+
 [site]
 type = "dmm"
 url = "http://eikaiwa.dmm.com/"
@@ -24,7 +32,7 @@ url = "bPLOW06msIeCN0fPuvqP/1S58yozAMsNYwGfJ3F77Mw7xpz/revQufXGvj8iZExil3+j0wuhE
 [notification]
 mode = "slack"
 
-[notification.cli]
+[notification.console]
 enabled = false
 
 [notification.slack]

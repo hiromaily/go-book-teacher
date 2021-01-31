@@ -24,13 +24,16 @@ update:
 ###############################################################################
 # Golang formatter and detection
 ###############################################################################
+.PHONY: imports
+imports:
+	./scripts/imports.sh
+
 .PHONY: lint
 lint:
 	golangci-lint run --fix
 
-.PHONY: imports
-imports:
-	./scripts/imports.sh
+.PHONY: lintall
+lintall: imports lint
 
 ###########################################################
 # go list for check import package
@@ -56,9 +59,9 @@ exec1:
 .PHONY: exec2
 exec2:
 	book -t ./config/toml/text-command.toml -j ./testdata/json/teachers.json
-#	book -t ./config/toml/text-cli.toml -d 1 -j ./testdata/json/teachers.json
-#	book -t ./config/toml/text-cli.toml -d 2 -j ./testdata/json/teachers.json
-#	book -t ./config/toml/text-cli.toml -d 2 -i 30 -j ./testdata/json/teachers.json
+#	book -t ./config/toml/text-console.toml -d 1 -j ./testdata/json/teachers.json
+#	book -t ./config/toml/text-console.toml -d 2 -j ./testdata/json/teachers.json
+#	book -t ./config/toml/text-console.toml -d 2 -i 30 -j ./testdata/json/teachers.json
 
 # run by save:text, notify:command using defined teacher data with loop
 .PHONY: exec3

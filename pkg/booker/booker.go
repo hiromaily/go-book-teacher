@@ -6,7 +6,6 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/hiromaily/go-book-teacher/pkg/config"
 	"github.com/hiromaily/go-book-teacher/pkg/models"
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
 	"github.com/hiromaily/go-book-teacher/pkg/site"
@@ -27,13 +26,18 @@ type Booker interface {
 
 // NewBooker is to return booker interface
 func NewBooker(
-	conf *config.Root,
 	day int,
 	interval int,
 	storager storages.Storager,
 	notifier notifier.Notifier,
 	siter site.Siter) Booker {
-	return NewBook(conf, day, interval, storager, notifier, siter)
+	return NewBook(
+		day,
+		interval,
+		storager,
+		notifier,
+		siter,
+	)
 }
 
 // ----------------------------------------------------------------------------
@@ -42,7 +46,6 @@ func NewBooker(
 
 // Book is Book object
 type Book struct {
-	conf     *config.Root
 	day      int
 	interval int
 	storager storages.Storager
@@ -53,7 +56,6 @@ type Book struct {
 
 // NewBook is to return book object
 func NewBook(
-	conf *config.Root,
 	day int,
 	interval int,
 	storager storages.Storager,
@@ -65,7 +67,6 @@ func NewBook(
 	}
 
 	book := Book{
-		conf:     conf,
 		day:      day,
 		interval: interval,
 		storager: storager,

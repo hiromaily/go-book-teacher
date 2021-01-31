@@ -1,3 +1,12 @@
+
+interval = 60 # second :run every 60 second, run only once when interval is `0`
+
+[logger]
+service = "book-teacher"
+env = "custom" # dev, prod, custom :for only zap logger
+level = "debug" # debug, info, warn, error
+is_stacktrace = true
+
 [site]
 type = "dmm"
 url = "http://eikaiwa.dmm.com/"
@@ -20,9 +29,9 @@ url = ""
 # Notification
 # -----------------------------------------------------------------------------
 [notification]
-mode = "cli"
+mode = "console"
 
-[notification.cli]
+[notification.console]
 enabled = true
 
 [notification.slack]

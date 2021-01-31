@@ -2,6 +2,8 @@ package config
 
 import (
 	"io/ioutil"
+	"os"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/go-playground/validator/v10"
@@ -12,20 +14,26 @@ import (
 )
 
 // NewConfig returns *Root config
-func NewConfig(fileName string, isEncrypted bool) (*Root, error) {
+func NewConfig(fileName string) (*Root, error) {
 	conf, err := loadConfig(fileName)
 	if err != nil {
 		return nil, err
 	}
 
-	if isEncrypted {
-		crypt, err := encryption.NewCryptWithEnv()
-		if err != nil {
-			return nil, err
-		}
-		conf.decrypt(crypt)
+	if err = conf.decrypt(); err != nil {
+		return nil, err
 	}
 	return conf, err
+}
+
+// GetEnvConfPath returns toml file path from environment variable `$GO-BOOK_CONF`
+func GetEnvConfPath() string {
+	path := os.Getenv("GO_BOOK_CONF")
+	if strings.Contains(path, "${GOPATH}") {
+		gopath := os.Getenv("GOPATH")
+		path = strings.Replace(path, "${GOPATH}", gopath, 1)
+	}
+	return path
 }
 
 // load config file
@@ -51,32 +59,30 @@ func loadConfig(fileName string) (*Root, error) {
 
 func (r *Root) validate() error {
 	validate := validator.New()
-	// return validate.Struct(r)
 
 	excepted := make([]string, 0)
 	if r.Storage.Mode == storage.TextMode {
-		excepted = append(excepted, "Redis")
+		excepted = append(excepted, []string{"Storage.Redis", "Storage.Redis.URL"}...)
 	} else {
 		excepted = append(excepted, "Text")
 	}
 	if !r.Notification.Console.Enabled {
-		excepted = append(excepted, "CLI")
-	}
-	if !r.Notification.Browser.Enabled {
-		excepted = append(excepted, "Browser")
+		excepted = append(excepted, "Console")
 	}
 	if !r.Notification.Slack.Enabled {
-		excepted = append(excepted, "Slack")
-	}
-	if !r.Notification.Mail.Enabled {
-		excepted = append(excepted, []string{"Mail", "SMTP"}...)
+		excepted = append(excepted, []string{"Notification.Slack", "Notification.Key"}...)
 	}
 
 	return validate.StructExcept(r, excepted...)
 }
 
 // decrypt decrypts encrypted values in config file
-func (r *Root) decrypt(crypt encryption.Crypt) {
+func (r *Root) decrypt() error {
+	crypt, err := encryption.NewCryptWithEnv()
+	if err != nil {
+		return err
+	}
+
 	if r.Storage.Redis.Encrypted {
 		target := r.Storage.Redis
 		target.URL, _ = crypt.DecryptBase64(target.URL)
@@ -86,14 +92,5 @@ func (r *Root) decrypt(crypt encryption.Crypt) {
 		target := r.Notification.Slack
 		target.Key, _ = crypt.DecryptBase64(target.Key)
 	}
-
-	if r.Notification.Mail.Encrypted {
-		target := r.Notification.Mail
-		target.MailTo, _ = crypt.DecryptBase64(target.MailTo)
-		target.MailFrom, _ = crypt.DecryptBase64(target.MailFrom)
-
-		target.SMTP.Address, _ = crypt.DecryptBase64(target.SMTP.Address)
-		target.SMTP.Pass, _ = crypt.DecryptBase64(target.SMTP.Pass)
-		target.SMTP.Server, _ = crypt.DecryptBase64(target.SMTP.Server)
-	}
+	return nil
 }
