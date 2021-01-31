@@ -9,7 +9,6 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/hiromaily/go-book-teacher/pkg/config"
 	"github.com/hiromaily/go-book-teacher/pkg/models"
 	lg "github.com/hiromaily/golibs/log"
 	"github.com/hiromaily/golibs/tmpl"
@@ -40,10 +39,10 @@ Enjoy!😄
 `
 
 // NewSlack is to return Slack object
-func NewSlack(conf *config.SlackConfig, targetSiteURL string) *Slack {
+func NewSlack(key string, targetSiteURL string) *Slack {
 	return &Slack{
 		mode:          "slack",
-		slackURL:      getSlackURL(conf.Key),
+		slackURL:      getSlackURL(key),
 		targetSiteURL: targetSiteURL,
 	}
 }

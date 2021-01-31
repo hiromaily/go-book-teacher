@@ -1,10 +1,10 @@
-package siter
+package site
 
 import (
 	"github.com/hiromaily/go-book-teacher/pkg/config"
 	"github.com/hiromaily/go-book-teacher/pkg/models"
-	"github.com/hiromaily/go-book-teacher/pkg/siter/dmmer"
-	"github.com/hiromaily/go-book-teacher/pkg/siter/dummy"
+	"github.com/hiromaily/go-book-teacher/pkg/site/dmmer"
+	"github.com/hiromaily/go-book-teacher/pkg/site/dummy"
 )
 
 // Siter is Siter interface
@@ -15,10 +15,10 @@ type Siter interface {
 }
 
 // NewSiter is to return Siter interface
-func NewSiter(jsonPath string, siteConf *config.SiteConfig) Siter {
+func NewSiter(jsonPath string, siteConf *config.Site) Siter {
 	switch siteConf.Type {
 	case SiteTypeDMM.String():
-		return dmmer.NewDMM(jsonPath, siteConf.URL, siteConf.Concurrency)
+		return dmmer.NewDMM(jsonPath, siteConf.URL)
 	default:
 		return dummy.NewDummySite()
 	}

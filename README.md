@@ -8,6 +8,7 @@
 
 Go-book-teacher is notifier for that specific teachers are available on English lesson service.  
 
+This project has started since 2016 to study Golang and code is quite messy. Now it's under refactoring.
 
 #### Console
 ```
@@ -37,6 +38,13 @@ Go-book-teacher is notifier for that specific teachers are available on English 
 
 #### Slack
 ![slack](https://raw.githubusercontent.com/hiromaily/go-book-teacher/master/images/slack_image.png)
+
+
+## Requirements
+- Golang 1.15+
+- Docker compose
+  - Redis
+- [direnv](https://github.com/direnv/direnv) for MacOS user
 
 
 ## Installation

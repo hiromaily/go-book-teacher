@@ -9,8 +9,8 @@ import (
 	"github.com/hiromaily/go-book-teacher/pkg/config"
 	"github.com/hiromaily/go-book-teacher/pkg/models"
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
-	"github.com/hiromaily/go-book-teacher/pkg/siter"
-	storages "github.com/hiromaily/go-book-teacher/pkg/storager"
+	"github.com/hiromaily/go-book-teacher/pkg/site"
+	storages "github.com/hiromaily/go-book-teacher/pkg/storage"
 	lg "github.com/hiromaily/golibs/log"
 )
 
@@ -27,12 +27,12 @@ type Booker interface {
 
 // NewBooker is to return booker interface
 func NewBooker(
-	conf *config.Config,
+	conf *config.Root,
 	day int,
 	interval int,
 	storager storages.Storager,
 	notifier notifier.Notifier,
-	siter siter.Siter) Booker {
+	siter site.Siter) Booker {
 	return NewBook(conf, day, interval, storager, notifier, siter)
 }
 
@@ -42,23 +42,23 @@ func NewBooker(
 
 // Book is Book object
 type Book struct {
-	conf     *config.Config
+	conf     *config.Root
 	day      int
 	interval int
 	storager storages.Storager
 	notifier notifier.Notifier
-	siter    siter.Siter
+	siter    site.Siter
 	isLoop   bool
 }
 
 // NewBook is to return book object
 func NewBook(
-	conf *config.Config,
+	conf *config.Root,
 	day int,
 	interval int,
 	storager storages.Storager,
 	notifier notifier.Notifier,
-	siter siter.Siter) *Book {
+	siter site.Siter) *Book {
 	var isLoop bool
 	if interval != 0 {
 		isLoop = true
@@ -79,7 +79,7 @@ func NewBook(
 // Start is to start book execution
 func (b *Book) Start() error {
 	if err := b.siter.FetchInitialData(); err != nil {
-		return errors.Wrap(err, "fail to call siter.FetchInitialData()")
+		return errors.Wrap(err, "fail to call site.FetchInitialData()")
 	}
 
 	for {

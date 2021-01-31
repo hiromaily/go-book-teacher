@@ -1,4 +1,4 @@
-package storages
+package storage
 
 import (
 	lg "github.com/hiromaily/golibs/log"

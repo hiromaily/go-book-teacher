@@ -1,7 +1,6 @@
 [site]
-type = "DMM"
+type = "dmm"
 url = "http://eikaiwa.dmm.com/"
-concurrency = 20
 
 # -----------------------------------------------------------------------------
 # Storage
@@ -17,21 +16,13 @@ path = "./status.log"
 # -----------------------------------------------------------------------------
 # Notification
 # -----------------------------------------------------------------------------
-[slack]
-encrypted = true
-key = "HP/9upIf+CwLGuDj2V0xfqulICwv1nHhQXy+S2TSEhFzYfEnt9zzWjVtoMT/8Rb7"
+[notification]
+mode = "slack"
 
-[browser]
+[notification.cli]
 enabled = false
 
-# mail or slack should be enabled on Heroku environment
-[mail]
-encrypted = false
-mail_to = ""
-mail_from = ""
-
-[mail.smtp]
-address = ""
-pass = ""
-server = ""
-port = 587
+[notification.slack]
+enabled = true
+encrypted = true
+key = "HP/9upIf+CwLGuDj2V0xfqulICwv1nHhQXy+S2TSEhFzYfEnt9zzWjVtoMT/8Rb7"

@@ -47,7 +47,7 @@ func isTimeApplicable(strDate string, day int) bool {
 
 // htmlStringDecode is replace string in HTML into json
 func htmlStringDecode(jsondata *string) {
-	//a:5:{s:8:"launched";s:19:"2020-09-22 14:30:00";s:10:"teacher_id";s:5:"28302";s:9:"lesson_id";s:8:"83658441";s:16:"from_recommended";N;s:15:"lesson_language";N;}
+	// a:5:{s:8:"launched";s:19:"2020-09-22 14:30:00";s:10:"teacher_id";s:5:"28302";s:9:"lesson_id";s:8:"83658441";s:16:"from_recommended";N;s:15:"lesson_language";N;}
 	lst := [12][2]string{
 		{"&amp;", "&"},
 		{"&lt;", "<"},

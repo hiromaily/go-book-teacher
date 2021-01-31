@@ -1,39 +1,34 @@
 # heroku
 
 [site]
-type = "DMM"
+type = "dmm"
 url = "http://eikaiwa.dmm.com/"
-concurrency = 20
 
 # -----------------------------------------------------------------------------
 # Storage
 # -----------------------------------------------------------------------------
-# redis should be enabled on Heroku environment
-[redis]
+[storage]
+mode = "redis"
+
+[storage.text]
+path = "./status.log"
+
+[storage.redis]
 encrypted = true
 url = "bPLOW06msIeCN0fPuvqP/1S58yozAMsNYwGfJ3F77Mw7xpz/revQufXGvj8iZExil3+j0wuhEhHlM+enVq70kU479UfVnPPepIezKQg80kEfUS3Bi/+5QLKkpHN1U7na65Le9niYPS/SU/aN/vdNUZb+lPvulvL/ZqudhLTsie8="
 
-[text]
-path = "./status.log"
 
 # -----------------------------------------------------------------------------
 # Notification
 # -----------------------------------------------------------------------------
-[slack]
+[notification]
+mode = "slack"
+
+[notification.cli]
+enabled = false
+
+[notification.slack]
+enabled = true
 encrypted = true
 key = "bPLOW06msIeCN0fPuvqP/1S58yozAMsNYwGfJ3F77Mw7xpz/revQufXGvj8iZExil3+j0wuhEhHlM+enVq70kU479UfVnPPepIezKQg80kEfUS3Bi/+5QLKkpHN1U7na65Le9niYPS/SU/aN/vdNUZb+lPvulvL/ZqudhLTsie8="
 
-[browser]
-enabled = false
-
-# mail or slack should be enabled on Heroku environment
-[mail]
-encrypted = false
-mail_to = ""
-mail_from = ""
-
-[mail.smtp]
-address = ""
-pass = ""
-server = ""
-port = 587

@@ -59,23 +59,22 @@ func TestIntegrationBooker(t *testing.T) {
 	}
 }
 
-func createConfig(storage, notification int) *config.Config {
-	conf := config.Config{}
+func createConfig(storage, notification int) *config.Root {
+	conf := config.Root{}
 	// site
-	conf.Site = &config.SiteConfig{
-		Type:        "DMM",
-		URL:         "http://eikaiwa.dmm.com/",
-		Concurrency: 10,
+	conf.Site = &config.Site{
+		Type: "DMM",
+		URL:  "http://eikaiwa.dmm.com/",
 	}
 
 	crypt := enc.GetCrypt()
 	switch storage {
 	case 1:
 		// text
-		conf.Text = &config.TextConfig{Path: "test.log"}
+		conf.Storage.Text = &config.Text{Path: "test.log"}
 	case 2:
 		// redis
-		conf.Redis = &config.RedisConfig{URL: "redis://h:password@127.0.0.1:6379"}
+		conf.Storage.Redis = &config.Redis{URL: "redis://h:password@127.0.0.1:6379"}
 	default:
 		// dummy
 	}
@@ -84,16 +83,7 @@ func createConfig(storage, notification int) *config.Config {
 	case 1:
 		// slack
 		key := "HP/9upIf+CwLGuDj2V0xfqulICwv1nHhQXy+S2TSEhFzYfEnt9zzWjVtoMT/8Rb7"
-		conf.Slack.Key, _ = crypt.DecryptBase64(key)
-	case 2:
-		// browser
-		conf.Browser.Enabled = true
-	// case 3:
-	//	//mail
-	//	conf.Mail.Encrypted = true
-	//	conf.Mail.MailFrom = "your@mail.com"
-	default:
-		// console
+		conf.Notification.Slack.Key, _ = crypt.DecryptBase64(key)
 	}
 	return &conf
 }

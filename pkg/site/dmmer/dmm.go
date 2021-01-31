@@ -23,14 +23,9 @@ type DMM struct {
 }
 
 // NewDMM is to return DMM object
-func NewDMM(jsonFile, url string, concurrency int) *DMM {
-	if concurrency < 2 {
-		lg.Warnf("concurrency in config is invalid: %d", concurrency)
-		concurrency = 2
-	}
-
+func NewDMM(jsonFile, url string) *DMM {
 	return &DMM{
-		maxGoRoutine: concurrency,
+		maxGoRoutine: 20,
 		url:          url,
 		jsonFile:     jsonFile,
 		fetcher:      newFetcher(jsonFile, url),

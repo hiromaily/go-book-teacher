@@ -10,6 +10,7 @@ require (
 	github.com/apache/thrift v0.12.0 // indirect
 	github.com/bookerzzz/grok v0.0.0
 	github.com/garyburd/redigo v1.6.2
+	github.com/go-playground/validator/v10 v10.4.1
 	github.com/hiromaily/golibs v0.0.0-20201019070620-8c38788571a9
 	github.com/klauspost/cpuid v1.2.1 // indirect
 	github.com/openzipkin/zipkin-go v0.1.6 // indirect

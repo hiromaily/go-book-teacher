@@ -63,14 +63,15 @@ func main() {
 	}
 
 	// config
-	if err := config.New(*tomlPath, *isEncryptedConf); err != nil {
+	conf, err := config.NewConfig(*tomlPath, *isEncryptedConf)
+	if err != nil {
 		panic(err)
 	}
 
 	// signal (Debug)
 	go signal.StartSignal()
 
-	regi := NewRegistry(config.GetConf())
+	regi := NewRegistry(conf)
 	booker := regi.NewBooker(*jsPath, *day, *interval)
 	if err := booker.Start(); err != nil {
 		lg.Error(err)

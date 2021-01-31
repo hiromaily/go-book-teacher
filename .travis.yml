@@ -9,7 +9,7 @@ services:
 env:
   global:
     - GO111MODULE=on
-    - GO_BOOK_CONF='/home/travis/gopath/src/github.com/hiromaily/go-book-teacher/configs/text-command.toml'
+    - GO_BOOK_CONF='/home/travis/gopath/src/github.com/hiromaily/go-book-teacher/configs/text-cli.toml'
     #- GO_PROJ_PATH='/home/travis/gopath/src/github.com/hiromaily/go-book-teacher/cmd/book/'
 
 before_install:

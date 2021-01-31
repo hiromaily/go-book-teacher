@@ -1,11 +1,13 @@
 package main
 
 import (
+	"github.com/pkg/errors"
+
 	"github.com/hiromaily/go-book-teacher/pkg/booker"
 	"github.com/hiromaily/go-book-teacher/pkg/config"
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
-	"github.com/hiromaily/go-book-teacher/pkg/siter"
-	storages "github.com/hiromaily/go-book-teacher/pkg/storager"
+	"github.com/hiromaily/go-book-teacher/pkg/site"
+	"github.com/hiromaily/go-book-teacher/pkg/storage"
 )
 
 // Registry is for registry interface
@@ -14,12 +16,12 @@ type Registry interface {
 }
 
 type registry struct {
-	conf *config.Config
-	// storager   *storages.Storager
+	conf *config.Root
+	// storage   *storages.Storager
 }
 
 // NewRegistry is to register regstry interface
-func NewRegistry(conf *config.Config) Registry {
+func NewRegistry(conf *config.Root) Registry {
 	return &registry{conf: conf}
 }
 
@@ -35,8 +37,12 @@ func (r *registry) NewBooker(jsonPath string, day, interval int) booker.Booker {
 	)
 }
 
-func (r *registry) newStorager() storages.Storager {
-	storager, err := storages.NewStorager(r.conf)
+func (r *registry) newStorager() storage.Storager {
+	storager, err := storage.NewStorager(
+		r.conf.Storage.Mode,
+		r.conf.Storage.Redis.URL,
+		r.conf.Storage.Text.Path,
+	)
 	if err != nil {
 		panic(err)
 	}
@@ -44,9 +50,16 @@ func (r *registry) newStorager() storages.Storager {
 }
 
 func (r *registry) newNotifier() notifier.Notifier {
-	return notifier.NewNotifier(r.conf)
+	switch r.conf.Notification.Mode {
+	case notifier.ConsoleMode:
+		return notifier.NewConsole()
+	case notifier.SlackMode:
+		return notifier.NewSlack(r.conf.Notification.Slack.Key, r.conf.Site.URL)
+	}
+
+	panic(errors.New("invalid notification mode"))
 }
 
-func (r *registry) newSiter(jsonPath string) siter.Siter {
-	return siter.NewSiter(jsonPath, r.conf.Site)
+func (r *registry) newSiter(jsonPath string) site.Siter {
+	return site.NewSiter(jsonPath, r.conf.Site)
 }
