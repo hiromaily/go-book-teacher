@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"text/template"
 
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"github.com/hiromaily/go-book-teacher/pkg/teachers"
-	"github.com/hiromaily/go-book-teacher/pkg/tmpl"
 )
 
 // slack object
@@ -22,26 +22,7 @@ type slack struct {
 	targetSiteURL string
 }
 
-// Message object
-type Message struct {
-	Text string `json:"text"`
-}
-
-var tmplSlackMsg = `
-🤓😎😴 The following tachers are available now! 🤓😎😴
-{{range .Teachers}}
-*[{{.Name}} / {{.Country}}]*
-{{$.URL}}teacher/index/{{.ID}}/
-{{end}}
-Enjoy!😄
-
-`
-
-type TeacherInfo struct {
-	Teachers []teachers.TeacherRepo
-}
-
-// NewSlack is to return Slack object
+// NewSlack returns Notifier
 func NewSlack(logger *zap.Logger, key string, targetSiteURL string) Notifier {
 	return &slack{
 		mode:          SlackMode,
@@ -51,53 +32,52 @@ func NewSlack(logger *zap.Logger, key string, targetSiteURL string) Notifier {
 	}
 }
 
+type TeacherInfo struct {
+	Teachers []teachers.TeacherRepo
+}
+
+// Message object of slack
+type Message struct {
+	Text string `json:"text"`
+}
+
 // Send is notification by Slack
-func (s *slack) Notify(ths []teachers.TeacherRepo) error {
+func (s *slack) Notify(teachers []teachers.TeacherRepo) error {
 	s.logger.Debug("notify", zap.String("mode", s.mode.String()))
 
 	// make body
-	// FIXME: handle as interface
-	msg, err := tmpl.StrTempParser(
-		tmplSlackMsg,
-		&TeacherInfo{Teachers: ths},
-	)
+	msgBody, err := templateParser(&TeacherInfo{Teachers: teachers})
 	if err != nil {
-		return errors.Wrap(err, "fail to parse message for slack")
+		return errors.Wrap(err, "fail to parse message body of slack")
 	}
 
 	// crate json
-	sm := Message{Text: msg}
-	data, err := json.Marshal(&sm)
+	jsonMsg, err := json.Marshal(&Message{Text: msgBody})
 	if err != nil {
 		return errors.Wrap(err, "fail to call json.Marshal")
 	}
 	// send
-	body, err := s.sendPost(data)
+	body, err := s.sendPost(jsonMsg)
 	if err != nil {
 		return err
 	}
-	s.logger.Debug("body", zap.String("body", string(body)))
+	s.logger.Debug("slack_body", zap.String("body", string(body)))
 
 	return nil
 }
 
-func (s *slack) sendPost(data []byte) ([]byte, error) {
-	// 1. prepare NewRequest data
+func (s *slack) sendPost(jsonMsg []byte) ([]byte, error) {
 	req, err := http.NewRequest(
 		"POST",
 		s.slackURL,
-		// bytes.NewBuffer(jsonStr),
-		bytes.NewReader(data),
+		bytes.NewReader(jsonMsg),
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "fail to call http.NewRequest()")
 	}
 
-	// 2. set http header
-	// Content-Type:application/json; charset=utf-8
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 
-	// 3. send
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -105,8 +85,28 @@ func (s *slack) sendPost(data []byte) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	// 4. read response
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	return body, err
+}
+
+// template
+func templateParser(params interface{}) (string, error) {
+	slackTemplate := `
+🤓😎😴 The following tachers are available now! 🤓😎😴
+{{range .Teachers}}
+*[{{.Name}} / {{.Country}}]*
+{{$.URL}}teacher/index/{{.ID}}/
+{{end}}
+Enjoy!😄
+
+`
+
+	var writer bytes.Buffer
+	tpl := template.Must(template.New("tpl").Parse(slackTemplate))
+	if err := tpl.Execute(&writer, params); err != nil {
+		return "", err
+	}
+
+	return writer.String(), nil
 }

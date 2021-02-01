@@ -6,7 +6,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-// GetHTMLDocs is to get http resource as document data from set URL
+// GetHTMLDocs gets http resource as document data from target URL
 func GetHTMLDocs(url string) (*goquery.Document, error) {
 	// goquery.NewDocument is Deprecated
 

@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/hiromaily/go-book-teacher/pkg/teachers"
 	"log"
 	"os"
 
 	"github.com/hiromaily/go-book-teacher/pkg/config"
+	"github.com/hiromaily/go-book-teacher/pkg/teachers"
 )
 
 var (

@@ -23,6 +23,5 @@ func NewDummy(logger *zap.Logger) Notifier {
 // Send is to do nothing
 func (d *dummy) Notify(_ []teachers.TeacherRepo) error {
 	d.logger.Debug("notify", zap.String("mode", d.mode.String()))
-
 	return nil
 }
