@@ -1,8 +1,9 @@
 package dmmer
 
 import (
-	"github.com/hiromaily/go-book-teacher/pkg/models"
 	"go.uber.org/zap"
+
+	"github.com/hiromaily/go-book-teacher/pkg/models"
 )
 
 // Fetcher is interface to fetch initial data

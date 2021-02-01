@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/hiromaily/go-book-teacher/pkg/site/dmmer"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
@@ -10,6 +9,7 @@ import (
 	"github.com/hiromaily/go-book-teacher/pkg/logger"
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
 	"github.com/hiromaily/go-book-teacher/pkg/site"
+	"github.com/hiromaily/go-book-teacher/pkg/site/dmmer"
 	"github.com/hiromaily/go-book-teacher/pkg/storage"
 )
 

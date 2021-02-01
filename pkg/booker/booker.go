@@ -1,11 +1,11 @@
 package booker
 
 import (
-	"go.uber.org/zap"
 	"strconv"
 	"time"
 
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 
 	"github.com/hiromaily/go-book-teacher/pkg/models"
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"

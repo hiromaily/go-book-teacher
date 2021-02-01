@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/hiromaily/go-book-teacher/pkg/models"
-	"github.com/hiromaily/golibs/tmpl"
+	"github.com/hiromaily/go-book-teacher/pkg/tmpl"
 )
 
 // slack object

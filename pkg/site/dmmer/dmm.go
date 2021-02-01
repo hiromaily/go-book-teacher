@@ -2,15 +2,15 @@ package dmmer
 
 import (
 	"fmt"
-	"go.uber.org/zap"
 	"sync"
 	"time"
 
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 
 	"github.com/hiromaily/go-book-teacher/pkg/httpdoc"
 	"github.com/hiromaily/go-book-teacher/pkg/models"
-	tm "github.com/hiromaily/golibs/time"
+	"github.com/hiromaily/go-book-teacher/pkg/times"
 )
 
 // DMM is DMM object
@@ -47,7 +47,7 @@ func (d *DMM) FetchInitialData() error {
 
 // FindTeachers is to find available teachers by scraping web site
 func (d *DMM) FindTeachers(day int) []models.TeacherInfo {
-	defer tm.Track(time.Now(), "dmm.FindTeachers()")
+	defer times.Track(time.Now(), "dmm.FindTeachers()")
 
 	wg := &sync.WaitGroup{}
 	chanSemaphore := make(chan bool, d.maxGoRoutine)
