@@ -10,7 +10,7 @@ type dummySaver struct {
 	logger *zap.Logger
 }
 
-// NewDummy returns Saver interface
+// NewDummySaver returns Saver interface
 func NewDummySaver(logger *zap.Logger) Saver {
 	return &dummySaver{
 		mode:   DummyMode,

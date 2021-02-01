@@ -1,6 +1,6 @@
 package teachers
 
-// Saver interface
+// Teacher interface
 type Teacher interface {
 	Fetch() ([]TeacherRepo, error)
 }

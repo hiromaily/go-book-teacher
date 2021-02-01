@@ -9,41 +9,43 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/hiromaily/go-book-teacher/pkg/httpdoc"
+	"github.com/hiromaily/go-book-teacher/pkg/site"
 	"github.com/hiromaily/go-book-teacher/pkg/teachers"
 	"github.com/hiromaily/go-book-teacher/pkg/times"
 )
 
+// MaxGoroutine is number of goroutine to run scraping func
 const MaxGoroutine = 20
 
-// DMM object
-type DMM struct {
-	teacherFetcher teachers.Teacher
-	teachers       []teachers.TeacherRepo
-	logger         *zap.Logger
-	maxGoRoutine   int
-	siteURL        string
-	day            int
+// siteDMM object
+type siteDMM struct {
+	teacherRepo  teachers.Teacher
+	teachers     []teachers.TeacherRepo
+	logger       *zap.Logger
+	maxGoRoutine int
+	siteURL      string
+	day          int
 }
 
-// NewDMM is to return DMM object
+// NewDMM returns Siter interface
 func NewDMM(
 	logger *zap.Logger,
-	teacherFetcher teachers.Teacher,
+	teacherRepo teachers.Teacher,
 	siteURL string,
 	day int,
-) *DMM {
-	return &DMM{
-		teacherFetcher: teacherFetcher,
-		logger:         logger,
-		maxGoRoutine:   MaxGoroutine,
-		siteURL:        siteURL,
-		day:            day,
+) site.Siter {
+	return &siteDMM{
+		teacherRepo:  teacherRepo,
+		logger:       logger,
+		maxGoRoutine: MaxGoroutine,
+		siteURL:      siteURL,
+		day:          day,
 	}
 }
 
 // Fetch fetches target teachers to search schedule
-func (d *DMM) Fetch() error {
-	teachers, err := d.teacherFetcher.Fetch()
+func (d *siteDMM) Fetch() error {
+	teachers, err := d.teacherRepo.Fetch()
 	if err != nil {
 		return err
 	}
@@ -53,18 +55,18 @@ func (d *DMM) Fetch() error {
 }
 
 // FindTeachers finds available teachers by scraping web site
-func (d *DMM) FindTeachers() []teachers.TeacherRepo {
+func (d *siteDMM) FindTeachers() []teachers.TeacherRepo {
 	defer times.Track(time.Now(), "dmm.FindTeachers()")
 
 	wg := &sync.WaitGroup{}
-	chSemaphore := make(chan bool, d.maxGoRoutine)
+	chSemaphore := make(chan struct{}, d.maxGoRoutine)
 	chTeacher := make(chan teachers.TeacherRepo) // response of found teacher by channel
 
 	for _, teacher := range d.teachers {
 		teacher := teacher
 
 		wg.Add(1)
-		chSemaphore <- true
+		chSemaphore <- struct{}{}
 
 		go func() {
 			defer func() {
@@ -87,7 +89,7 @@ func (d *DMM) FindTeachers() []teachers.TeacherRepo {
 	}()
 
 	savedTeachers := make([]teachers.TeacherRepo, 0)
-	// wait until results channel is closed.
+	// wait until chTeacher channel is closed.
 	for teacher := range chTeacher {
 		savedTeachers = append(savedTeachers, teacher)
 	}
@@ -95,8 +97,8 @@ func (d *DMM) FindTeachers() []teachers.TeacherRepo {
 	return savedTeachers
 }
 
-// getHTML is to get teacher information from HTML document
-func (d *DMM) getHTML(teacher *teachers.TeacherRepo, chTeacher chan teachers.TeacherRepo) error {
+// getHTML gets teacher information from HTML document and send found teacher by channel
+func (d *siteDMM) getHTML(teacher *teachers.TeacherRepo, chTeacher chan teachers.TeacherRepo) error {
 	// HTTP connection
 	targetURL := fmt.Sprintf("%steacher/index/%d/", d.siteURL, teacher.ID)
 	doc, err := httpdoc.GetHTMLDocs(targetURL)

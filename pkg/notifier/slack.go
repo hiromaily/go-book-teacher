@@ -32,6 +32,7 @@ func NewSlack(logger *zap.Logger, key string, targetSiteURL string) Notifier {
 	}
 }
 
+// TeacherInfo is used for template parameter
 type TeacherInfo struct {
 	Teachers []teachers.TeacherRepo
 }

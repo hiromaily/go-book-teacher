@@ -39,10 +39,11 @@ func (j *jsonTeacher) Fetch() ([]TeacherRepo, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "fail to Unmarshal json binary: %s", j.fileName)
 	}
-	//j.logger.Debug("target_teacher", zap.Any("teachers", repo))
+	// j.logger.Debug("target_teacher", zap.Any("teachers", repo))
 	return repo.Teachers, nil
 }
 
+// GetEnvJSONPath returns json path from environment variable
 func GetEnvJSONPath() string {
 	path := os.Getenv("GO_BOOK_JSON")
 	if strings.Contains(path, "${GOPATH}") {

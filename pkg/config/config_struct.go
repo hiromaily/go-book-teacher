@@ -29,6 +29,7 @@ type Site struct {
 	URL  string        `toml:"url" validate:"required"`
 }
 
+// Save is save method
 type Save struct {
 	Mode  save.Mode `toml:"mode" validate:"oneof=text redis dummy"`
 	Text  *Text     `toml:"text" validate:"-"`
@@ -46,6 +47,7 @@ type Redis struct {
 	URL       string `toml:"url" validate:"required"`
 }
 
+// Notification is notification method
 type Notification struct {
 	Mode    notifier.Mode `toml:"mode" validate:"required"`
 	Console *Console      `toml:"console" validate:"-"`

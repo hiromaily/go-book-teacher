@@ -16,7 +16,7 @@ type redisSaver struct {
 	redisKey string
 }
 
-// NewRedis returns Saver
+// NewRedisSaver returns Saver
 func NewRedisSaver(logger *zap.Logger, redisURL string) (Saver, error) {
 	redisConn, err := redis.DialURL(redisURL)
 	if err != nil {
