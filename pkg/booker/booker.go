@@ -7,38 +7,36 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
-	"github.com/hiromaily/go-book-teacher/pkg/models"
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
+	"github.com/hiromaily/go-book-teacher/pkg/save"
 	"github.com/hiromaily/go-book-teacher/pkg/site"
-	storages "github.com/hiromaily/go-book-teacher/pkg/storage"
+	"github.com/hiromaily/go-book-teacher/pkg/teachers"
 )
 
 // ----------------------------------------------------------------------------
 // Booker interface
 // ----------------------------------------------------------------------------
 
-// Booker is interface
+// Booker interface
 type Booker interface {
 	Start() error
-	Cleanup()
+	Clean()
 	Close()
 }
 
-// NewBooker is to return booker interface
+// NewBooker returns Booker interface
 func NewBooker(
-	storager storages.Storager,
+	saver save.Saver,
 	notifier notifier.Notifier,
 	siter site.Siter,
 	logger *zap.Logger,
-	day int,
 	interval int,
 ) Booker {
 	return NewBook(
-		storager,
+		saver,
 		notifier,
 		siter,
 		logger,
-		day,
 		interval,
 	)
 }
@@ -47,58 +45,51 @@ func NewBooker(
 // Book
 // ----------------------------------------------------------------------------
 
-// Book is Book object
+// Book object
 type Book struct {
-	storager storages.Storager
+	saver    save.Saver
 	notifier notifier.Notifier
 	siter    site.Siter
 	logger   *zap.Logger
-	day      int
 	interval int
 	isLoop   bool
 }
 
 // NewBook is to return book object
 func NewBook(
-	storager storages.Storager,
+	saver save.Saver,
 	notifier notifier.Notifier,
 	siter site.Siter,
 	logger *zap.Logger,
-	day int,
 	interval int,
 ) *Book {
 
-	var isLoop bool
-	if interval != 0 {
-		isLoop = true
-	}
-
 	book := Book{
-		storager: storager,
+		saver:    saver,
 		notifier: notifier,
 		siter:    siter,
 		logger:   logger,
-		day:      day,
 		interval: interval,
-		isLoop:   isLoop, // TODO: testmode, heroku env should be false
+		isLoop:   interval != 0, // Note: testmode, heroku env should be false
 	}
 	return &book
 }
 
-// Start is to start book execution
+// Start starts book execution
 func (b *Book) Start() error {
 	b.logger.Debug("book Start()")
-	defer b.storager.Close()
+	defer b.saver.Close()
 
+	// fetch initial teacher data
 	b.logger.Debug("book siter.FetchInitialData()")
-	if err := b.siter.FetchInitialData(); err != nil {
-		return errors.Wrap(err, "fail to call site.FetchInitialData()")
+	if err := b.siter.Fetch(); err != nil {
+		return errors.Wrap(err, "fail to call siter.Fetch()")
 	}
 
 	for {
 		// scraping
 		b.logger.Debug("book siter.FindTeachers()")
-		teachers := b.siter.FindTeachers(b.day)
+		teachers := b.siter.FindTeachers()
 
 		// save
 		b.logger.Debug("book siter.saveAndNotify()")
@@ -114,18 +105,18 @@ func (b *Book) Start() error {
 	}
 }
 
-// Cleanup is to clean up middleware object
-func (b *Book) Cleanup() {
-	b.storager.Delete()
+// Clean deletes save
+func (b *Book) Clean() {
+	b.saver.Delete()
 }
 
-// Close is to clean up middleware object
+// Close closes middleware
 func (b *Book) Close() {
-	b.storager.Close()
+	b.saver.Close()
 }
 
 // saveAndNotify is to save and notify if something saved
-func (b *Book) saveAndNotify(ths []models.TeacherInfo) {
+func (b *Book) saveAndNotify(ths []teachers.TeacherRepo) {
 	if len(ths) != 0 {
 		// create string from ids slice
 		var sum int
@@ -135,7 +126,7 @@ func (b *Book) saveAndNotify(ths []models.TeacherInfo) {
 		newData := strconv.Itoa(sum)
 
 		// save
-		isUpdated, err := b.storager.Save(newData)
+		isUpdated, err := b.saver.Save(newData)
 		if err != nil {
 			b.logger.Error("fail to call Save()", zap.Error(err))
 		}
@@ -146,26 +137,3 @@ func (b *Book) saveAndNotify(ths []models.TeacherInfo) {
 		}
 	}
 }
-
-// ----------------------------------------------------------------------------
-// DummyBook
-// ----------------------------------------------------------------------------
-
-// DummyBook is DummyBook object
-type DummyBook struct{}
-
-// NewDummyBook is to return NewDummyBook object
-func NewDummyBook() *DummyBook {
-	return &DummyBook{}
-}
-
-// Start is to do nothing
-func (b *DummyBook) Start() error {
-	return nil
-}
-
-// Cleanup is to do nothing
-func (b *DummyBook) Cleanup() {}
-
-// Close is to do nothing
-func (b *DummyBook) Close() {}

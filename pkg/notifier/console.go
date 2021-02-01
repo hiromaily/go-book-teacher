@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/hiromaily/go-book-teacher/pkg/models"
+	"github.com/hiromaily/go-book-teacher/pkg/teachers"
 )
 
 // console object
@@ -25,7 +25,7 @@ func NewConsole(logger *zap.Logger) Notifier {
 
 // Notify notifies on console
 // TODO: time should be displayed
-func (c *console) Notify(ths []models.TeacherInfo) error {
+func (c *console) Notify(ths []teachers.TeacherRepo) error {
 	c.logger.Debug("notify", zap.String("mode", c.mode.String()))
 
 	// emit a sound (maybe macOS only)

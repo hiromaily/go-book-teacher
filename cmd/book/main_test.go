@@ -1,14 +1,14 @@
 package main
 
 //var bookerTests = []struct {
-//	storage      int    // 1:text, 2:redis, anything else:dummy
+//	save      int    // 1:text, 2:redis, anything else:dummy
 //	notification int    // 1:slack, 2:browser, 3:mail, anything else: console
 //	jsonPath     string // if blank, default value should be used
 //	explanation  string
 //	err          error
 //}{
-//	{1, 99, "", "text storage should work", nil},
-//	{2, 99, "", "redis storage should work", nil},
+//	{1, 99, "", "text save should work", nil},
+//	{2, 99, "", "redis save should work", nil},
 //	{1, 99, "../../testdata/json/teachers.json", "initial data is created from json file", nil},
 //}
 //
@@ -38,7 +38,7 @@ package main
 //func TestIntegrationBooker(t *testing.T) {
 //	for _, tt := range bookerTests {
 //		// create config
-//		conf := createConfig(tt.storage, tt.notification)
+//		conf := createConfig(tt.save, tt.notification)
 //		regi := NewRegistry(conf)
 //
 //		// run
@@ -50,7 +50,7 @@ package main
 //	}
 //}
 //
-//func createConfig(storage, notification int) *config.Root {
+//func createConfig(save, notification int) *config.Root {
 //	conf := config.Root{}
 //	// site
 //	conf.Site = &config.Site{
@@ -59,7 +59,7 @@ package main
 //	}
 //
 //	crypt := enc.GetCrypt()
-//	switch storage {
+//	switch save {
 //	case 1:
 //		// text
 //		conf.Storage.Text = &config.Text{Path: "test.log"}

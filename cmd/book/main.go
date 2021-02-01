@@ -57,5 +57,5 @@ func main() {
 		log.Fatal(err)
 	}
 	//
-	booker.Cleanup()
+	booker.Clean()
 }

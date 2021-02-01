@@ -3,7 +3,7 @@ package notifier
 import (
 	"go.uber.org/zap"
 
-	"github.com/hiromaily/go-book-teacher/pkg/models"
+	"github.com/hiromaily/go-book-teacher/pkg/teachers"
 )
 
 // dummy object
@@ -21,7 +21,7 @@ func NewDummy(logger *zap.Logger) Notifier {
 }
 
 // Send is to do nothing
-func (d *dummy) Notify(ths []models.TeacherInfo) error {
+func (d *dummy) Notify(_ []teachers.TeacherRepo) error {
 	d.logger.Debug("notify", zap.String("mode", d.mode.String()))
 
 	return nil

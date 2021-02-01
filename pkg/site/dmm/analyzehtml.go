@@ -1,4 +1,4 @@
-package dmmer
+package dmm
 
 import (
 	"encoding/json"

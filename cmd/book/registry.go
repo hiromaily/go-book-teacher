@@ -8,9 +8,10 @@ import (
 	"github.com/hiromaily/go-book-teacher/pkg/config"
 	"github.com/hiromaily/go-book-teacher/pkg/logger"
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
+	"github.com/hiromaily/go-book-teacher/pkg/save"
 	"github.com/hiromaily/go-book-teacher/pkg/site"
-	"github.com/hiromaily/go-book-teacher/pkg/site/dmmer"
-	"github.com/hiromaily/go-book-teacher/pkg/storage"
+	"github.com/hiromaily/go-book-teacher/pkg/site/dmm"
+	"github.com/hiromaily/go-book-teacher/pkg/teachers"
 )
 
 // Registry interface
@@ -19,9 +20,9 @@ type Registry interface {
 }
 
 type registry struct {
-	conf    *config.Root
-	logger  *zap.Logger
-	storage storage.Storager
+	conf   *config.Root
+	logger *zap.Logger
+	saver  save.Saver
 }
 
 // NewRegistry is to register regstry interface
@@ -30,13 +31,12 @@ func NewRegistry(conf *config.Root) Registry {
 }
 
 // NewBooker is to register for booker interface
-func (r *registry) NewBooker(jsonPath string, day int) booker.Booker {
+func (r *registry) NewBooker(jsonFile string, day int) booker.Booker {
 	return booker.NewBooker(
-		r.newStorager(),
+		r.newSaver(),
 		r.newNotifier(),
-		r.newSiter(jsonPath),
+		r.newSiter(jsonFile, day),
 		r.newLogger(),
-		day,
 		r.conf.Interval,
 	)
 }
@@ -48,27 +48,27 @@ func (r *registry) newLogger() *zap.Logger {
 	return r.logger
 }
 
-func (r *registry) newStorager() storage.Storager {
-	if r.storage == nil {
+func (r *registry) newSaver() save.Saver {
+	if r.saver == nil {
 		var err error
 		switch r.conf.Storage.Mode {
-		case storage.RedisMode:
+		case save.RedisMode:
 			r.newLogger().Debug("storager: redis")
-			r.storage, err = storage.NewRedis(r.newLogger(), r.conf.Storage.Redis.URL)
-		case storage.TextMode:
+			r.saver, err = save.NewRedisSaver(r.newLogger(), r.conf.Storage.Redis.URL)
+		case save.TextMode:
 			r.newLogger().Debug("storager: text")
-			r.storage = storage.NewText(r.newLogger(), r.conf.Storage.Text.Path)
-		case storage.DummyMode:
+			r.saver = save.NewTextSaver(r.newLogger(), r.conf.Storage.Text.Path)
+		case save.DummyMode:
 			r.newLogger().Debug("storager: dummy")
-			r.storage = storage.NewDummy(r.newLogger())
+			r.saver = save.NewDummySaver(r.newLogger())
 		default:
-			panic(errors.New("storage mode is not found"))
+			panic(errors.New("save mode is not found"))
 		}
 		if err != nil {
 			panic(err)
 		}
 	}
-	return r.storage
+	return r.saver
 }
 
 func (r *registry) newNotifier() notifier.Notifier {
@@ -87,15 +87,26 @@ func (r *registry) newNotifier() notifier.Notifier {
 	panic(errors.Errorf("invalid notification mode: %s", r.conf.Notification.Mode))
 }
 
-func (r *registry) newSiter(jsonPath string) site.Siter {
+func (r *registry) newSiter(jsonFile string, day int) site.Siter {
 	switch r.conf.Site.Type {
 	case site.SiteTypeDMM:
 		r.newLogger().Debug("site: dmm")
-		return dmmer.NewDMM(
+		return dmm.NewDMM(
 			r.newLogger(),
-			jsonPath,
+			r.newTeacherFetcher(jsonFile),
 			r.conf.Site.URL,
+			day,
 		)
 	}
 	panic(errors.Errorf("invalid site type: %s", r.conf.Site.Type))
+}
+
+func (r *registry) newTeacherFetcher(jsonFile string) teachers.Teacher {
+	if jsonFile != "" {
+		return teachers.NewJSONTeacher(
+			r.newLogger(),
+			jsonFile,
+		)
+	}
+	return teachers.NewDummyTeacher(r.newLogger())
 }

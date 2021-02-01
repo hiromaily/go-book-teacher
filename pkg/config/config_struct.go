@@ -2,8 +2,8 @@ package config
 
 import (
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
+	"github.com/hiromaily/go-book-teacher/pkg/save"
 	"github.com/hiromaily/go-book-teacher/pkg/site"
-	"github.com/hiromaily/go-book-teacher/pkg/storage"
 )
 
 // Root is root config
@@ -11,7 +11,7 @@ type Root struct {
 	Interval     int           `toml:"interval" validate:"required"`
 	Logger       *Logger       `toml:"logger" validate:"required"`
 	Site         *Site         `toml:"site" validate:"required"`
-	Storage      *Storage      `toml:"storage"`
+	Storage      *Storage      `toml:"save"`
 	Notification *Notification `toml:"notification"`
 }
 
@@ -30,17 +30,17 @@ type Site struct {
 }
 
 type Storage struct {
-	Mode  storage.Mode `toml:"mode" validate:"oneof=text redis dummy"`
-	Text  *Text        `toml:"text" validate:"-"`
-	Redis *Redis       `toml:"redis" validate:"-"`
+	Mode  save.Mode `toml:"mode" validate:"oneof=text redis dummy"`
+	Text  *Text     `toml:"text" validate:"-"`
+	Redis *Redis    `toml:"redis" validate:"-"`
 }
 
-// Text is text storage
+// Text is text save
 type Text struct {
 	Path string `toml:"path" validate:"required"`
 }
 
-// Redis is redis storage
+// Redis is redis save
 type Redis struct {
 	Encrypted bool   `toml:"encrypted"`
 	URL       string `toml:"url" validate:"required"`

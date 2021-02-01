@@ -1,4 +1,11 @@
-package storage
+package save
+
+// Saver interface
+type Saver interface {
+	Save(string) (bool, error)
+	Delete() error
+	Close()
+}
 
 type Mode string
 

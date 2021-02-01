@@ -1,15 +1,18 @@
 package site
 
 import (
-	"github.com/hiromaily/go-book-teacher/pkg/models"
+	"github.com/hiromaily/go-book-teacher/pkg/teachers"
 )
 
-// Siter is Siter interface
+// Siter interface
 type Siter interface {
-	FetchInitialData() error
-	// InitializeSavedTeachers()
-	FindTeachers(day int) []models.TeacherInfo
+	Fetch() error
+	FindTeachers() []teachers.TeacherRepo
 }
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
 
 // SiteType is site type
 type SiteType string

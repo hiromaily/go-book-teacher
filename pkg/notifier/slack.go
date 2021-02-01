@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
-	"github.com/hiromaily/go-book-teacher/pkg/models"
+	"github.com/hiromaily/go-book-teacher/pkg/teachers"
 	"github.com/hiromaily/go-book-teacher/pkg/tmpl"
 )
 
@@ -37,6 +37,10 @@ Enjoy!😄
 
 `
 
+type TeacherInfo struct {
+	Teachers []teachers.TeacherRepo
+}
+
 // NewSlack is to return Slack object
 func NewSlack(logger *zap.Logger, key string, targetSiteURL string) Notifier {
 	return &slack{
@@ -48,13 +52,15 @@ func NewSlack(logger *zap.Logger, key string, targetSiteURL string) Notifier {
 }
 
 // Send is notification by Slack
-func (s *slack) Notify(ths []models.TeacherInfo) error {
+func (s *slack) Notify(ths []teachers.TeacherRepo) error {
 	s.logger.Debug("notify", zap.String("mode", s.mode.String()))
 
 	// make body
 	// FIXME: handle as interface
-	si := &models.SiteInfo{URL: s.targetSiteURL, Teachers: ths}
-	msg, err := tmpl.StrTempParser(tmplSlackMsg, &si)
+	msg, err := tmpl.StrTempParser(
+		tmplSlackMsg,
+		&TeacherInfo{Teachers: ths},
+	)
 	if err != nil {
 		return errors.Wrap(err, "fail to parse message for slack")
 	}

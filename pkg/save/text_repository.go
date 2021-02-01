@@ -1,4 +1,4 @@
-package storage
+package save
 
 import (
 	"bufio"
@@ -8,16 +8,16 @@ import (
 	"go.uber.org/zap"
 )
 
-// TextRepo text repository
-type textRepo struct {
+// textSaver object
+type textSaver struct {
 	mode     Mode
 	logger   *zap.Logger
 	filePath string
 }
 
-// NewText is to return TextRepo object
-func NewText(logger *zap.Logger, path string) Storager {
-	return &textRepo{
+// NewTextSaver returns Saver interface
+func NewTextSaver(logger *zap.Logger, path string) Saver {
+	return &textSaver{
 		mode:     TextMode,
 		logger:   logger,
 		filePath: path,
@@ -25,7 +25,7 @@ func NewText(logger *zap.Logger, path string) Storager {
 }
 
 // Save is to save data to text
-func (t *textRepo) Save(newData string) (bool, error) {
+func (t *textSaver) Save(newData string) (bool, error) {
 	t.logger.Debug("save", zap.String("mode", t.mode.String()))
 
 	// open saved log
@@ -50,9 +50,9 @@ func (t *textRepo) Save(newData string) (bool, error) {
 }
 
 // Delete deletes file
-func (t *textRepo) Delete() error {
+func (t *textSaver) Delete() error {
 	return os.Remove(t.filePath)
 }
 
 // Close closes nothing
-func (t *textRepo) Close() {}
+func (t *textSaver) Close() {}

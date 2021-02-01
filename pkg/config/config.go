@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/hiromaily/go-book-teacher/pkg/encryption"
-	"github.com/hiromaily/go-book-teacher/pkg/storage"
+	"github.com/hiromaily/go-book-teacher/pkg/save"
 )
 
 // NewConfig returns *Root config
@@ -61,7 +61,7 @@ func (r *Root) validate() error {
 	validate := validator.New()
 
 	excepted := make([]string, 0)
-	if r.Storage.Mode == storage.TextMode {
+	if r.Storage.Mode == save.TextMode {
 		excepted = append(excepted, []string{"Storage.Redis", "Storage.Redis.URL"}...)
 	} else {
 		excepted = append(excepted, "Text")
