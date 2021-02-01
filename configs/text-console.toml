@@ -12,15 +12,15 @@ type = "dmm"
 url = "http://eikaiwa.dmm.com/"
 
 # -----------------------------------------------------------------------------
-# Storage
+# Save
 # -----------------------------------------------------------------------------
-[storage]
+[save]
 mode = "text"
 
-[storage.text]
+[save.text]
 path = "./status.log"
 
-[storage.redis]
+[save.redis]
 encrypted = false
 url = ""
 

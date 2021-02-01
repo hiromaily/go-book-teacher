@@ -97,7 +97,6 @@ func (d *DMM) FindTeachers() []teachers.TeacherRepo {
 
 // getHTML is to get teacher information from HTML document
 func (d *DMM) getHTML(teacher *teachers.TeacherRepo, chTeacher chan teachers.TeacherRepo) error {
-
 	// HTTP connection
 	targetURL := fmt.Sprintf("%steacher/index/%d/", d.siteURL, teacher.ID)
 	doc, err := httpdoc.GetHTMLDocs(targetURL)

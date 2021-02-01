@@ -61,7 +61,7 @@ func (r *Root) validate() error {
 	validate := validator.New()
 
 	excepted := make([]string, 0)
-	if r.Storage.Mode == save.TextMode {
+	if r.Save.Mode == save.TextMode {
 		excepted = append(excepted, []string{"Storage.Redis", "Storage.Redis.URL"}...)
 	} else {
 		excepted = append(excepted, "Text")
@@ -83,8 +83,8 @@ func (r *Root) decrypt() error {
 		return err
 	}
 
-	if r.Storage.Redis.Encrypted {
-		target := r.Storage.Redis
+	if r.Save.Redis.Encrypted {
+		target := r.Save.Redis
 		target.URL, _ = crypt.DecryptBase64(target.URL)
 	}
 

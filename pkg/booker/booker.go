@@ -63,7 +63,6 @@ func NewBook(
 	logger *zap.Logger,
 	interval int,
 ) *Book {
-
 	book := Book{
 		saver:    saver,
 		notifier: notifier,

@@ -29,5 +29,4 @@ func (d *dummyTeacher) Fetch() ([]TeacherRepo, error) {
 		{ID: 25302, Name: "Nami", Country: "USA"},
 		{ID: 32141, Name: "Colleen Marie", Country: "USA"},
 	}, nil
-
 }

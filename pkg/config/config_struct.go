@@ -11,7 +11,7 @@ type Root struct {
 	Interval     int           `toml:"interval" validate:"required"`
 	Logger       *Logger       `toml:"logger" validate:"required"`
 	Site         *Site         `toml:"site" validate:"required"`
-	Storage      *Storage      `toml:"save"`
+	Save         *Save         `toml:"save"`
 	Notification *Notification `toml:"notification"`
 }
 
@@ -29,7 +29,7 @@ type Site struct {
 	URL  string        `toml:"url" validate:"required"`
 }
 
-type Storage struct {
+type Save struct {
 	Mode  save.Mode `toml:"mode" validate:"oneof=text redis dummy"`
 	Text  *Text     `toml:"text" validate:"-"`
 	Redis *Redis    `toml:"redis" validate:"-"`

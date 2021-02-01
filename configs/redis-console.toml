@@ -13,15 +13,15 @@ type = "dmm"
 url = "http://eikaiwa.dmm.com/"
 
 # -----------------------------------------------------------------------------
-# Storage
+# Save
 # -----------------------------------------------------------------------------
-[storage]
+[save]
 mode = "redis"
 
-[storage.text]
+[save.text]
 path = "/tmp/status.log"
 
-[storage.redis]
+[save.redis]
 encrypted = false
 url = "redis://h:password@127.0.0.1:6379"
 

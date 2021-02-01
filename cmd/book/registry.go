@@ -51,13 +51,13 @@ func (r *registry) newLogger() *zap.Logger {
 func (r *registry) newSaver() save.Saver {
 	if r.saver == nil {
 		var err error
-		switch r.conf.Storage.Mode {
+		switch r.conf.Save.Mode {
 		case save.RedisMode:
 			r.newLogger().Debug("storager: redis")
-			r.saver, err = save.NewRedisSaver(r.newLogger(), r.conf.Storage.Redis.URL)
+			r.saver, err = save.NewRedisSaver(r.newLogger(), r.conf.Save.Redis.URL)
 		case save.TextMode:
 			r.newLogger().Debug("storager: text")
-			r.saver = save.NewTextSaver(r.newLogger(), r.conf.Storage.Text.Path)
+			r.saver = save.NewTextSaver(r.newLogger(), r.conf.Save.Text.Path)
 		case save.DummyMode:
 			r.newLogger().Debug("storager: dummy")
 			r.saver = save.NewDummySaver(r.newLogger())
