@@ -2,7 +2,7 @@ package dmmer
 
 import (
 	"github.com/hiromaily/go-book-teacher/pkg/models"
-	lg "github.com/hiromaily/golibs/log"
+	"go.uber.org/zap"
 )
 
 // Fetcher is interface to fetch initial data
@@ -10,11 +10,11 @@ type Fetcher interface {
 	FetchInitialData() (*models.SiteInfo, error)
 }
 
-func newFetcher(jsonFile, url string) Fetcher {
+func newFetcher(logger *zap.Logger, jsonFile, url string) Fetcher {
 	if jsonFile != "" {
-		return newJSONFetcher(jsonFile)
+		return newJSONFetcher(logger, jsonFile)
 	}
-	return newDummyFetcher(url)
+	return newDummyFetcher(logger, url)
 }
 
 // ----------------------------------------------------------------------------
@@ -22,11 +22,13 @@ func newFetcher(jsonFile, url string) Fetcher {
 // ----------------------------------------------------------------------------
 
 type jsonFetcher struct {
+	logger   *zap.Logger
 	jsonFile string
 }
 
-func newJSONFetcher(jsonFile string) Fetcher {
+func newJSONFetcher(logger *zap.Logger, jsonFile string) Fetcher {
 	return &jsonFetcher{
+		logger:   logger,
 		jsonFile: jsonFile,
 	}
 }
@@ -34,7 +36,7 @@ func newJSONFetcher(jsonFile string) Fetcher {
 // FetchInitialData is to return siteInfo by loading json
 func (f *jsonFetcher) FetchInitialData() (*models.SiteInfo, error) {
 	// call json file
-	lg.Debugf("Load json file: %s", f.jsonFile)
+	f.logger.Debug("load json file", zap.String("file", f.jsonFile))
 	siteInfo, err := models.LoadJSON(f.jsonFile)
 	if err != nil {
 		return nil, err
@@ -47,18 +49,20 @@ func (f *jsonFetcher) FetchInitialData() (*models.SiteInfo, error) {
 // ----------------------------------------------------------------------------
 
 type dummyFetcher struct {
-	url string
+	logger *zap.Logger
+	url    string
 }
 
-func newDummyFetcher(url string) Fetcher {
+func newDummyFetcher(logger *zap.Logger, url string) Fetcher {
 	return &dummyFetcher{
-		url: url,
+		logger: logger,
+		url:    url,
 	}
 }
 
 // FetchInitialData is to return defined teachers info
 func (d *dummyFetcher) FetchInitialData() (*models.SiteInfo, error) {
-	lg.Debug("use defined data for dmm teacher")
+	d.logger.Debug("use defined data for dmm teacher")
 	ti := []models.TeacherInfo{
 		{ID: 6214, Name: "Aleksandra S", Country: "Serbia"},
 		{ID: 4808, Name: "Joxyly", Country: "Serbia"},

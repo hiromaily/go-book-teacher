@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
+	"github.com/hiromaily/go-book-teacher/pkg/site"
 	"github.com/hiromaily/go-book-teacher/pkg/storage"
 )
 
@@ -24,8 +25,8 @@ type Logger struct {
 
 // Site is site information
 type Site struct {
-	Type string `toml:"type" validate:"oneof=dmm"`
-	URL  string `toml:"url" validate:"required"`
+	Type site.SiteType `toml:"type" validate:"oneof=dmm"`
+	URL  string        `toml:"url" validate:"required"`
 }
 
 type Storage struct {

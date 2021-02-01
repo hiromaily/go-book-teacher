@@ -1,6 +1,6 @@
 # heroku
 
-interval = 60 # second :run every 60 second, run only once when interval is `0`
+interval = 0 # second :run every 60 second, run only once when interval is `0`
 
 [logger]
 service = "book-teacher"

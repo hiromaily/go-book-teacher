@@ -1,6 +1,7 @@
 package booker
 
 import (
+	"go.uber.org/zap"
 	"strconv"
 	"time"
 
@@ -10,7 +11,6 @@ import (
 	"github.com/hiromaily/go-book-teacher/pkg/notifier"
 	"github.com/hiromaily/go-book-teacher/pkg/site"
 	storages "github.com/hiromaily/go-book-teacher/pkg/storage"
-	lg "github.com/hiromaily/golibs/log"
 )
 
 // ----------------------------------------------------------------------------
@@ -26,17 +26,20 @@ type Booker interface {
 
 // NewBooker is to return booker interface
 func NewBooker(
-	day int,
-	interval int,
 	storager storages.Storager,
 	notifier notifier.Notifier,
-	siter site.Siter) Booker {
+	siter site.Siter,
+	logger *zap.Logger,
+	day int,
+	interval int,
+) Booker {
 	return NewBook(
-		day,
-		interval,
 		storager,
 		notifier,
 		siter,
+		logger,
+		day,
+		interval,
 	)
 }
 
@@ -46,32 +49,37 @@ func NewBooker(
 
 // Book is Book object
 type Book struct {
-	day      int
-	interval int
 	storager storages.Storager
 	notifier notifier.Notifier
 	siter    site.Siter
+	logger   *zap.Logger
+	day      int
+	interval int
 	isLoop   bool
 }
 
 // NewBook is to return book object
 func NewBook(
-	day int,
-	interval int,
 	storager storages.Storager,
 	notifier notifier.Notifier,
-	siter site.Siter) *Book {
+	siter site.Siter,
+	logger *zap.Logger,
+	day int,
+	interval int,
+) *Book {
+
 	var isLoop bool
 	if interval != 0 {
 		isLoop = true
 	}
 
 	book := Book{
-		day:      day,
-		interval: interval,
 		storager: storager,
 		notifier: notifier,
 		siter:    siter,
+		logger:   logger,
+		day:      day,
+		interval: interval,
 		isLoop:   isLoop, // TODO: testmode, heroku env should be false
 	}
 	return &book
@@ -79,23 +87,29 @@ func NewBook(
 
 // Start is to start book execution
 func (b *Book) Start() error {
+	b.logger.Debug("book Start()")
+	defer b.storager.Close()
+
+	b.logger.Debug("book siter.FetchInitialData()")
 	if err := b.siter.FetchInitialData(); err != nil {
 		return errors.Wrap(err, "fail to call site.FetchInitialData()")
 	}
 
 	for {
 		// scraping
+		b.logger.Debug("book siter.FindTeachers()")
 		teachers := b.siter.FindTeachers(b.day)
 
 		// save
+		b.logger.Debug("book siter.saveAndNotify()")
 		b.saveAndNotify(teachers)
 
 		// execute only once
 		if !b.isLoop {
-			b.storager.Close()
 			return nil
 		}
 
+		b.logger.Debug("book sleep for next execution")
 		time.Sleep(time.Duration(b.interval) * time.Second)
 	}
 }
@@ -123,7 +137,7 @@ func (b *Book) saveAndNotify(ths []models.TeacherInfo) {
 		// save
 		isUpdated, err := b.storager.Save(newData)
 		if err != nil {
-			lg.Errorf("fail to save() %v", err)
+			b.logger.Error("fail to call Save()", zap.Error(err))
 		}
 
 		if isUpdated {

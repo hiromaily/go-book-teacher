@@ -14,7 +14,9 @@ url = "http://eikaiwa.dmm.com/"
 # -----------------------------------------------------------------------------
 # Storage
 # -----------------------------------------------------------------------------
-# redis should be enabled on Heroku environment
+[storage]
+mode = "text"
+
 [redis]
 encrypted = false
 url = ""

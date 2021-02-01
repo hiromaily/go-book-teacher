@@ -2,6 +2,7 @@ package dmmer
 
 import (
 	"fmt"
+	"go.uber.org/zap"
 	"sync"
 	"time"
 
@@ -9,26 +10,27 @@ import (
 
 	"github.com/hiromaily/go-book-teacher/pkg/httpdoc"
 	"github.com/hiromaily/go-book-teacher/pkg/models"
-	lg "github.com/hiromaily/golibs/log"
 	tm "github.com/hiromaily/golibs/time"
 )
 
 // DMM is DMM object
 type DMM struct {
+	site         *models.SiteInfo
+	fetcher      Fetcher
+	logger       *zap.Logger
 	maxGoRoutine int
 	url          string
 	jsonFile     string
-	*models.SiteInfo
-	fetcher Fetcher
 }
 
 // NewDMM is to return DMM object
-func NewDMM(jsonFile, url string) *DMM {
+func NewDMM(logger *zap.Logger, jsonFile, url string) *DMM {
 	return &DMM{
+		fetcher:      newFetcher(logger, jsonFile, url),
+		logger:       logger,
 		maxGoRoutine: 20,
 		url:          url,
 		jsonFile:     jsonFile,
-		fetcher:      newFetcher(jsonFile, url),
 	}
 }
 
@@ -39,7 +41,7 @@ func (d *DMM) FetchInitialData() error {
 		return nil
 	}
 
-	d.SiteInfo = siteInfo
+	d.site = siteInfo
 	return nil
 }
 
@@ -51,7 +53,7 @@ func (d *DMM) FindTeachers(day int) []models.TeacherInfo {
 	chanSemaphore := make(chan bool, d.maxGoRoutine)
 	chanTh := make(chan *models.TeacherInfo) // response of found teacher by channel
 
-	for _, teacher := range d.Teachers {
+	for _, teacher := range d.site.Teachers {
 		teacher := teacher
 
 		wg.Add(1)
@@ -66,7 +68,7 @@ func (d *DMM) FindTeachers(day int) []models.TeacherInfo {
 			err := d.getHTML(&teacher, chanTh, day)
 			if err != nil {
 				// TODO: this err shouold emit by channel
-				lg.Error(err)
+				d.logger.Error("fail to call getHTML()", zap.Error(err))
 			}
 		}()
 	}

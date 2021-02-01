@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/hiromaily/go-book-teacher/pkg/site/dmmer"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
@@ -31,11 +32,12 @@ func NewRegistry(conf *config.Root) Registry {
 // NewBooker is to register for booker interface
 func (r *registry) NewBooker(jsonPath string, day int) booker.Booker {
 	return booker.NewBooker(
-		day,
-		r.conf.Interval,
 		r.newStorager(),
 		r.newNotifier(),
 		r.newSiter(jsonPath),
+		r.newLogger(),
+		day,
+		r.conf.Interval,
 	)
 }
 
@@ -49,12 +51,19 @@ func (r *registry) newLogger() *zap.Logger {
 func (r *registry) newStorager() storage.Storager {
 	if r.storage == nil {
 		var err error
-		r.storage, err = storage.NewStorager(
-			r.conf.Storage.Mode,
-			r.newLogger(),
-			r.conf.Storage.Redis.URL,
-			r.conf.Storage.Text.Path,
-		)
+		switch r.conf.Storage.Mode {
+		case storage.RedisMode:
+			r.newLogger().Debug("storager: redis")
+			r.storage, err = storage.NewRedis(r.newLogger(), r.conf.Storage.Redis.URL)
+		case storage.TextMode:
+			r.newLogger().Debug("storager: text")
+			r.storage = storage.NewText(r.newLogger(), r.conf.Storage.Text.Path)
+		case storage.DummyMode:
+			r.newLogger().Debug("storager: dummy")
+			r.storage = storage.NewDummy(r.newLogger())
+		default:
+			panic(errors.New("storage mode is not found"))
+		}
 		if err != nil {
 			panic(err)
 		}
@@ -65,8 +74,10 @@ func (r *registry) newStorager() storage.Storager {
 func (r *registry) newNotifier() notifier.Notifier {
 	switch r.conf.Notification.Mode {
 	case notifier.ConsoleMode:
+		r.newLogger().Debug("notifier: console")
 		return notifier.NewConsole(r.newLogger())
 	case notifier.SlackMode:
+		r.newLogger().Debug("notifier: slack")
 		return notifier.NewSlack(
 			r.newLogger(),
 			r.conf.Notification.Slack.Key,
@@ -77,5 +88,14 @@ func (r *registry) newNotifier() notifier.Notifier {
 }
 
 func (r *registry) newSiter(jsonPath string) site.Siter {
-	return site.NewSiter(jsonPath, r.conf.Site)
+	switch r.conf.Site.Type {
+	case site.SiteTypeDMM:
+		r.newLogger().Debug("site: dmm")
+		return dmmer.NewDMM(
+			r.newLogger(),
+			jsonPath,
+			r.conf.Site.URL,
+		)
+	}
+	panic(errors.Errorf("invalid site type: %s", r.conf.Site.Type))
 }

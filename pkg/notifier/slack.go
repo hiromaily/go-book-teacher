@@ -11,7 +11,6 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/hiromaily/go-book-teacher/pkg/models"
-	lg "github.com/hiromaily/golibs/log"
 	"github.com/hiromaily/golibs/tmpl"
 )
 
@@ -71,7 +70,7 @@ func (s *slack) Notify(ths []models.TeacherInfo) error {
 	if err != nil {
 		return err
 	}
-	lg.Debugf("body: %s", string(body))
+	s.logger.Debug("body", zap.String("body", string(body)))
 
 	return nil
 }

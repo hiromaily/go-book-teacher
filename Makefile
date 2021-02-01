@@ -50,6 +50,10 @@ golist:
 build:
 	go build -i -v -o ${GOPATH}/bin/book ./cmd/book/
 
+.PHONY: run
+run: build
+	book
+
 # run by save:text, notify:command using defined teacher data
 .PHONY: exec1
 exec1:
