@@ -103,10 +103,12 @@ func (r *registry) newSiter(jsonFile string, day int) site.Siter {
 
 func (r *registry) newTeacherFetcher(jsonFile string) teachers.Teacher {
 	if jsonFile != "" {
+		r.newLogger().Debug("target teachers: json")
 		return teachers.NewJSONTeacher(
 			r.newLogger(),
 			jsonFile,
 		)
 	}
+	r.newLogger().Debug("target teachers: dummy")
 	return teachers.NewDummyTeacher(r.newLogger())
 }

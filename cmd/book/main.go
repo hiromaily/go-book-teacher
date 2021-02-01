@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/hiromaily/go-book-teacher/pkg/teachers"
 	"log"
 	"os"
 
 	"github.com/hiromaily/go-book-teacher/pkg/config"
-	"github.com/hiromaily/go-book-teacher/pkg/signal"
 )
 
 var (
@@ -48,11 +48,17 @@ func main() {
 		panic(err)
 	}
 
-	// signal
-	go signal.StartSignal()
-
+	// registry
 	regi := NewRegistry(conf)
-	booker := regi.NewBooker(*jsPath, *day)
+
+	// json
+	jsonPath := *jsPath
+	if jsonPath == "" {
+		jsonPath = teachers.GetEnvJSONPath()
+	}
+
+	// booker
+	booker := regi.NewBooker(jsonPath, *day)
 	if err := booker.Start(); err != nil {
 		log.Fatal(err)
 	}

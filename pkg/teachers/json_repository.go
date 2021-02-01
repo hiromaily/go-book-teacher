@@ -3,6 +3,8 @@ package teachers
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
+	"strings"
 
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -37,6 +39,15 @@ func (j *jsonTeacher) Fetch() ([]TeacherRepo, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "fail to Unmarshal json binary: %s", j.fileName)
 	}
-
+	//j.logger.Debug("target_teacher", zap.Any("teachers", repo))
 	return repo.Teachers, nil
+}
+
+func GetEnvJSONPath() string {
+	path := os.Getenv("GO_BOOK_JSON")
+	if strings.Contains(path, "${GOPATH}") {
+		gopath := os.Getenv("GOPATH")
+		path = strings.Replace(path, "${GOPATH}", gopath, 1)
+	}
+	return path
 }

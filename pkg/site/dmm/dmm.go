@@ -45,7 +45,7 @@ func NewDMM(
 func (d *DMM) Fetch() error {
 	teachers, err := d.teacherFetcher.Fetch()
 	if err != nil {
-		return nil
+		return err
 	}
 
 	d.teachers = teachers

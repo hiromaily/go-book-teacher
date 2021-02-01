@@ -80,7 +80,7 @@ func (b *Book) Start() error {
 	defer b.saver.Close()
 
 	// fetch initial teacher data
-	b.logger.Debug("book siter.FetchInitialData()")
+	b.logger.Debug("book siter.Fetch()")
 	if err := b.siter.Fetch(); err != nil {
 		return errors.Wrap(err, "fail to call siter.Fetch()")
 	}
