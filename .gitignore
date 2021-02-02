@@ -3,6 +3,8 @@
 .idea/
 
 #main
+configs/default.toml
+configs/teacher/default.json
 status.log
 
 #compiled

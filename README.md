@@ -49,7 +49,17 @@ This project has started since 2016 to study Golang and code is quite messy. Now
 
 ## Installation
 ```
-$ go get github.com/hiromaily/go-book-teacher ./...
+# clone
+$ git clone https://github.com/hiromaily/go-book-teacher.git
+
+# setup config file
+$ cp configs/default.example.toml configs/default.toml
+# and modify `configs/default.toml` as you want
+
+# setup your favorite teacher's information
+$ cp configs/teacher/default.example.json configs/teacher/default.json
+# and modify `configs/teacher/default.json` as you want
+
 ```
 
 ## Usage
