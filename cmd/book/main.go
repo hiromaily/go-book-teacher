@@ -50,7 +50,8 @@ func getConfig() *config.Root {
 	if configPath == "" {
 		//book-teacher.toml
 		expectedFileName := fmt.Sprintf("%s.toml", os.Args[0])
-		if _, err := os.Stat(expectedFileName); os.IsExist(err) {
+		log.Println("config file: ", expectedFileName)
+		if _, err := os.Stat(expectedFileName); !os.IsNotExist(err) {
 			configPath = expectedFileName
 		}
 	}
@@ -69,7 +70,8 @@ func getJSON() string {
 	if jsonPath == "" {
 		//book-teacher.json
 		expectedFileName := fmt.Sprintf("%s.json", os.Args[0])
-		if _, err := os.Stat(expectedFileName); os.IsExist(err) {
+		log.Println("json file: ", expectedFileName)
+		if _, err := os.Stat(expectedFileName); !os.IsNotExist(err) {
 			jsonPath = expectedFileName
 		}
 	}

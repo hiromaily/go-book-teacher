@@ -8,8 +8,8 @@ dist/
 configs/default.toml
 configs/teacher/default.json
 status.log
-default.json
-default.toml
+*.json
+*.toml
 
 #compiled
 profile.cov
