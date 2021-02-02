@@ -21,7 +21,7 @@ var usage = `Usage: %s [options...]
 Options:
   -json      Json file path for teacher information
   -toml      Toml file path for config
-  -day       Day for teacher schedule list
+  -day       range of schedule to get teacher's availability: 0: all day, 1:today, 2: tomorrow
 `
 
 // init() can not be used because it affects main_test.go as well.

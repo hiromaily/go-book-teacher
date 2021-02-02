@@ -7,6 +7,7 @@
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/hiromaily/go-book-teacher)
 
 Go-book-teacher is notifier for that specific teachers are available on English lesson service.  
+For now, only [DMM eikaiwa](https://eikaiwa.dmm.com/) is expected.
 
 This project has started since 2016 to study Golang and code is quite messy. Now it's under refactoring.
 
@@ -60,6 +61,11 @@ $ cp configs/default.example.toml configs/default.toml
 $ cp configs/teacher/default.example.json configs/teacher/default.json
 # and modify `configs/teacher/default.json` as you want
 
+# build
+$ make build
+
+# run
+book
 ```
 
 ## Usage
@@ -67,50 +73,35 @@ $ cp configs/teacher/default.example.json configs/teacher/default.json
 Usage: book [options...]
 
 Options:
-  -j      JSON file path for teacher information
-  -t      TOML file path for config
-  -i      Interval for scraping, if 0 it scrapes only once
-  -crypto true is that conf file is handled as encrypted value
+  -json      Json file path for teacher information
+  -toml      Toml file path for config
+  -day       range of schedule to get teacher's availability: 0: all day, 1:today, 2: tomorrow
 
 e.g.
- $ book -j ./testdata/json/teachers.json -t ./config/toml/text-command.toml
+ $ book -day 1
 ```
-
-## Configration
-```
-./config/toml/*.toml
-```
-* site
-* storage
-    * redis
-    * text
-* notification
-    * slack
-    * browser
-    * mail
-
-※ As needed, secret information can be encrypted.(using AES encryption)
 
 ## Environment valuables
+- envrc is used for MacOS user, please install direnv](https://github.com/direnv/direnv)
 - encryption is used for secret value in config files.
-- secret value can be encrypted/decrypted by tools
-```bash
-# encode
-go run ./tools/encryption/ -m e important-password
-# decode
-go run ./tools/encryption/ -m d o5PDC2aLqoYxhY9+mL0W/IdG+rTTH0FWPUT4u1XBzko=
+- secret value can be encrypted/decrypted by tools (see Makefile)
+
+```Makefile
+.PHONY: tool-encode
+tool-encode:
+	go run ./tools/encryption/ -encode important-password
+
+.PHONY: tool-decode
+tool-decode:
+	go run ./tools/encryption/ -decode o5PDC2aLqoYxhY9+mL0W/IdG+rTTH0FWPUT4u1XBzko=
 ```
 
-### Option
-| NAME              | Value                               |
-|:------------------|:------------------------------------|
-| ENC_KEY           | xxxxx                               |
-| ENC_IV            | xxxxx                               |
-
-
-## registration for target teacher's ids
-json file can be used with command line argument `-j`
-`testdata/json/teachers.json`
+| NAME              | Value                                         |
+|:------------------|:----------------------------------------------|
+| GO_BOOK_CONF      | default config file path                      |
+| GO_BOOK_JSON      | default teacher info json file path           |
+| ENC_KEY           | 16byte_string_xx                              |
+| ENC_IV            | 16byte_string_xx                              |
 
 
 ## deploy on heroku

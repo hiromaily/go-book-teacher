@@ -35,13 +35,6 @@ lint:
 .PHONY: lintall
 lintall: imports lint
 
-###########################################################
-# go list for check import package
-###########################################################
-.PHONY: golist
-golist:
-	go list -f '{{.ImportPath}} -> {{join .Imports "\n"}}' ./cmd/book/main.go
-
 
 ###############################################################################
 # Build
@@ -53,43 +46,6 @@ build:
 .PHONY: run
 run: build
 	book
-
-# run by save:text, notify:command using defined teacher data
-.PHONY: exec1
-exec1:
-	book -t ./config/toml/text-command.toml
-
-# run by save:text, notify:command using defined teacher jsondata
-.PHONY: exec2
-exec2:
-	book -t ./config/toml/text-command.toml -j ./testdata/json/teachers.json
-#	book -t ./config/toml/text-console.toml -d 1 -j ./testdata/json/teachers.json
-#	book -t ./config/toml/text-console.toml -d 2 -j ./testdata/json/teachers.json
-#	book -t ./config/toml/text-console.toml -d 2 -i 30 -j ./testdata/json/teachers.json
-
-# run by save:text, notify:command using defined teacher data with loop
-.PHONY: exec3
-exec3:
-	book -t ./config/toml/text-command.toml -i 10
-
-# run by save:text, notify:slack using defined teacher data
-.PHONY: exec4
-exec4:
-	book -t ./config/toml/text-slack.toml -crypto
-
-# run by save:redis, notify:command using defined teacher data
-.PHONY: exec5
-exec5:
-	book -t ./config/toml/redis-command.toml -crypto
-
-.PHONY: exec-heroku
-exec-heroku:
-	book -t ./config/toml/heroku.toml -crypto
-
-# run by save:text, notify:mail using defined teacher data
-# for now, mail is not available because of security issue
-# exec10:
-# 	book -t ./config/toml/text-mail.toml
 
 
 ###############################################################################
@@ -107,19 +63,12 @@ test:
 ###############################################################################
 .PHONY: tool-encode
 tool-encode:
-	go run ./tools/encryption/ -m e important-password
+	go run ./tools/encryption/ -encode important-password
 
 .PHONY: tool-decode
 tool-decode:
-	go run ./tools/encryption/ -m d o5PDC2aLqoYxhY9+mL0W/IdG+rTTH0FWPUT4u1XBzko=
+	go run ./tools/encryption/ -decode o5PDC2aLqoYxhY9+mL0W/IdG+rTTH0FWPUT4u1XBzko=
 
-###############################################################################
-# Utility
-###############################################################################
-
-.PHONY: clean
-clean:
-	rm -rf status.log
 
 ###############################################################################
 # Docker
@@ -130,7 +79,7 @@ dclogin:
 
 .PHONY: dcexec
 dcexec:
-	docker-compose exec book /bin/sh -c "book -t ./config/toml/text-command.toml"
+	docker-compose exec book /bin/sh -c "book -t ./config/text-command.toml"
 
 ###############################################################################
 # Build Heroku
@@ -156,7 +105,7 @@ heroku-deploy:
 
 .PHONY: heroku-run
 heroku-run:
-	heroku run book -t /app/config/toml/heroku.toml -crypto
+	heroku run book -t /app/config/heroku.toml
 
 .PHONY: heroku-info
 heroku-info:
