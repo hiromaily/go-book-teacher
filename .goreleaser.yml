@@ -2,6 +2,7 @@
 # Make sure to check the documentation at http://goreleaser.com
 # - example yml
 # https://github.com/goreleaser/goreleaser/blob/master/.goreleaser.yml
+
 before:
   hooks:
     # You may remove this if you don't use go modules.
@@ -10,6 +11,7 @@ before:
     #- go generate ./...
     - cp configs/default.example.toml book-teacher.toml
     - cp configs/teacher/default.example.json book-teacher.json
+# https://goreleaser.com/customization/build/
 builds:
   - env:
       - CGO_ENABLED=0
@@ -19,6 +21,7 @@ builds:
       - linux
       - windows
       - darwin
+# https://goreleaser.com/customization/archive/
 archives:
   - replacements:
       darwin: Darwin
@@ -27,11 +30,8 @@ archives:
       386: i386
       amd64: x86_64
     files:
-#      - configs/default.example.toml
-#      - configs/teacher/default.example.json
       - book-teacher.toml
       - book-teacher.json
-
 checksum:
   name_template: 'checksums.txt'
 snapshot:
@@ -46,6 +46,7 @@ changelog:
       - '^images:'
       - '^scripts:'
 
+# https://goreleaser.com/customization/homebrew/
 brews:
   - tap:
       owner: hiromaily
