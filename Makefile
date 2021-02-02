@@ -58,6 +58,15 @@ test:
 
 
 ###############################################################################
+# Release
+# https://github.com/goreleaser/goreleaser
+###############################################################################
+.PHONY: release
+release:
+	#goreleaser release
+	goreleaser release --rm-dist
+
+###############################################################################
 # Tools
 # Note: environment variable `ENC_KEY`, `ENC_IV` should be set in advance
 ###############################################################################
