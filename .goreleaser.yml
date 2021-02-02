@@ -1,5 +1,7 @@
 # This is an example .goreleaser.yml file with some sane defaults.
 # Make sure to check the documentation at http://goreleaser.com
+# - example yml
+# https://github.com/goreleaser/goreleaser/blob/master/.goreleaser.yml
 before:
   hooks:
     # You may remove this if you don't use go modules.
@@ -48,6 +50,7 @@ brews:
   - tap:
       owner: hiromaily
       name: homebrew-go-book-teacher
+    folder: Formula
     description: find teacher's lesson
     homepage: https://github.com/hiromaily/go-book-teacher
     test: |

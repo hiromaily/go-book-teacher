@@ -78,6 +78,12 @@ brew-install:
 	brew install go-book-teacher
 	# book-teacher
 
+.PHONY: brew-reinstall
+brew-reinstall:
+	brew uninstall go-book-teacher
+	brew update
+	brew install go-book-teacher
+
 ###############################################################################
 # Tools
 # Note: environment variable `ENC_KEY`, `ENC_IV` should be set in advance
