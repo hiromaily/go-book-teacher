@@ -3,6 +3,7 @@
 CURRENTDIR=`pwd`
 modVer=$(shell cat go.mod | head -n 3 | tail -n 1 | awk '{print $2}' | cut -d'.' -f2)
 currentVer=$(shell go version | awk '{print $3}' | sed -e "s/go//" | cut -d'.' -f2)
+gitTag=$(shell git tag | head -n 1)
 
 ###############################################################################
 # Managing Dependencies
@@ -42,6 +43,10 @@ lintall: imports lint
 .PHONY: build
 build:
 	go build -i -v -o ${GOPATH}/bin/book ./cmd/book/
+
+.PHONY: build-version
+build-version:
+	go build -ldflags "-X main.version=${gitTag}" -i -v -o ${GOPATH}/bin/book ./cmd/book/
 
 .PHONY: run
 run: build

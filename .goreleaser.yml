@@ -34,3 +34,12 @@ changelog:
       - '^build:'
       - '^images:'
       - '^scripts:'
+
+brews:
+  - tap:
+      owner: hiromaily
+      name: homebrew-book-teacher
+    description: find teacher's lesson
+    homepage: https://github.com/hiromaily/go-book-teacher
+    test: |
+      system "#{bin}/go-book-teacher -v"

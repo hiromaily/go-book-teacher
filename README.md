@@ -61,6 +61,10 @@ $ cp configs/default.example.toml configs/default.toml
 $ cp configs/teacher/default.example.json configs/teacher/default.json
 # and modify `configs/teacher/default.json` as you want
 
+# setup .envrc
+$ cp example.envrc .envrc
+# and modify `.envrc` as you want
+
 # build
 $ make build
 

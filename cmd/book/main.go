@@ -11,10 +11,12 @@ import (
 )
 
 var (
-	jsPath   = flag.String("json", "", "JSON file path")
-	tomlPath = flag.String("toml", "", "TOML file path")
-	day      = flag.Int("day", 0, "0: all day, 1:today, 2: tomorrow")
+	jsPath    = flag.String("json", "", "JSON file path")
+	tomlPath  = flag.String("toml", "", "TOML file path")
+	day       = flag.Int("day", 0, "0: all day, 1:today, 2: tomorrow")
+	isVersion = flag.Bool("v", false, "version")
 	// -d daemon mode
+	version string
 )
 
 var usage = `Usage: %s [options...]
@@ -37,6 +39,12 @@ func parseFlag() {
 
 func main() {
 	parseFlag()
+
+	// version
+	if *isVersion {
+		fmt.Printf("%s %s\n", "book-teacher", version)
+		os.Exit(0)
+	}
 
 	// config
 	configPath := *tomlPath
