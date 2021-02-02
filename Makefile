@@ -70,6 +70,7 @@ test:
 release:
 	#goreleaser release
 	goreleaser release --rm-dist
+	rm -rf default.json default.toml
 
 
 .PHONY: brew-install

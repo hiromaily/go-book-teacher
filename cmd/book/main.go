@@ -24,6 +24,7 @@ Options:
   -json      Json file path for teacher information
   -toml      Toml file path for config
   -day       range of schedule to get teacher's availability: 0: all day, 1:today, 2: tomorrow
+  -v         show version
 `
 
 // init() can not be used because it affects main_test.go as well.
@@ -37,16 +38,14 @@ func parseFlag() {
 	flag.Parse()
 }
 
-func main() {
-	parseFlag()
-
-	// version
+func checkVersion() {
 	if *isVersion {
 		fmt.Printf("%s %s\n", "book-teacher", version)
 		os.Exit(0)
 	}
+}
 
-	// config
+func getConfig() *config.Root {
 	configPath := *tomlPath
 	if configPath == "" {
 		configPath = config.GetEnvConfPath()
@@ -55,21 +54,31 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	return conf
+}
 
-	// registry
-	regi := NewRegistry(conf)
-
-	// json
+func getJSON() string {
 	jsonPath := *jsPath
 	if jsonPath == "" {
 		jsonPath = teachers.GetEnvJSONPath()
 	}
+	return jsonPath
+}
+
+func main() {
+	parseFlag()
+	checkVersion()
+
+	conf := getConfig()
+	jsonPath := getJSON()
+
+	// registry
+	regi := NewRegistry(conf)
 
 	// booker
 	booker := regi.NewBooker(jsonPath, *day)
 	if err := booker.Start(); err != nil {
 		log.Fatal(err)
 	}
-	//
 	booker.Clean()
 }
