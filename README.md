@@ -49,6 +49,17 @@ This project has started since 2016 to study Golang and code is quite messy. Now
 
 
 ## Installation
+### for MacOS user
+```
+$ make install
+ or
+$ brew tap hiromaily/go-book-teacher
+$ brew install go-book-teacher
+# run
+$ book-teacher
+```
+
+### for development
 ```
 # clone
 $ git clone https://github.com/hiromaily/go-book-teacher.git

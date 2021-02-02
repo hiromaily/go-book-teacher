@@ -76,6 +76,7 @@ release:
 brew-install:
 	brew tap hiromaily/go-book-teacher
 	brew install go-book-teacher
+	# book-teacher
 
 ###############################################################################
 # Tools

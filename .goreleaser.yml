@@ -6,6 +6,8 @@ before:
     - go mod download
     # you may remove this if you don't need go generate
     #- go generate ./...
+    - cp configs/default.example.toml default.toml
+    - cp configs/teacher/default.example.json default.json
 builds:
   - env:
       - CGO_ENABLED=0
@@ -22,6 +24,12 @@ archives:
       windows: Windows
       386: i386
       amd64: x86_64
+    files:
+#      - configs/default.example.toml
+#      - configs/teacher/default.example.json
+      - default.toml
+      - default.json
+
 checksum:
   name_template: 'checksums.txt'
 snapshot:
