@@ -112,7 +112,6 @@ $ heroku addons:create heroku-redis:hobby-dev -a projectname
 $ heroku addons:create scheduler:standard
 
 ## Environment variable
-$ heroku config:add HEROKU_FLG=1
 $ heroku config:add ENC_KEY=xxxxx
 $ heroku config:add ENC_IV=xxxxx
 
