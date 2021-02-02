@@ -1,9 +1,10 @@
 #common
 .DS_Store
 .idea/
-dist/
 
 #main
+.envrc
+dist/
 configs/default.toml
 configs/teacher/default.json
 status.log
