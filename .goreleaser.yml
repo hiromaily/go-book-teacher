@@ -54,5 +54,7 @@ brews:
     folder: Formula
     description: find teacher's lesson
     homepage: https://github.com/hiromaily/go-book-teacher
+    install: |
+      bin.install Dir['*']
     test: |
       system "#{bin}/book-teacher -v"
