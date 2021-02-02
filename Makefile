@@ -71,6 +71,12 @@ release:
 	#goreleaser release
 	goreleaser release --rm-dist
 
+
+.PHONY: brew-install
+brew-install:
+	brew tap hiromaily/go-book-teacher
+	brew install go-book-teacher
+
 ###############################################################################
 # Tools
 # Note: environment variable `ENC_KEY`, `ENC_IV` should be set in advance
