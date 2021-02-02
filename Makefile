@@ -70,20 +70,19 @@ test:
 release:
 	#goreleaser release
 	goreleaser release --rm-dist
-	rm -rf default.json default.toml
+	rm -rf book-teacher.json book-teacher.toml
 
 
 .PHONY: brew-install
 brew-install:
-	brew tap hiromaily/go-book-teacher
-	brew install go-book-teacher
+	brew install hiromaily/tap/go-book-teacher
 	# book-teacher
 
+brew-uninstall:
+	brew uninstall hiromaily/tap/go-book-teacher
+
 .PHONY: brew-reinstall
-brew-reinstall:
-	brew uninstall go-book-teacher
-	brew update
-	brew install go-book-teacher
+brew-reinstall: brew-uninstall brew-install
 
 ###############################################################################
 # Tools

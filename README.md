@@ -51,10 +51,8 @@ This project has started since 2016 to study Golang and code is quite messy. Now
 ## Installation
 ### for MacOS user
 ```
-$ make install
- or
-$ brew tap hiromaily/go-book-teacher
-$ brew install go-book-teacher
+$ brew install hiromaily/tap/go-book-teacher
+
 # run
 $ book-teacher
 ```
@@ -91,9 +89,11 @@ Options:
   -json      Json file path for teacher information
   -toml      Toml file path for config
   -day       range of schedule to get teacher's availability: 0: all day, 1:today, 2: tomorrow
+  -v         show version
 
 e.g.
  $ book -day 1
+ $ book -h      # show help
 ```
 
 ## Environment valuables
