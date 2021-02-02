@@ -81,8 +81,11 @@ brew-install:
 brew-uninstall:
 	brew uninstall hiromaily/tap/go-book-teacher
 
+brew-update:
+	brew update
+
 .PHONY: brew-reinstall
-brew-reinstall: brew-uninstall brew-install
+brew-reinstall: brew-uninstall brew-update brew-install
 
 ###############################################################################
 # Tools

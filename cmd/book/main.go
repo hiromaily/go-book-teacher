@@ -48,6 +48,13 @@ func checkVersion() {
 func getConfig() *config.Root {
 	configPath := *tomlPath
 	if configPath == "" {
+		//book-teacher.toml
+		expectedFileName := fmt.Sprintf("%s.toml", os.Args[0])
+		if _, err := os.Stat(expectedFileName); os.IsExist(err) {
+			configPath = expectedFileName
+		}
+	}
+	if configPath == "" {
 		configPath = config.GetEnvConfPath()
 	}
 	conf, err := config.NewConfig(configPath)
@@ -59,6 +66,13 @@ func getConfig() *config.Root {
 
 func getJSON() string {
 	jsonPath := *jsPath
+	if jsonPath == "" {
+		//book-teacher.json
+		expectedFileName := fmt.Sprintf("%s.json", os.Args[0])
+		if _, err := os.Stat(expectedFileName); os.IsExist(err) {
+			jsonPath = expectedFileName
+		}
+	}
 	if jsonPath == "" {
 		jsonPath = teachers.GetEnvJSONPath()
 	}
