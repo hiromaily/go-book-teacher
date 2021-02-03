@@ -34,6 +34,7 @@ func NewSlack(logger *zap.Logger, key string, targetSiteURL string) Notifier {
 
 // TeacherInfo is used for template parameter
 type TeacherInfo struct {
+	URL      string
 	Teachers []teachers.TeacherRepo
 }
 
@@ -47,7 +48,10 @@ func (s *slack) Notify(teachers []teachers.TeacherRepo) error {
 	s.logger.Debug("notify", zap.String("mode", s.mode.String()))
 
 	// make body
-	msgBody, err := templateParser(&TeacherInfo{Teachers: teachers})
+	msgBody, err := templateParser(&TeacherInfo{
+		URL:      s.targetSiteURL,
+		Teachers: teachers,
+	})
 	if err != nil {
 		return errors.Wrap(err, "fail to parse message body of slack")
 	}
@@ -58,7 +62,7 @@ func (s *slack) Notify(teachers []teachers.TeacherRepo) error {
 		return errors.Wrap(err, "fail to call json.Marshal")
 	}
 	// send
-	body, err := s.sendPost(jsonMsg)
+	body, err := s.post(jsonMsg)
 	if err != nil {
 		return err
 	}
@@ -67,7 +71,7 @@ func (s *slack) Notify(teachers []teachers.TeacherRepo) error {
 	return nil
 }
 
-func (s *slack) sendPost(jsonMsg []byte) ([]byte, error) {
+func (s *slack) post(jsonMsg []byte) ([]byte, error) {
 	req, err := http.NewRequest(
 		"POST",
 		s.slackURL,

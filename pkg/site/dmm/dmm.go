@@ -3,7 +3,6 @@ package dmm
 import (
 	"fmt"
 	"sync"
-	"time"
 
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -11,7 +10,6 @@ import (
 	"github.com/hiromaily/go-book-teacher/pkg/httpdoc"
 	"github.com/hiromaily/go-book-teacher/pkg/site"
 	"github.com/hiromaily/go-book-teacher/pkg/teachers"
-	"github.com/hiromaily/go-book-teacher/pkg/times"
 )
 
 // MaxGoroutine is number of goroutine to run scraping func
@@ -56,7 +54,7 @@ func (d *siteDMM) Fetch() error {
 
 // FindTeachers finds available teachers by scraping web site
 func (d *siteDMM) FindTeachers() []teachers.TeacherRepo {
-	defer times.Track(time.Now(), "dmm.FindTeachers()")
+	// defer times.Track(time.Now(), "dmm.FindTeachers()")
 
 	wg := &sync.WaitGroup{}
 	chSemaphore := make(chan struct{}, d.maxGoRoutine)

@@ -99,7 +99,10 @@ func (b *Book) Start() error {
 		}
 		if isUpdated {
 			// notify
-			b.notifier.Notify(teachers)
+			b.logger.Debug("book notifier.Notify()")
+			if err := b.notifier.Notify(teachers); err != nil {
+				b.logger.Error("fail to call notifier.Notify()", zap.Error(err))
+			}
 		}
 
 		// execute only once

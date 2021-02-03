@@ -20,7 +20,7 @@ func init() {
 	today = time.Now()
 }
 
-// isTimeApplicable is to check within range for applicable time
+// isTimeApplicable validates that date is applicable time
 func isTimeApplicable(strDate string, day int) bool {
 	// e.g. 2016-02-27 03:30:00
 	dt := strings.Split(strDate, " ")
@@ -45,8 +45,8 @@ func isTimeApplicable(strDate string, day int) bool {
 	return true
 }
 
-// htmlStringDecode is replace string in HTML into json
-func htmlStringDecode(jsondata *string) {
+// decodeHTMLString replaces string of HTML into JSON format
+func decodeHTMLString(jsondata *string) {
 	// a:5:{s:8:"launched";s:19:"2020-09-22 14:30:00";s:10:"teacher_id";s:5:"28302";s:9:"lesson_id";s:8:"83658441";s:16:"from_recommended";N;s:15:"lesson_language";N;}
 	lst := [12][2]string{
 		{"&amp;", "&"},
@@ -68,20 +68,20 @@ func htmlStringDecode(jsondata *string) {
 	}
 }
 
-// isTeacherActive to check HTML (empty or not)
+// isTeacherActive checks teacher's activity by specific HTML element (empty or not)
 func isTeacherActive(htmldata *goquery.Document) bool {
 	ret := htmldata.Find("#fav_count").Text()
 	return ret != ""
 }
 
-// parseDate is to parse html date
+// parseDate parses HTML date
 func parseDate(htmldata *goquery.Document, day int) []string {
 	var dates []string
 
 	htmldata.Find("a.bt-open").Each(func(_ int, s *goquery.Selection) {
 		if jsonData, ok := s.Attr("id"); ok {
 			// decode
-			htmlStringDecode(&jsonData)
+			decodeHTMLString(&jsonData)
 
 			// analyze json object
 			var jsonObject map[string]interface{}

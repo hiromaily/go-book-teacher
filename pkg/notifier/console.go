@@ -25,14 +25,15 @@ func NewConsole(logger *zap.Logger) Notifier {
 
 // Notify notifies on console
 // TODO: time should be displayed
-func (c *console) Notify(ths []teachers.TeacherRepo) error {
-	c.logger.Debug("notify", zap.String("mode", c.mode.String()))
+func (c *console) Notify(teachers []teachers.TeacherRepo) error {
+	c.logger.Debug("notify", zap.String("mode", c.mode.String()), zap.Any("teachers", teachers))
 
 	// emit a sound (maybe macOS only)
 	_ = exec.Command("say", "Found").Start()
 
-	for _, th := range ths {
-		fmt.Printf("----------- %s / %s / %d ----------- \n", th.Name, th.Country, th.ID)
+	fmt.Println("teachers are found !!")
+	for _, teacher := range teachers {
+		fmt.Printf("----------- %s / %s / %d ----------- \n", teacher.Name, teacher.Country, teacher.ID)
 	}
 
 	return nil
