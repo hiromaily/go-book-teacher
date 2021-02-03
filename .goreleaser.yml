@@ -55,6 +55,8 @@ brews:
     description: find teacher's lesson
     homepage: https://github.com/hiromaily/go-book-teacher
     install: |
-      bin.install Dir['*']
+      bin.install "book-teacher"
+      etc.install "book-teacher.toml"
+      etc.install "book-teacher.json"
     test: |
       system "#{bin}/book-teacher -v"
