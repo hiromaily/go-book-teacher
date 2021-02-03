@@ -6,8 +6,10 @@ import (
 	"log"
 	"os"
 
+	"github.com/pkg/errors"
+
 	"github.com/hiromaily/go-book-teacher/pkg/config"
-	"github.com/hiromaily/go-book-teacher/pkg/teachers"
+	"github.com/hiromaily/go-book-teacher/pkg/files"
 )
 
 var (
@@ -46,18 +48,11 @@ func checkVersion() {
 }
 
 func getConfig() *config.Root {
-	configPath := *tomlPath
+	configPath := files.GetConfigPath(*tomlPath)
 	if configPath == "" {
-		//book-teacher.toml
-		expectedFileName := fmt.Sprintf("/usr/local/bin/%s.toml", os.Args[0])
-		log.Println("config file: ", expectedFileName)
-		if _, err := os.Stat(expectedFileName); !os.IsNotExist(err) {
-			configPath = expectedFileName
-		}
+		log.Fatal(errors.New("config file is not found"))
 	}
-	if configPath == "" {
-		configPath = config.GetEnvConfPath()
-	}
+	log.Println("config file: ", configPath)
 	conf, err := config.NewConfig(configPath)
 	if err != nil {
 		panic(err)
@@ -65,28 +60,12 @@ func getConfig() *config.Root {
 	return conf
 }
 
-func getJSON() string {
-	jsonPath := *jsPath
-	if jsonPath == "" {
-		//book-teacher.json
-		expectedFileName := fmt.Sprintf("/usr/local/bin/%s.json", os.Args[0])
-		log.Println("json file: ", expectedFileName)
-		if _, err := os.Stat(expectedFileName); !os.IsNotExist(err) {
-			jsonPath = expectedFileName
-		}
-	}
-	if jsonPath == "" {
-		jsonPath = teachers.GetEnvJSONPath()
-	}
-	return jsonPath
-}
-
 func main() {
 	parseFlag()
 	checkVersion()
 
 	conf := getConfig()
-	jsonPath := getJSON()
+	jsonPath := files.GetJSONPath(*jsPath)
 
 	// registry
 	regi := NewRegistry(conf)
