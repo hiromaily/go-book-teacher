@@ -113,11 +113,10 @@ dcexec:
 
 ###############################################################################
 # Build Heroku
-#
-#heroku config:add HEROKU_FLG=1
+###############################################################################
 #heroku addons:create scheduler:standard
 
-#heroku run book -t /app/config/toml/heroku.toml -crypto
+#heroku run book -t /app/config/toml/heroku.toml
 #heroku run bash
 #heroku logs -t
 #heroku ps -a book
