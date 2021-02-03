@@ -1,6 +1,7 @@
 package booker
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -91,15 +92,22 @@ func (b *Book) Start() error {
 		teachers := b.siter.FindTeachers()
 
 		// save
-		b.logger.Debug("book siter.saveAndNotify()")
-		b.saveAndNotify(teachers)
+		b.logger.Debug("book siter.save()")
+		isUpdated, err := b.save(teachers)
+		if err != nil {
+			b.logger.Error("fail to call save()", zap.Error(err))
+		}
+		if isUpdated {
+			// notify
+			b.notifier.Notify(teachers)
+		}
 
 		// execute only once
 		if !b.isLoop {
 			return nil
 		}
 
-		b.logger.Debug("book sleep for next execution")
+		b.logger.Debug(fmt.Sprintf("sleep %d second for next execution", b.interval))
 		time.Sleep(time.Duration(b.interval) * time.Second)
 	}
 }
@@ -114,25 +122,23 @@ func (b *Book) Close() {
 	b.saver.Close()
 }
 
-// saveAndNotify is to save and notify if something saved
-func (b *Book) saveAndNotify(ths []teachers.TeacherRepo) {
-	if len(ths) != 0 {
-		// create string from ids slice
-		var sum int
-		for _, t := range ths {
-			sum += t.ID
-		}
-		newData := strconv.Itoa(sum)
-
-		// save
-		isUpdated, err := b.saver.Save(newData)
-		if err != nil {
-			b.logger.Error("fail to call Save()", zap.Error(err))
-		}
-
-		if isUpdated {
-			// notify
-			b.notifier.Notify(ths)
-		}
+// save saves status on storage
+func (b *Book) save(teachers []teachers.TeacherRepo) (bool, error) {
+	if len(teachers) == 0 {
+		return false, nil
 	}
+
+	// create string from ids slice
+	var sum int
+	for _, t := range teachers {
+		sum += t.ID
+	}
+	newData := strconv.Itoa(sum)
+
+	// save
+	isUpdated, err := b.saver.Save(newData)
+	if err != nil {
+		return false, errors.Wrap(err, "fail to call Save()")
+	}
+	return isUpdated, nil
 }
