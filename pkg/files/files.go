@@ -3,6 +3,8 @@ package files
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"strings"
 
 	"github.com/hiromaily/go-book-teacher/pkg/config"
 	"github.com/hiromaily/go-book-teacher/pkg/teachers"
@@ -14,9 +16,12 @@ func GetConfigPath(tomlPath string) string {
 		return tomlPath
 	}
 	// book-teacher.toml
-	expectedFileName := fmt.Sprintf("/usr/local/bin/%s.toml", os.Args[0])
-	if isExist(expectedFileName) {
-		return expectedFileName
+	targetDir, err := getBinDir()
+	if err == nil {
+		expectedFileName := fmt.Sprintf("%s%s.toml", targetDir, os.Args[0])
+		if isExist(expectedFileName) {
+			return expectedFileName
+		}
 	}
 	envFile := config.GetEnvConfPath()
 	if envFile != "" && isExist(envFile) {
@@ -31,10 +36,14 @@ func GetJSONPath(jsonPath string) string {
 		return jsonPath
 	}
 	// book-teacher.json
-	expectedFileName := fmt.Sprintf("/usr/local/bin/%s.json", os.Args[0])
-	if isExist(expectedFileName) {
-		return expectedFileName
+	targetDir, err := getBinDir()
+	if err == nil {
+		expectedFileName := fmt.Sprintf("%s%s.json", targetDir, os.Args[0])
+		if isExist(expectedFileName) {
+			return expectedFileName
+		}
 	}
+
 	envFile := teachers.GetEnvJSONPath()
 	if envFile != "" && isExist(envFile) {
 		return envFile
@@ -51,4 +60,13 @@ func isExist(file string) bool {
 		return false // error occurred somehow, e.g. permission error
 	}
 	return true
+}
+
+func getBinDir() (string, error) {
+	out, err := exec.Command("which", []string{os.Args[0]}...).Output()
+	if err != nil {
+		return "", err
+	}
+	// FIXME: windows newline is \r\n
+	return strings.TrimRight(string(out), fmt.Sprintf("%s\n", os.Args[0])), nil
 }

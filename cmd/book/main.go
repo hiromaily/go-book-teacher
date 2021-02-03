@@ -66,6 +66,7 @@ func main() {
 
 	conf := getConfig()
 	jsonPath := files.GetJSONPath(*jsPath)
+	log.Println("json file: ", jsonPath)
 
 	// registry
 	regi := NewRegistry(conf)
