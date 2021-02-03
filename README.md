@@ -53,6 +53,13 @@ This project has started since 2016 to study Golang and code is quite messy. Now
 ```
 $ brew install hiromaily/tap/go-book-teacher
 
+# 
+# config file is installed in /usr/local/etc/book-teacher/book-teacher.toml
+# modify `book-teacher.toml` if settings wanna be changed
+#
+# json file is installed in /usr/local/etc/book-teacher/book-teacher.json
+# add your teacher's ID/Name/Nationality to `book-teacher.json`
+
 # run
 $ book-teacher
 ```
