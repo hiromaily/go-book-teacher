@@ -56,7 +56,7 @@ brews:
     homepage: https://github.com/hiromaily/go-book-teacher
     install: |
       bin.install "book-teacher"
-      etc.install "book-teacher.toml"
-      etc.install "book-teacher.json"
+      etc.install "book-teacher/book-teacher.toml"
+      etc.install "book-teacher/book-teacher.json"
     test: |
       system "#{bin}/book-teacher -v"
