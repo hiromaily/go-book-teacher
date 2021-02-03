@@ -2,6 +2,7 @@
 # Make sure to check the documentation at http://goreleaser.com
 # - example yml
 # https://github.com/goreleaser/goreleaser/blob/master/.goreleaser.yml
+# https://github.com/gopasspw/gopass/blob/master/.goreleaser.yml
 
 before:
   hooks:
@@ -60,3 +61,10 @@ brews:
       (etc/"book-teacher").install "book-teacher.json"
     test: |
       system "#{bin}/book-teacher -v"
+    caveats:  |
+      book-teacher has been installed, have fun!
+      config file has been installed in /usr/local/etc/book-teacher/book-teacher.toml
+      json file has been installed in /usr/local/etc/book-teacher/book-teacher.json
+      please modify these files as you want.
+      More information:
+        https://github.com/hiromaily/go-book-teacher
