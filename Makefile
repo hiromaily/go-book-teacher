@@ -114,9 +114,8 @@ dcexec:
 ###############################################################################
 # Build Heroku
 ###############################################################################
-#heroku addons:create scheduler:standard
 
-#heroku run book -t /app/config/toml/heroku.toml
+#heroku run book -toml /app/configs/heroku.toml
 #heroku run bash
 #heroku logs -t
 #heroku ps -a book
@@ -134,7 +133,7 @@ heroku-deploy:
 
 .PHONY: heroku-run
 heroku-run:
-	heroku run book -t /app/config/heroku.toml
+	heroku run book -toml /app/configs/heroku.toml
 
 .PHONY: heroku-info
 heroku-info:
