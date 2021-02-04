@@ -111,7 +111,9 @@ dclogin:
 dcexec:
 	docker-compose exec book /bin/sh -c "book -t ./config/text-command.toml"
 
-#
+
+###############################################################################
+# Heroku
 ###############################################################################
 .PHONY: heroku-deploy
 heroku-deploy:

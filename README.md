@@ -160,6 +160,14 @@ $ git push heroku master
 2. click app `book-teacher`
 3. redis status
 ```
-heroku addons | grep heroku-redis
-heroku redis:cli --confirm book-teacher
+$ heroku addons | grep heroku-redis
+$ heroku redis:cli --confirm book-teacher
+```
+3. show config info
+```
+$ heroku config
+```
+4. execute
+```
+$ heroku run book -toml /app/configs/heroku.toml
 ```

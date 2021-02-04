@@ -8,7 +8,7 @@ import (
 
 // Root is root config
 type Root struct {
-	Interval     int           `toml:"interval" validate:"required"`
+	Interval     int           `toml:"interval"`
 	Site         *Site         `toml:"site" validate:"required"`
 	Logger       *Logger       `toml:"logger" validate:"required"`
 	Save         *Save         `toml:"save"`
