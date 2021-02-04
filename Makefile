@@ -111,20 +111,6 @@ dclogin:
 dcexec:
 	docker-compose exec book /bin/sh -c "book -t ./config/text-command.toml"
 
-###############################################################################
-# Build Heroku
-###############################################################################
-
-#heroku run book -toml /app/configs/heroku.toml
-#heroku run bash
-#heroku logs -t
-#heroku ps -a book
-#heroku ps
-#heroku config
-#
-# $ git push -f heroku master
-#  The go.mod file for this project does not specify a Go version
-#  https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration
 #
 ###############################################################################
 .PHONY: heroku-deploy
@@ -135,8 +121,14 @@ heroku-deploy:
 heroku-run:
 	heroku run book -toml /app/configs/heroku.toml
 
+.PHONY: heroku-run-bash
+heroku-run-bash:
+	heroku run bash
+
 .PHONY: heroku-info
 heroku-info:
 	#heroku config | grep REDIS
 	heroku config
 	heroku ps
+	heroku ps -a book
+	heroku logs -t

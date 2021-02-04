@@ -129,19 +129,21 @@ tool-decode:
 ## deploy on heroku
 ```
 ## Install 
-$ heroku create bookteacher --buildpack heroku/go
-$ heroku addons:create heroku-redis:hobby-dev -a projectname 
+$ heroku create book-teacher
+$ heroku addons:create heroku-redis:hobby-dev
 $ heroku addons:create scheduler:standard
 
 ## Environment variable
-$ heroku config:add ENC_KEY=xxxxx
-$ heroku config:add ENC_IV=xxxxx
-
-## Check
-$ heroku config | grep REDIS
-$ heroku ps -a bookteacher
+$ heroku config:add ENC_KEY='xxxxxxxxxxxxxxxx'
+$ heroku config:add ENC_IV'xxxxxxxxxxxxxxxx'
+$ heroku config:add GO_BOOK_CONF=/app/configs/default.toml
+$ heroku config:add GO_BOOK_JSON=/app/configs/teacher/default.json
 
 ## Deploy
-$ git push -f heroku master
+$ git push heroku master
+
+## Status
+$ heroku config | grep REDIS
+$ heroku ps -a book-teacher
 
 ```
