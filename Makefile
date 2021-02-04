@@ -126,11 +126,3 @@ heroku-run:
 .PHONY: heroku-run-bash
 heroku-run-bash:
 	heroku run bash
-
-.PHONY: heroku-info
-heroku-info:
-	#heroku config | grep REDIS
-	heroku config
-	heroku ps
-	heroku ps -a book
-	heroku logs -t

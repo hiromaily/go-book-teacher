@@ -146,8 +146,8 @@ $ heroku addons:create scheduler:standard
 ## Environment variable
 $ heroku config:add 'ENC_KEY=xxxxxxxxxxxxxxxx'
 $ heroku config:add 'ENC_IV=xxxxxxxxxxxxxxxx'
-$ heroku config:add GO_BOOK_CONF=/app/configs/default.toml
-$ heroku config:add GO_BOOK_JSON=/app/configs/teacher/default.json
+$ heroku config:add GO_BOOK_CONF=/app/configs/heroku.toml
+$ heroku config:add GO_BOOK_JSON=/app/configs/teacher/default.example.json
 ```
 
 ### deploy
@@ -170,4 +170,12 @@ $ heroku config
 4. execute
 ```
 $ heroku run book -toml /app/configs/heroku.toml
+```
+5. show logs
+```
+heroku logs -t
+```   
+6. instance info
+```
+heroku ps
 ```
