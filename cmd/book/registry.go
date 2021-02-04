@@ -54,7 +54,7 @@ func (r *registry) newSaver() save.Saver {
 		switch r.conf.Save.Mode {
 		case save.RedisMode:
 			r.newLogger().Debug("storager: redis")
-			r.saver, err = save.NewRedisSaver(r.newLogger(), r.conf.Save.Redis.URL)
+			r.saver, err = save.NewRedisSaver(r.newLogger(), r.conf.Save.Redis.URL, r.conf.Save.Redis.Env)
 		case save.TextMode:
 			r.newLogger().Debug("storager: text")
 			r.saver = save.NewTextSaver(r.newLogger(), r.conf.Save.Text.Path)

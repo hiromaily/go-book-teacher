@@ -1,15 +1,15 @@
 
 interval = 300 # second :run every x second, run only once when interval is `0`
 
+[site]
+type = "dmm"
+url = "http://eikaiwa.dmm.com/"
+
 [logger]
 service = "book-teacher"
 env = "custom" # dev, prod, custom :for only zap logger
 level = "info" # debug, info, warn, error
 is_stacktrace = false
-
-[site]
-type = "dmm"
-url = "http://eikaiwa.dmm.com/"
 
 # -----------------------------------------------------------------------------
 # Save
@@ -17,12 +17,13 @@ url = "http://eikaiwa.dmm.com/"
 [save]
 mode = "text"
 
+[save.text]
+path = "./status.log"
+
 [save.redis]
 encrypted = false
 url = ""
-
-[save.text]
-path = "./status.log"
+env = ""
 
 # -----------------------------------------------------------------------------
 # Notification

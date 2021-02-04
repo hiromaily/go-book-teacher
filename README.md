@@ -127,25 +127,39 @@ tool-decode:
 
 
 ## deploy on heroku
+### modification in go.mod
+add +heroku goVersion go1.x
 ```
-## Install 
-#https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-go
-$ heroku create book-teacher
+// +heroku goVersion go1.15
+go 1.15
+```
+
+### install
+[Heroku Buildpack for Go](https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-go)
+
+```
+#
 $ heroku create book-teacher --buildpack https://github.com/heroku/heroku-buildpack-go.git
 $ heroku addons:create heroku-redis:hobby-dev
 $ heroku addons:create scheduler:standard
 
 ## Environment variable
-$ heroku config:add ENC_KEY='xxxxxxxxxxxxxxxx'
-$ heroku config:add ENC_IV'xxxxxxxxxxxxxxxx'
+$ heroku config:add 'ENC_KEY=xxxxxxxxxxxxxxxx'
+$ heroku config:add 'ENC_IV=xxxxxxxxxxxxxxxx'
 $ heroku config:add GO_BOOK_CONF=/app/configs/default.toml
 $ heroku config:add GO_BOOK_JSON=/app/configs/teacher/default.json
+```
 
-## Deploy
+### deploy
+```
 $ git push heroku master
+```
 
-## Status
-$ heroku config | grep REDIS
-$ heroku ps -a book-teacher
-
+### get information
+1. access to dashboard `https://dashboard.heroku.com/apps`
+2. click app `book-teacher`
+3. redis status
+```
+heroku addons | grep heroku-redis
+heroku redis:cli --confirm book-teacher
 ```

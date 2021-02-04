@@ -9,10 +9,16 @@ import (
 // Root is root config
 type Root struct {
 	Interval     int           `toml:"interval" validate:"required"`
-	Logger       *Logger       `toml:"logger" validate:"required"`
 	Site         *Site         `toml:"site" validate:"required"`
+	Logger       *Logger       `toml:"logger" validate:"required"`
 	Save         *Save         `toml:"save"`
 	Notification *Notification `toml:"notification"`
+}
+
+// Site is site information
+type Site struct {
+	Type site.SiteType `toml:"type" validate:"oneof=dmm"`
+	URL  string        `toml:"url" validate:"required"`
 }
 
 // Logger is zap logger property
@@ -21,12 +27,6 @@ type Logger struct {
 	Env          string `toml:"env" validate:"oneof=dev prod custom"`
 	Level        string `toml:"level" validate:"required"`
 	IsStackTrace bool   `toml:"is_stacktrace"`
-}
-
-// Site is site information
-type Site struct {
-	Type site.SiteType `toml:"type" validate:"oneof=dmm"`
-	URL  string        `toml:"url" validate:"required"`
 }
 
 // Save is save method
@@ -44,7 +44,8 @@ type Text struct {
 // Redis is redis save
 type Redis struct {
 	Encrypted bool   `toml:"encrypted"`
-	URL       string `toml:"url" validate:"required"`
+	URL       string `toml:"url"`
+	Env       string `toml:"env"`
 }
 
 // Notification is notification method

@@ -1,6 +1,10 @@
 package save
 
 import (
+	"net"
+	"net/url"
+	"os"
+	"strconv"
 	"strings"
 
 	"github.com/garyburd/redigo/redis"
@@ -17,10 +21,23 @@ type redisSaver struct {
 }
 
 // NewRedisSaver returns Saver
-func NewRedisSaver(logger *zap.Logger, redisURL string) (Saver, error) {
-	redisConn, err := redis.DialURL(redisURL)
-	if err != nil {
-		return nil, err
+func NewRedisSaver(logger *zap.Logger, redisURL, env string) (Saver, error) {
+	var redisConn redis.Conn
+	if redisURL == "" {
+		u, err := getEnvURL(logger, env)
+		if err != nil {
+			return nil, err
+		}
+		redisConn, err = redis.DialURL(u.String(), redis.DialTLSSkipVerify(true))
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		var err error
+		redisConn, err = redis.DialURL(redisURL)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &redisSaver{
@@ -29,6 +46,33 @@ func NewRedisSaver(logger *zap.Logger, redisURL string) (Saver, error) {
 		conn:     redisConn,
 		redisKey: "bookteacher:save",
 	}, nil
+}
+
+// `REDIS_URL` is expected in env
+// https://devcenter.heroku.com/articles/securing-heroku-redis#using-go
+func getEnvURL(logger *zap.Logger, env string) (*url.URL, error) {
+	if env == "" {
+		return nil, errors.New("env is empty")
+	}
+	redisURL := os.Getenv(env)
+	logger.Debug("getEnvURL", zap.String(env, redisURL))
+	u, err := url.Parse(redisURL)
+	if err != nil {
+		return nil, err
+	}
+
+	host, strPort, err := net.SplitHostPort(u.Host)
+	if err != nil {
+		return nil, err
+	}
+
+	port, _ := strconv.Atoi(strPort)
+	port++
+	u.Scheme = "rediss"
+	u.Host = net.JoinHostPort(host, strconv.Itoa(port))
+	logger.Debug("getEnvURL", zap.String("url", u.String()))
+
+	return u, nil
 }
 
 // Save saves data on Redis
