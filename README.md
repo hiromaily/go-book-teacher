@@ -129,7 +129,9 @@ tool-decode:
 ## deploy on heroku
 ```
 ## Install 
+#https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-go
 $ heroku create book-teacher
+$ heroku create book-teacher --buildpack https://github.com/heroku/heroku-buildpack-go.git
 $ heroku addons:create heroku-redis:hobby-dev
 $ heroku addons:create scheduler:standard
 
