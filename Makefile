@@ -49,8 +49,8 @@ build-version:
 	go build -ldflags "-X main.version=${gitTag}" -i -v -o ${GOPATH}/bin/book ./cmd/book/
 
 .PHONY: run
-run: build
-	book
+run:
+	go run -v ./cmd/book/
 
 
 ###############################################################################
