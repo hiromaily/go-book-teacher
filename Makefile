@@ -42,11 +42,11 @@ lintall: imports lint
 ###############################################################################
 .PHONY: build
 build:
-	go build -i -v -o ${GOPATH}/bin/book ./cmd/book/
+	go build -v -o ${GOPATH}/bin/book ./cmd/book/
 
 .PHONY: build-version
 build-version:
-	go build -ldflags "-X main.version=${gitTag}" -i -v -o ${GOPATH}/bin/book ./cmd/book/
+	go build -ldflags "-X main.version=${gitTag}" -v -o ${GOPATH}/bin/book ./cmd/book/
 
 .PHONY: run
 run:

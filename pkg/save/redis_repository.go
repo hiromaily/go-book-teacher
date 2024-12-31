@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/garyburd/redigo/redis"
+	"github.com/gomodule/redigo/redis"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
